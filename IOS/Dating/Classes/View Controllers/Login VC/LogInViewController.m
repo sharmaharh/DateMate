@@ -44,20 +44,20 @@
 
 - (IBAction)btnLoginFBPressed:(id)sender
 {
-    [self performSegueWithIdentifier:@"LoginToChatIdentifier" sender:self];
-//    NSString *paramsString = @"id, name, first_name, last_name, gender, picture.type(square), email, birthday, location";
-//    NSArray *permissionsArray = @[@"read_stream",@"email",@"user_birthday",@"user_location"];
-//    
-//    [FacebookUtility fetchFBPersonalInfoWithParams:paramsString withPermissions:permissionsArray completionHandler:^(id response, NSError *e) {
-//        if (!e)
-//        {
-//            fbDict = response;
-//        }
-//        else
-//        {
-//            [Utils showOKAlertWithTitle:@"Dating" message:@"Failed to Fetch Data from Facebook"];
-//        }
-//    }];
+//    [self performSegueWithIdentifier:@"LoginToChatIdentifier" sender:self];
+    NSString *paramsString = @"id, name, first_name, last_name, gender, picture.type(square), email, birthday, location";
+    NSArray *permissionsArray = @[@"read_stream",@"email",@"user_birthday",@"user_location"];
+    
+    [FacebookUtility fetchFBPersonalInfoWithParams:paramsString withPermissions:permissionsArray completionHandler:^(id response, NSError *e) {
+        if (!e)
+        {
+            fbDict = response;
+        }
+        else
+        {
+            [Utils showOKAlertWithTitle:@"Dating" message:@"Failed to Fetch Data from Facebook"];
+        }
+    }];
     
 }
 
@@ -94,7 +94,25 @@
 
 -(void)parseLogin :(NSDictionary*)FBUserDetailDict
 {
-    
+    /*
+     Response Parameters for Log In
+     
+     First Name *:   = "ent_first_name"
+     Last Name :   name= "ent_last_name"
+     FB Id:   ="ent_fbid"
+     Sex *:   Male    Female          name="ent_sex"
+     Current Latitude :   name="ent_curr_lat"
+     Current Longitude :   name="ent_curr_long"
+     Date Of Birth: (YYYY-MM-DD)  name="ent_dob"
+     Push Token *:   name="ent_push_token"
+     ent_profile_pic *:   name="ent_profile_pic"
+     Device type *:   name="ent_device_type"
+     Authentication type *:   name="ent_auth_type"
+     *-marked are mandatory  name="ent_submit"
+     */
+    NSDictionary *fbInfo = @{@"ent_first_name":fbDict[@"first_name"], @"ent_last_name":fbDict[@"last_name"], @"ent_fbid":fbDict[@"id"], @"ent_sex":@"1", @"ent_curr_lat":@"0.0", @"ent_curr_long":@"0.0", @"ent_dob":@"1991-01-29", @"ent_push_token" : @"SIMULATOR_TEST", @"ent_profile_pic":fbDict[@"picture"][@"data"][@"url"], @"ent_device_type":@"1", @"ent_auth_type":@"1"};
+    AFNHelper *afnhelper = [AFNHelper new];
+    [afnhelper callWebserviceWithMethod:@"login" andBody:<#(NSString *)#>]
 }
 
 

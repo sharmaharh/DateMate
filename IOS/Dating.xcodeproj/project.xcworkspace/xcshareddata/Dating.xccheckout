@@ -5,24 +5,24 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>0D939575-1B30-45EA-8291-74BCAAC77744</string>
+	<string>963B2D6C-8F75-4F97-8DBC-7D1EB112E0D0</string>
 	<key>IDESourceControlProjectName</key>
 	<string>Dating</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>0B4F4DD4-AC2F-4A7A-B602-127266506007</key>
+		<key>952C638A-09B6-4E6F-91AD-EBBC5CB2A6BA</key>
 		<string>https://github.com/sharmaharh/DateMate/trunk</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>IOS/Dating.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>0B4F4DD4-AC2F-4A7A-B602-127266506007</key>
+		<key>952C638A-09B6-4E6F-91AD-EBBC5CB2A6BA</key>
 		<string>../../..</string>
 	</dict>
 	<key>IDESourceControlProjectRepositoryRootDictionary</key>
 	<dict>
-		<key>0B4F4DD4-AC2F-4A7A-B602-127266506007</key>
+		<key>952C638A-09B6-4E6F-91AD-EBBC5CB2A6BA</key>
 		<string>https://github.com/sharmaharh/DateMate</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
@@ -30,7 +30,7 @@
 	<key>IDESourceControlProjectVersion</key>
 	<integer>110</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>0B4F4DD4-AC2F-4A7A-B602-127266506007</string>
+	<string>952C638A-09B6-4E6F-91AD-EBBC5CB2A6BA</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
@@ -41,7 +41,7 @@
 			<key>IDESourceControlRepositoryTrunkRelativeLocationKey</key>
 			<string>trunk</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>0B4F4DD4-AC2F-4A7A-B602-127266506007</string>
+			<string>952C638A-09B6-4E6F-91AD-EBBC5CB2A6BA</string>
 			<key>IDESourceControlWCCName</key>
 			<string>DateMate</string>
 		</dict>
