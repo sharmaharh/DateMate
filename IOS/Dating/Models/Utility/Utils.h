@@ -26,8 +26,38 @@
 @property(nonatomic,copy) void(^alertCompletionBlock)(UIAlertView *alert ,NSInteger index);
 @property(nonatomic,copy) void(^actionSheetCompletionBlock)(UIActionSheet *actionSheet ,NSInteger index);
 
+
+/*-----------------------------------------------------
+ 
+ Method Name   : sharedInstance
+ Parameters    : nil
+ Return Type   : Void
+ Functionality : To Show Alert With only Ok Default Button in button options, usually use to just display the message and by pressing ok to dismiss it. For more buttons in Alert use other AlertView methods
+ 
+ ------------------------------------------------------*/
+
 + (void) showOKAlertWithTitle:(NSString*)aTitle message:(NSString*)aMsg;
+
+/*-----------------------------------------------------
+ 
+ Method Name   : sharedInstance
+ Parameters    : nil
+ Return Type   : Void
+ Functionality : To Show Alert With Title, Message, Delegate and Button Titles.
+ 
+ ------------------------------------------------------*/
+
 + (void) showAlertView :(NSString*)title message:(NSString*)msg delegate:(id)delegate cancelButtonTitle:(NSString*)CbtnTitle otherButtonTitles:(NSString*)otherBtnTitles;
+
+/*-----------------------------------------------------
+ 
+ Method Name   : sharedInstance
+ Parameters    : nil
+ Return Type   : Void
+ Functionality : To Show Alert With only Ok Default Button in button options, usually use to just display the message and by pressing ok to dismiss it. For more buttons in Alert use other AlertView methods
+ 
+ ------------------------------------------------------*/
+
 + (void) showAlertViewWithTag:(NSInteger)tag title:(NSString*)title message:(NSString*)msg delegate:(id)delegate
 			cancelButtonTitle:(NSString*)CbtnTitle otherButtonTitles:(NSString*)otherBtnTitles;
 
