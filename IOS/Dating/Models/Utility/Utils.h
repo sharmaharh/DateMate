@@ -11,28 +11,37 @@
 @interface Utils : NSObject <UIActionSheetDelegate>
 
 
+@property(assign,nonatomic)BOOL internetActive;
+@property(nonatomic,copy) void(^alertCompletionBlock)(UIAlertView *alert ,NSInteger index);
+@property(nonatomic,copy) void(^actionSheetCompletionBlock)(UIActionSheet *actionSheet ,NSInteger index);
+
+#pragma mark ----
+#pragma mark Singleton Instance
+
 /*-----------------------------------------------------
  
  Method Name   : sharedInstance
  Parameters    : nil
- Return Type   : Void
+ Return Type   : Class Type (Instance Type)
  Functionality : To Create a Singelton Object of Utils, which will be alive throughout the run of the app.
  
  ------------------------------------------------------*/
 
 + (Utils *)sharedInstance;
 
-@property(assign,nonatomic)BOOL internetActive;
-@property(nonatomic,copy) void(^alertCompletionBlock)(UIAlertView *alert ,NSInteger index);
-@property(nonatomic,copy) void(^actionSheetCompletionBlock)(UIActionSheet *actionSheet ,NSInteger index);
-
+#pragma mark ----
+#pragma mark UIAlertView Methods
 
 /*-----------------------------------------------------
  
  Method Name   : sharedInstance
- Parameters    : nil
+ Parameters    : aTi
+                 aTitle : (Title of Ok Button to display in Alert View)
+                 aMsg : (Message to Display to the User)
+ 
  Return Type   : Void
- Functionality : To Show Alert With only Ok Default Button in button options, usually use to just display the message and by pressing ok to dismiss it. For more buttons in Alert use other AlertView methods
+ Functionality : To Show Alert With only Ok Default Button in button options, usually use to just display the message and by pressing ok to     
+                 dismiss it. For more buttons in Alert use other AlertView methods
  
  ------------------------------------------------------*/
 
@@ -54,27 +63,32 @@
  Method Name   : sharedInstance
  Parameters    : nil
  Return Type   : Void
- Functionality : To Show Alert With only Ok Default Button in button options, usually use to just display the message and by pressing ok to dismiss it. For more buttons in Alert use other AlertView methods
+ Functionality : To Create Alert view With Tag and other options like in above one.
  
  ------------------------------------------------------*/
 
 + (void) showAlertViewWithTag:(NSInteger)tag title:(NSString*)title message:(NSString*)msg delegate:(id)delegate
 			cancelButtonTitle:(NSString*)CbtnTitle otherButtonTitles:(NSString*)otherBtnTitles;
 
-+ (UIButton *)newButtonWithTarget:(id)target
-						 selector:(SEL)selector
-							frame:(CGRect)frame
-							image:(UIImage *)image
-					selectedImage:(UIImage *)selectedImage
-							  tag:(NSInteger)aTag;
-+(UITextField*) createTextFieldWithTag:(NSInteger)aTag startX:(CGFloat)aX startY:(CGFloat)aY width:(CGFloat)aW height:(CGFloat)aH placeHolder:(NSString*)aPl keyBoard:(BOOL)isNumber;
-+(UILabel*) createNewLabelWithTag:(NSInteger)aTag startX:(CGFloat)aX startY:(CGFloat)aY width:(CGFloat)aW height:(CGFloat)aH text:(NSString*)aText noOfLines:(NSInteger)noOfLine;
+#pragma mark ----
+#pragma mark UIImage Operations
+
+/*-----------------------------------------------------
+ 
+ Method Name   : sharedInstance
+ Parameters    : nil
+ Return Type   : Void
+ Functionality : To .
+ 
+ ------------------------------------------------------*/
 
 + (UIImage *)scaleImage:(UIImage *)image maxWidth:(int) maxWidth maxHeight:(int) maxHeight;
 + (NSString*) stringFromImage:(UIImage*)image;
 + (UIImage*) imageFromString:(NSString*)imageString;
 + (UIImage *)generatePhotoThumbnail:(UIImage *)image ;
-+ (void) addLabelOnNavigationBarWithTitle:(NSString*)aTitle OnNavigation:(UINavigationController*)naviController;
+
+#pragma mark ----
+#pragma mark Field Validations
 
 +(BOOL)emailValidate:(NSString *)email;
 
