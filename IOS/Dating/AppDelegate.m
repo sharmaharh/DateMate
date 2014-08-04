@@ -16,11 +16,29 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    // Override point for customization after application launch.
-    self.window.backgroundColor = [UIColor whiteColor];
-    [self.window makeKeyAndVisible];
     return YES;
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication
+         annotation:(id)annotation {
+//    NSData *urlData=[NSKeyedArchiver archivedDataWithRootObject:url];
+//    
+//    NSString *scheme=url.scheme;
+//    if([scheme isEqualToString:kTumblrScheme])
+//    {
+//        [UserDefaluts setObject:urlData forKey:kTumblrUrl];
+//        [UserDefaluts setBool:YES forKey:kIsTumblrLink];
+//        return [[TMAPIClient sharedInstance] handleOpenURL:url];
+//        
+//    }
+//    
+//    [UserDefaluts setObject:urlData forKey:kFacebookUrl];
+//    [UserDefaluts setBool:YES forKey:kIsFacebookLink];
+//    [UserDefaluts synchronize];
+    
+    // return [FBSession.activeSession handleOpenURL:url];
+    return [FBAppCall handleOpenURL:url sourceApplication:sourceApplication];
+    
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application

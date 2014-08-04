@@ -53,7 +53,7 @@
 {
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Attachment" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Image",@"Video",@"Audio", nil];
     actionSheet.tag = 1;
-    [actionSheet showInView:self.view];
+    [actionSheet showFromBarButtonItem:(UIBarButtonItem *)sender animated:YES];
 }
 
 - (IBAction)btnSendMessagePressed:(id)sender

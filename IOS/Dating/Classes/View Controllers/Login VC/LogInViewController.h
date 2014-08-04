@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FacebookUtility.h"
 
 @interface LogInViewController : UIViewController
 
