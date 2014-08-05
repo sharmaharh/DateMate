@@ -48,7 +48,7 @@
     NSString *paramsString = @"id, name, first_name, last_name, gender, picture.type(square), email, birthday, location";
     NSArray *permissionsArray = @[@"read_stream",@"email",@"user_birthday",@"user_location"];
     
-    [FacebookUtility fetchFBPersonalInfoWithParams:paramsString withPermissions:permissionsArray completionHandler:^(id response, NSError *e) {
+    [[FacebookUtility sharedObject]fetchFBPersonalInfoWithParams:paramsString withPermissions:permissionsArray completionHandler:^(id response, NSError *e) {
         if (!e)
         {
             fbDict = response;
@@ -111,8 +111,8 @@
      *-marked are mandatory  name="ent_submit"
      */
     NSDictionary *fbInfo = @{@"ent_first_name":fbDict[@"first_name"], @"ent_last_name":fbDict[@"last_name"], @"ent_fbid":fbDict[@"id"], @"ent_sex":@"1", @"ent_curr_lat":@"0.0", @"ent_curr_long":@"0.0", @"ent_dob":@"1991-01-29", @"ent_push_token" : @"SIMULATOR_TEST", @"ent_profile_pic":fbDict[@"picture"][@"data"][@"url"], @"ent_device_type":@"1", @"ent_auth_type":@"1"};
-    AFNHelper *afnhelper = [AFNHelper new];
-    [afnhelper callWebserviceWithMethod:@"login" andBody:<#(NSString *)#>]
+//    AFNHelper *afnhelper = [AFNHelper new];
+//    [afnhelper callWebserviceWithMethod:@"login" andBody:<#(NSString *)#>]
 }
 
 
