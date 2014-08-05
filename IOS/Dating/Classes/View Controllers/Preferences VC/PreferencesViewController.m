@@ -50,6 +50,7 @@
 
 - (IBAction)buttonSubmitPrefferencesPressed:(id)sender
 {
+    NSDictionary *responseDict = @{@"ent_user_fbid": [FacebookUtility sharedObject].fbID, @"ent_sex" : @"1" , @"ent_pref_sex" : [NSString stringWithFormat:@"%i",self.switchPrefferedSex.on+1], @"ent_pref_lower_age" : self.textfieldPrefferdLowerAge.text , @"ent_pref_upper_age" : self.textfieldPrefferdUpperAge.text , @"ent_pref_radius" : self.textfieldPrefferdRadius.text};
     
 }
 @end
