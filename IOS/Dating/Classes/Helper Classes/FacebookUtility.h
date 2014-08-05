@@ -31,6 +31,8 @@ typedef void (^FBFriendCompletionBlock)(NSArray *friends, NSError *error);
 @property (strong, nonatomic) NSMutableDictionary *dictUserInfo;
 @property (strong, nonatomic) NSMutableArray *arrFBFriendList;
 @property (strong, nonatomic) NSMutableArray *arrFBLikesList;
+@property (strong, nonatomic) NSString *fbID;
+@property (strong, nonatomic) NSString *fbAccesToken;
 @property (strong, nonatomic) FBSession *session;
 
 //init and shared object
@@ -93,7 +95,7 @@ me/friends?fields=name,id,picture.type(normal)&limit=500
 //Mutable Likes And Friends
 -(void)getMutualLikesAndFriendsForUserID:(NSString *)userID WithCompletionBlock:(FBCompletionBlock)fbResult;
 
-+ (void)fetchFBPersonalInfoWithParams:(NSString*)params withPermissions:(NSArray*)permissions completionHandler:(void(^)(id response, NSError *e))completionBlock;
+- (void)fetchFBPersonalInfoWithParams:(NSString*)params withPermissions:(NSArray*)permissions completionHandler:(void(^)(id response, NSError *e))completionBlock;
 
 //me/albums?fields=photos.limit(1),id,name,from
 

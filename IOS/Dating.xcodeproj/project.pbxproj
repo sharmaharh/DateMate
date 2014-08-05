@@ -45,6 +45,7 @@
 		3ABC28BE198BEA7400E598B5 /* AFNHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ABC28BD198BEA7400E598B5 /* AFNHelper.m */; };
 		3ABC28BF198BEA7400E598B5 /* AFNHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ABC28BD198BEA7400E598B5 /* AFNHelper.m */; };
 		3ABC28C1198C121A00E598B5 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3ABC28C0198C121A00E598B5 /* SystemConfiguration.framework */; };
+		AAF488BF1990D609007A3C94 /* PreferencesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AAF488BE1990D609007A3C94 /* PreferencesViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -113,6 +114,8 @@
 		3ABC28BC198BEA7400E598B5 /* AFNHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNHelper.h; sourceTree = "<group>"; };
 		3ABC28BD198BEA7400E598B5 /* AFNHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNHelper.m; sourceTree = "<group>"; };
 		3ABC28C0198C121A00E598B5 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		AAF488BD1990D609007A3C94 /* PreferencesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferencesViewController.h; sourceTree = "<group>"; };
+		AAF488BE1990D609007A3C94 /* PreferencesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreferencesViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -258,6 +261,7 @@
 			children = (
 				3A2DE8A81983C6F30035FA1B /* Login VC */,
 				3A2DE8A71983C6F30035FA1B /* Chat VC */,
+				AAF488BC1990D5DA007A3C94 /* Preferences VC */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -401,6 +405,16 @@
 			path = Dating/Classes/ThirdParty/WebserviceHelper;
 			sourceTree = SOURCE_ROOT;
 		};
+		AAF488BC1990D5DA007A3C94 /* Preferences VC */ = {
+			isa = PBXGroup;
+			children = (
+				AAF488BD1990D609007A3C94 /* PreferencesViewController.h */,
+				AAF488BE1990D609007A3C94 /* PreferencesViewController.m */,
+			);
+			name = "Preferences VC";
+			path = "Dating/Classes/View Controllers/Preferences VC";
+			sourceTree = SOURCE_ROOT;
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -508,6 +522,7 @@
 				3A2DE8761983C0FD0035FA1B /* AppDelegate.m in Sources */,
 				3A9D16051986A2E40049CE09 /* ChatViewController.m in Sources */,
 				3A2DE8791983C0FD0035FA1B /* Dating.xcdatamodeld in Sources */,
+				AAF488BF1990D609007A3C94 /* PreferencesViewController.m in Sources */,
 				3A2DE8721983C0FD0035FA1B /* main.m in Sources */,
 				3AA4CB2D198AAA6F005D82AF /* AFImageRequestOperation.m in Sources */,
 				3AA4CB2F198AAA6F005D82AF /* AFNetworkActivityIndicatorManager.m in Sources */,

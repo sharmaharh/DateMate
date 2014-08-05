@@ -222,7 +222,7 @@ NSString *const PARAM_ENT_STATUS=@"ent_status";
 }
 
 
-+ (void)fetchFBPersonalInfoWithParams:(NSString*)params withPermissions:(NSArray*)permissions completionHandler:(void(^)(id response, NSError *e))completionBlock
+- (void)fetchFBPersonalInfoWithParams:(NSString*)params withPermissions:(NSArray*)permissions completionHandler:(void(^)(id response, NSError *e))completionBlock
 {
     if (FBSession.activeSession.isOpen)
     {
@@ -230,16 +230,20 @@ NSString *const PARAM_ENT_STATUS=@"ent_status";
         {
             [FBSession openActiveSessionWithReadPermissions:permissions allowLoginUI:YES completionHandler:^(FBSession *session,FBSessionState status,NSError *error)
              {
+                 
+                 
                  if (error)
                  {
                      
                  }
                  else if (FB_ISSESSIONOPENWITHSTATE(status))
                  {
+                     _fbAccesToken = session.accessTokenData.accessToken;
                      FBRequestConnection *newConnection = [[FBRequestConnection alloc] init];
                      FBRequest *request = [FBRequest requestWithGraphPath:@"me" parameters:[NSDictionary dictionaryWithObjectsAndKeys:params,@"fields", nil] HTTPMethod:@"GET"];
                      FBRequestHandler handler = ^(FBRequestConnection *connection, id result, NSError *error)
                      {
+                         _fbID = result[@"id"];
                          completionBlock(result,error);
                      };
                      [newConnection addRequest:request completionHandler:handler];
