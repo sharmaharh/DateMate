@@ -12,7 +12,7 @@
 #import "AFHTTPRequestOperation.h"
 
 //#import "JSON.h"
-#define API_URL @"http://www.incredtechnologies.com/playground/ws/"
+#define API_URL @"http://www.incredtechnologies.com/playground/ws/process.php/"
 
 @implementation AFNHelper
 

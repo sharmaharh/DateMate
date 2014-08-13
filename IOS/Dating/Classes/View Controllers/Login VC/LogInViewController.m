@@ -52,6 +52,7 @@
         if (!e)
         {
             fbDict = response;
+            [self parseLogin:nil];
         }
         else
         {
@@ -111,7 +112,10 @@
      *-marked are mandatory  name="ent_submit"
      */
     NSDictionary *fbInfo = @{@"ent_first_name":fbDict[@"first_name"], @"ent_last_name":fbDict[@"last_name"], @"ent_fbid":fbDict[@"id"], @"ent_sex":@"1", @"ent_curr_lat":@"0.0", @"ent_curr_long":@"0.0", @"ent_dob":@"1991-01-29", @"ent_push_token" : @"SIMULATOR_TEST", @"ent_profile_pic":fbDict[@"picture"][@"data"][@"url"], @"ent_device_type":@"1", @"ent_auth_type":@"1"};
-//    AFNHelper *afnhelper = [AFNHelper new];
+    AFNHelper *afnhelper = [AFNHelper new];
+    [afnhelper getDataFromURL:@"login" withBody:fbInfo withBlock:^(id response, NSError *error) {
+        NSLog(@"%@",response);
+    }];
 //    [afnhelper callWebserviceWithMethod:@"login" andBody:<#(NSString *)#>]
 }
 
