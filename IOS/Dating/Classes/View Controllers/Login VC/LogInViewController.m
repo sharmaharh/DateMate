@@ -7,7 +7,7 @@
 //
 
 #import "LogInViewController.h"
-#import "AFNHelper.h"
+
 
 
 @interface LogInViewController ()
@@ -44,9 +44,19 @@
 
 - (IBAction)btnLoginFBPressed:(id)sender
 {
-//    [self performSegueWithIdentifier:@"LoginToChatIdentifier" sender:self];
-    NSString *paramsString = @"id, name, first_name, last_name, gender, picture.type(square), email, birthday, location";
+        NSString *paramsString = @"id, name, first_name, last_name, gender, picture.type(square), email, birthday, location";
     NSArray *permissionsArray = @[@"read_stream",@"email",@"user_birthday",@"user_location"];
+//    
+//    [[FacebookUtility sharedObject]fetchFBPersonalInfoWithParams:paramsString withPermissions:permissionsArray completionHandler:^(id response, NSError *e) {
+//        if (!e)
+//        {
+//            fbDict = response;
+//        }
+//        else
+//        {
+//            [Utils showOKAlertWithTitle:@"Dating" message:@"Failed to Fetch Data from Facebook"];
+//        }
+//    }];
     
     [[FacebookUtility sharedObject]fetchFBPersonalInfoWithParams:paramsString withPermissions:permissionsArray completionHandler:^(id response, NSError *e) {
         if (!e)
@@ -111,9 +121,12 @@
      Authentication type *:   name="ent_auth_type"
      *-marked are mandatory  name="ent_submit"
      */
-    NSDictionary *fbInfo = @{@"ent_first_name":fbDict[@"first_name"], @"ent_last_name":fbDict[@"last_name"], @"ent_fbid":fbDict[@"id"], @"ent_sex":@"1", @"ent_curr_lat":@"0.0", @"ent_curr_long":@"0.0", @"ent_dob":@"1991-01-29", @"ent_push_token" : @"SIMULATOR_TEST", @"ent_profile_pic":fbDict[@"picture"][@"data"][@"url"], @"ent_device_type":@"1", @"ent_auth_type":@"1"};
+    [FacebookUtility sharedObject].fbID = fbDict[@"id"];
+    NSDictionary *fbInfo = @{@"ent_first_name":fbDict[@"first_name"], @"ent_last_name":fbDict[@"last_name"], @"ent_fbid":fbDict[@"id"], @"ent_sex":@"1", @"ent_curr_lat":@"28.500", @"ent_curr_long":@"77.3", @"ent_dob":@"1991-01-29", @"ent_push_token" : [[NSUserDefaults standardUserDefaults] stringForKey:@"deviceToken"], @"ent_profile_pic":fbDict[@"picture"][@"data"][@"url"], @"ent_device_type":@"1", @"ent_auth_type":@"1"};
     AFNHelper *afnhelper = [AFNHelper new];
-    [afnhelper getDataFromURL:@"login" withBody:fbInfo withBlock:^(id response, NSError *error) {
+    [afnhelper getDataFromPath:@"login" withParamData:[fbInfo mutableCopy] withBlock:^(id response, NSError *error) {
+        [self performSegueWithIdentifier:@"LoginToFindMatchIdentifier" sender:self];
+
         NSLog(@"%@",response);
     }];
 //    [afnhelper callWebserviceWithMethod:@"login" andBody:<#(NSString *)#>]

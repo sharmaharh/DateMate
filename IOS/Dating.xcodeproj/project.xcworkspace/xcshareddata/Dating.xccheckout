@@ -5,34 +5,43 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>D21666C9-337E-4CB5-B68A-2A58307FAB6F</string>
+	<string>42447299-BCB5-4E33-BC8C-37F6233AEE67</string>
 	<key>IDESourceControlProjectName</key>
 	<string>Dating</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>76B51362-D763-45FE-BCE4-D84B86D4015C</key>
-		<string>https://github.com/sharmaharh/DateMate.git</string>
+		<key>55D11DA5-9521-4B79-8D04-4817883A3DD9</key>
+		<string>https://github.com/sharmaharh/DateMate/trunk</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>IOS/Dating.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>76B51362-D763-45FE-BCE4-D84B86D4015C</key>
+		<key>55D11DA5-9521-4B79-8D04-4817883A3DD9</key>
 		<string>../../..</string>
 	</dict>
+	<key>IDESourceControlProjectRepositoryRootDictionary</key>
+	<dict>
+		<key>55D11DA5-9521-4B79-8D04-4817883A3DD9</key>
+		<string>https://github.com/sharmaharh/DateMate</string>
+	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/sharmaharh/DateMate.git</string>
+	<string>https://github.com/sharmaharh/DateMate/trunk/IOS/Dating.xcodeproj</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>110</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>76B51362-D763-45FE-BCE4-D84B86D4015C</string>
+	<string>55D11DA5-9521-4B79-8D04-4817883A3DD9</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
+			<key>IDESourceControlRepositoryBranchesRelativeLocationKey</key>
+			<string>branches</string>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
-			<string>public.vcs.git</string>
+			<string>public.vcs.subversion</string>
+			<key>IDESourceControlRepositoryTrunkRelativeLocationKey</key>
+			<string>trunk</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>76B51362-D763-45FE-BCE4-D84B86D4015C</string>
+			<string>55D11DA5-9521-4B79-8D04-4817883A3DD9</string>
 			<key>IDESourceControlWCCName</key>
 			<string>DateMate</string>
 		</dict>

@@ -7,6 +7,8 @@
 //
 
 #import "AppDelegate.h"
+#import "ChatViewController.h"
+#import "SWRevealViewController.h"
 
 @implementation AppDelegate
 
@@ -16,6 +18,33 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
+     (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+    UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
+    SWRevealViewController *swRevealViewController = (SWRevealViewController*)[mainStoryBoard instantiateInitialViewController];
+    
+    self.revealController = swRevealViewController;
+    
+    NSDictionary *serverNotif =
+    [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+    if (serverNotif)
+    {
+        // After Recieving Push Notification, go to Message View controller
+        NSLog(@"Server Notification = %@",serverNotif);
+        double delayInSeconds = 2.0;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            ChatViewController *messageVC = [ChatViewController sharedChatInstance];
+            NSLog(@"Chat = %@",messageVC);
+            messageVC.messages = [@[[Message messageWithString:serverNotif[@"aps"][@"alert"]]] mutableCopy];
+            
+            
+            UINavigationController *frontNavigationController = (UINavigationController *)swRevealViewController.frontViewController;
+            [frontNavigationController pushViewController:messageVC animated:YES];
+            
+        });
+        
+    }
     return YES;
 }
 
@@ -68,6 +97,55 @@
     // Saves changes in the application's managed object context before the application terminates.
     [self saveContext];
 }
+
+#pragma mark-  Push Notification Method
+
+- (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken
+{
+	NSLog(@"My token is: %@", deviceToken);
+    
+    NSString *devToken = [[deviceToken description]stringByReplacingOccurrencesOfString: @"<" withString: @""];
+    devToken = [devToken stringByReplacingOccurrencesOfString: @">" withString: @""] ;
+    devToken = [devToken stringByReplacingOccurrencesOfString: @" " withString:@""];
+    
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setObject:devToken forKey:@"deviceToken"];
+    [userDefaults synchronize];
+}
+
+- (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error
+{
+    [Utils showOKAlertWithTitle:@"DateMate" message:error.localizedDescription];
+//    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+//    [userDefaults setObject:@"1234" forKey:kDeviceToken];
+//    [userDefaults synchronize];
+}
+
+- (void)application:(UIApplication*)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+{
+
+//    [self callLogOut];
+    UINavigationController *frontNavigationController = (id)self.revealController.frontViewController;
+    [Utils showOKAlertWithTitle:@"DateMate" message:@"Push Recieved"];
+    if ( ![frontNavigationController.topViewController isKindOfClass:[ChatViewController class]] )
+    {
+        
+        
+        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[ChatViewController sharedChatInstance]];
+        [self.revealController pushFrontViewController:navigationController animated:YES];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [[ChatViewController sharedChatInstance] recieveMessage:userInfo[@"aps"][@"alert"]];
+        });
+    }
+    // Seems the user attempts to 'switch' to exactly the same controller he came from!
+    else
+    {
+        [self.revealController revealToggle:self];
+    }
+    
+    
+}
+
 
 - (void)saveContext
 {
