@@ -10,6 +10,7 @@
 #define Dating_Defines_h
 
 #import "SWRevealViewController.h"
+#import "AppDelegate.h"
 #import "AFNHelper.h"
 #import "Utils.h"
 #import "FacebookUtility.h"

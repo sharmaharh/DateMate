@@ -8,9 +8,13 @@
 
 #import "AppDelegate.h"
 #import "ChatViewController.h"
+#import "FindMatchViewController.h"
 #import "SWRevealViewController.h"
+#import "LogInViewController.h"
 
 @implementation AppDelegate
+
+AppDelegate* appDelegate = nil;
 
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize managedObjectModel = _managedObjectModel;
@@ -18,33 +22,56 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    self.window=[[UIWindow alloc]initWithFrame:[[UIScreen mainScreen] bounds]];
+    appDelegate = self;
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
      (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+    
     UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
-    SWRevealViewController *swRevealViewController = (SWRevealViewController*)[mainStoryBoard instantiateInitialViewController];
     
-    self.revealController = swRevealViewController;
+    // Condition Determines that if user is already logged in previously in the device, than he/she will not log in again. To Login again firstly Logout from Settings.
     
-    NSDictionary *serverNotif =
-    [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
-    if (serverNotif)
+    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"fbID"] length])
     {
-        // After Recieving Push Notification, go to Message View controller
-        NSLog(@"Server Notification = %@",serverNotif);
-        double delayInSeconds = 2.0;
-        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-            ChatViewController *messageVC = [ChatViewController sharedChatInstance];
-            NSLog(@"Chat = %@",messageVC);
-            messageVC.messages = [@[[Message messageWithString:serverNotif[@"aps"][@"alert"]]] mutableCopy];
-            
-            
-            UINavigationController *frontNavigationController = (UINavigationController *)swRevealViewController.frontViewController;
-            [frontNavigationController pushViewController:messageVC animated:YES];
-            
-        });
+        // Find Match
+        self.revealController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"SWRevealViewController"];
         
+        [FacebookUtility sharedObject].fbID = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbID"];
+        self.window.rootViewController=self.revealController;
+        self.frontNavigationController = (UINavigationController *)self.revealController.frontViewController;
     }
+    else
+    {
+        // Login
+        LogInViewController *logInViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"LogInViewController"];
+        self.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:logInViewController];
+        
+        self.window.rootViewController = self.frontNavigationController;
+    }
+    
+    [self.window makeKeyAndVisible];
+    
+    
+//    NSDictionary *serverNotif =
+//    [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+//    if (serverNotif)
+//    {
+//        // After Recieving Push Notification, go to Message View controller
+//        NSLog(@"Server Notification = %@",serverNotif);
+//        double delayInSeconds = 2.0;
+//        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+//        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+//            ChatViewController *messageVC = [ChatViewController sharedChatInstance];
+//            NSLog(@"Chat = %@",messageVC);
+//            messageVC.messages = [@[[Message messageWithString:serverNotif[@"aps"][@"alert"]]] mutableCopy];
+//            
+//            
+//            UINavigationController *frontNavigationController = (UINavigationController *)swRevealViewController.frontViewController;
+//            [frontNavigationController pushViewController:messageVC animated:YES];
+//            
+//        });
+//        
+//    }
     return YES;
 }
 

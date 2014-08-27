@@ -7,9 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "SWRevealViewController.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
+
+extern AppDelegate *appDelegate;
 
 @property (strong, nonatomic) UIWindow *window;
 
@@ -17,6 +18,7 @@
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property (strong, nonatomic) SWRevealViewController *revealController;
+@property (strong, nonatomic) UINavigationController *frontNavigationController;
 
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;

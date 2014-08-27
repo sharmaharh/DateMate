@@ -9,7 +9,6 @@
 #import "LogInViewController.h"
 
 
-
 @interface LogInViewController ()
 {
     NSDictionary *fbDict;
@@ -122,12 +121,14 @@
      *-marked are mandatory  name="ent_submit"
      */
     [FacebookUtility sharedObject].fbID = fbDict[@"id"];
-    NSDictionary *fbInfo = @{@"ent_first_name":fbDict[@"first_name"], @"ent_last_name":fbDict[@"last_name"], @"ent_fbid":fbDict[@"id"], @"ent_sex":@"1", @"ent_curr_lat":@"28.500", @"ent_curr_long":@"77.3", @"ent_dob":@"1991-01-29", @"ent_push_token" : [[NSUserDefaults standardUserDefaults] stringForKey:@"deviceToken"], @"ent_profile_pic":fbDict[@"picture"][@"data"][@"url"], @"ent_device_type":@"1", @"ent_auth_type":@"1"};
+    NSDictionary *fbInfo = @{@"ent_first_name":fbDict[@"first_name"], @"ent_last_name":fbDict[@"last_name"], @"ent_fbid":fbDict[@"id"], @"ent_sex":@"1", @"ent_curr_lat":@"28.500", @"ent_curr_long":@"77.3", @"ent_dob":@"1991-01-29", @"ent_push_token" : @"iPhone_Simulator", @"ent_profile_pic":fbDict[@"picture"][@"data"][@"url"], @"ent_device_type":@"1", @"ent_auth_type":@"1"};
     AFNHelper *afnhelper = [AFNHelper new];
     [afnhelper getDataFromPath:@"login" withParamData:[fbInfo mutableCopy] withBlock:^(id response, NSError *error) {
-        [self performSegueWithIdentifier:@"LoginToFindMatchIdentifier" sender:self];
+        
+        appDelegate.revealController = [self.storyboard instantiateViewControllerWithIdentifier:@"SWRevealViewController"];
+        appDelegate.frontNavigationController = (UINavigationController *)appDelegate.revealController.frontViewController;
 
-        NSLog(@"%@",response);
+        
     }];
 //    [afnhelper callWebserviceWithMethod:@"login" andBody:<#(NSString *)#>]
 }
