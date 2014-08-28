@@ -17,10 +17,9 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableViewChat;
 @property (weak, nonatomic) IBOutlet UITextField *textFieldMessage;
 @property (nonatomic, strong) NSMutableArray *messages;
+@property (strong, nonatomic) NSString *userName;
 
 + (id)sharedChatInstance;
-
-- (IBAction)btnRevealPressed:(id)sender;
 
 - (IBAction)btnAttachmentPressed:(id)sender;
 - (IBAction)btnSendMessagePressed:(id)sender;

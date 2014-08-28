@@ -35,6 +35,8 @@
     return sharedInstance;
 }
 
+
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -63,11 +65,6 @@
 #pragma mark -----
 #pragma mark IBActions
 
-- (IBAction)btnRevealPressed:(id)sender
-{
-    [self.revealViewController revealToggle:self];
-}
-
 - (IBAction)btnAttachmentPressed:(id)sender
 {
     [UIView animateWithDuration:0.16 animations:^{
@@ -83,7 +80,7 @@
 {
     if (self.textFieldMessage.text.length)
     {
-        [self.messages addObject:[Message messageWithString:self.textFieldMessage.text]];
+        [self.messages addObject:[Message messageWithString:self.textFieldMessage.text isMySentMessage:YES]];
         [self.tableViewChat reloadData];
         [self sendMessage];
     }
@@ -96,6 +93,7 @@
 
 - (void)sendMessage
 {
+    
     AFNHelper *afnHelper = [AFNHelper new];
     [afnHelper getDataFromPath:@"sendMessage" withParamData:[NSMutableDictionary dictionaryWithObjects:@[[FacebookUtility sharedObject].fbID,@"10203175848489479",self.textFieldMessage.text] forKeys:@[@"ent_user_fbid",@"ent_user_recever_fbid",@"ent_message"]] withBlock:^(id response, NSError *error) {
         NSLog(@"Message Sent Response = %@",response);
@@ -104,7 +102,7 @@
 
 - (void)recieveMessage:(NSString *)msg
 {
-    [self.messages addObject:[Message messageWithString:self.textFieldMessage.text]];
+    [self.messages addObject:[Message messageWithString:msg isMySentMessage:NO]];
     [self.tableViewChat reloadData];
 }
 
@@ -202,7 +200,7 @@
 	
     // Put your own logic here to determine the author
     
-    cell.authorType = STBubbleTableViewCellAuthorTypeSelf;
+    cell.authorType = !message.isMySentMessage;
     cell.bubbleColor = STBubbleTableViewCellBubbleColorGreen;
     
 //	if(indexPath.row % 2 != 0 || indexPath.row == 4)

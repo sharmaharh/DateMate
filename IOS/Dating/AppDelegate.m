@@ -10,7 +10,8 @@
 #import "ChatViewController.h"
 #import "FindMatchViewController.h"
 #import "SWRevealViewController.h"
-#import "LogInViewController.h"
+#import "RearMenuViewController.h"
+#import "RecentChatsViewController.h"
 
 @implementation AppDelegate
 
@@ -31,47 +32,60 @@ AppDelegate* appDelegate = nil;
     
     // Condition Determines that if user is already logged in previously in the device, than he/she will not log in again. To Login again firstly Logout from Settings.
     
-    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"fbID"] length])
+    
+    NSDictionary *serverNotif =
+    [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+    if (serverNotif)
     {
-        // Find Match
-        self.revealController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"SWRevealViewController"];
+        // After Recieving Push Notification, go to Message View controller
+        NSLog(@"Server Notification = %@",serverNotif);
+        double delayInSeconds = 2.0;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            
+            RecentChatsViewController *recentChatViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecentChatsViewController"];
+            recentChatViewController.isFromPush = YES;
+            self.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:recentChatViewController];
+            
+            RearMenuViewController *rearMenuViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RearMenuViewController"];
+            [FacebookUtility sharedObject].fbID = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbID"];
+            self.revealController = [[SWRevealViewController alloc] initWithRearViewController:rearMenuViewController frontViewController:self.frontNavigationController];
+            
+            [self.window setRootViewController:self.revealController];
+
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [[ChatViewController sharedChatInstance] recieveMessage:serverNotif[@"aps"][@"alert"]];
+            });
+            
+        });
         
-        [FacebookUtility sharedObject].fbID = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbID"];
-        self.window.rootViewController=self.revealController;
-        self.frontNavigationController = (UINavigationController *)self.revealController.frontViewController;
     }
     else
     {
-        // Login
-        LogInViewController *logInViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"LogInViewController"];
-        self.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:logInViewController];
-        
-        self.window.rootViewController = self.frontNavigationController;
+        if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"fbID"] length])
+        {
+            // Find Match
+            
+            FindMatchViewController *findMatchViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"FindMatchViewController"];
+            appDelegate.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:findMatchViewController];
+            [FacebookUtility sharedObject].fbID = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbID"];
+            RearMenuViewController *rearMenuViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RearMenuViewController"];
+            appDelegate.revealController = [[SWRevealViewController alloc] initWithRearViewController:rearMenuViewController frontViewController:appDelegate.frontNavigationController];
+            
+            [self.window setRootViewController:self.revealController];
+            
+        }
+        else
+        {
+            // Login
+            self.frontNavigationController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"FirstNavigationController"];
+            
+            self.window.rootViewController = self.frontNavigationController;
+        }
     }
     
     [self.window makeKeyAndVisible];
-    
-    
-//    NSDictionary *serverNotif =
-//    [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
-//    if (serverNotif)
-//    {
-//        // After Recieving Push Notification, go to Message View controller
-//        NSLog(@"Server Notification = %@",serverNotif);
-//        double delayInSeconds = 2.0;
-//        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-//        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-//            ChatViewController *messageVC = [ChatViewController sharedChatInstance];
-//            NSLog(@"Chat = %@",messageVC);
-//            messageVC.messages = [@[[Message messageWithString:serverNotif[@"aps"][@"alert"]]] mutableCopy];
-//            
-//            
-//            UINavigationController *frontNavigationController = (UINavigationController *)swRevealViewController.frontViewController;
-//            [frontNavigationController pushViewController:messageVC animated:YES];
-//            
-//        });
-//        
-//    }
     return YES;
 }
 
@@ -105,6 +119,7 @@ AppDelegate* appDelegate = nil;
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
+    self.isAppinBackground = YES;
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 }
@@ -121,6 +136,7 @@ AppDelegate* appDelegate = nil;
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
+    self.isAppinBackground = NO;
     // Saves changes in the application's managed object context before the application terminates.
     [self saveContext];
 }
@@ -152,24 +168,54 @@ AppDelegate* appDelegate = nil;
 {
 
 //    [self callLogOut];
+    NSLog(@"Reveal Position = %i",self.revealController.frontViewPosition);
     UINavigationController *frontNavigationController = (id)self.revealController.frontViewController;
     [Utils showOKAlertWithTitle:@"DateMate" message:@"Push Recieved"];
-    if ( ![frontNavigationController.topViewController isKindOfClass:[ChatViewController class]] )
+    if ([frontNavigationController.topViewController isKindOfClass:[ChatViewController class]])
     {
-        
-        
-        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[ChatViewController sharedChatInstance]];
-        [self.revealController pushFrontViewController:navigationController animated:YES];
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [[ChatViewController sharedChatInstance] recieveMessage:userInfo[@"aps"][@"alert"]];
-        });
+        [[ChatViewController sharedChatInstance] recieveMessage:userInfo[@"aps"][@"alert"]];
     }
-    // Seems the user attempts to 'switch' to exactly the same controller he came from!
-    else
+    else if (self.isAppinBackground)
     {
-        [self.revealController revealToggle:self];
+        self.isAppinBackground = NO;
+         if ([frontNavigationController.topViewController isKindOfClass:[RecentChatsViewController class]])
+         {
+             [frontNavigationController pushViewController:[ChatViewController sharedChatInstance] animated:YES];
+             if (self.revealController.frontViewPosition != 3)
+             {
+                 [self.revealController revealToggle:self];
+             }
+             
+         }
+         else
+         {
+             UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
+             RecentChatsViewController *recentChatViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecentChatsViewController"];
+             frontNavigationController = [[UINavigationController alloc] initWithRootViewController:recentChatViewController];
+             recentChatViewController.isFromPush = YES;
+             [self.revealController pushFrontViewController:frontNavigationController animated:YES];
+             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                 [[ChatViewController sharedChatInstance] recieveMessage:userInfo[@"aps"][@"alert"]];
+             });
+         }
     }
     
+//    else if ([frontNavigationController.topViewController isKindOfClass:[RecentChatsViewController class]])
+//    {
+//        [frontNavigationController pushViewController:[ChatViewController sharedChatInstance] animated:YES];
+//        [self.revealController revealToggle:self];
+//    }
+//    else
+//    {
+//        UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
+//        RecentChatsViewController *recentChatViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecentChatsViewController"];
+//        frontNavigationController = [[UINavigationController alloc] initWithRootViewController:recentChatViewController];
+//        recentChatViewController.isFromPush = YES;
+//        [self.revealController pushFrontViewController:frontNavigationController animated:YES];
+//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//            [[ChatViewController sharedChatInstance] recieveMessage:userInfo[@"aps"][@"alert"]];
+//        });
+//    }
     
 }
 

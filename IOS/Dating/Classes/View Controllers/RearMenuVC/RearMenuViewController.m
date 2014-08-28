@@ -7,6 +7,7 @@
 //
 
 #import "RearMenuViewController.h"
+#import "RecentChatsViewController.h"
 
 @interface RearMenuViewController ()
 {
@@ -92,9 +93,9 @@
             
         case 3:
             // Chat
-            if ( ![frontNavigationController.topViewController isKindOfClass:[ChatViewController class]] )
+            if ( ![frontNavigationController.topViewController isKindOfClass:[RecentChatsViewController class]] )
             {
-                ChatViewController *chatViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ChatViewController"];
+                RecentChatsViewController *chatViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"RecentChatsViewController"];
                 UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:chatViewController];
                 [revealController pushFrontViewController:navigationController animated:YES];
             }

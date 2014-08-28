@@ -7,7 +7,8 @@
 //
 
 #import "LogInViewController.h"
-
+#import "FindMatchViewController.h"
+#import "RearMenuViewController.h"
 
 @interface LogInViewController ()
 {
@@ -120,16 +121,37 @@
      Authentication type *:   name="ent_auth_type"
      *-marked are mandatory  name="ent_submit"
      */
-    [FacebookUtility sharedObject].fbID = fbDict[@"id"];
-    NSDictionary *fbInfo = @{@"ent_first_name":fbDict[@"first_name"], @"ent_last_name":fbDict[@"last_name"], @"ent_fbid":fbDict[@"id"], @"ent_sex":@"1", @"ent_curr_lat":@"28.500", @"ent_curr_long":@"77.3", @"ent_dob":@"1991-01-29", @"ent_push_token" : @"iPhone_Simulator", @"ent_profile_pic":fbDict[@"picture"][@"data"][@"url"], @"ent_device_type":@"1", @"ent_auth_type":@"1"};
-    AFNHelper *afnhelper = [AFNHelper new];
-    [afnhelper getDataFromPath:@"login" withParamData:[fbInfo mutableCopy] withBlock:^(id response, NSError *error) {
+    if (![Utils isInternetAvailable])
+    {
+        [Utils showOKAlertWithTitle:@"Dating" message:@"No Internet Connection!"];
+    }
+    else
+    {
+        [FacebookUtility sharedObject].fbID = fbDict[@"id"];
+        [[NSUserDefaults standardUserDefaults] setObject:[FacebookUtility sharedObject].fbID forKey:@"fbID"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
         
-        appDelegate.revealController = [self.storyboard instantiateViewControllerWithIdentifier:@"SWRevealViewController"];
-        appDelegate.frontNavigationController = (UINavigationController *)appDelegate.revealController.frontViewController;
-
-        
-    }];
+        NSDictionary *fbInfo = @{@"ent_first_name":fbDict[@"first_name"], @"ent_last_name":fbDict[@"last_name"], @"ent_fbid":fbDict[@"id"], @"ent_sex":@"1", @"ent_curr_lat":@"28.500", @"ent_curr_long":@"77.3", @"ent_dob":@"1991-01-29", @"ent_push_token" : [[NSUserDefaults standardUserDefaults] objectForKey:@"deviceToken"], @"ent_profile_pic":fbDict[@"picture"][@"data"][@"url"], @"ent_device_type":@"1", @"ent_auth_type":@"1"};
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+        AFNHelper *afnhelper = [AFNHelper new];
+        [afnhelper getDataFromPath:@"login" withParamData:[fbInfo mutableCopy] withBlock:^(id response, NSError *error) {
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+            FindMatchViewController *findMatchViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FindMatchViewController"];
+            appDelegate.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:findMatchViewController];
+            
+            RearMenuViewController *rearMenuViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"RearMenuViewController"];
+            appDelegate.revealController = [[SWRevealViewController alloc] initWithRearViewController:rearMenuViewController frontViewController:appDelegate.frontNavigationController];
+            
+            [appDelegate.window setRootViewController:appDelegate.revealController];
+            
+            [appDelegate.window makeKeyAndVisible];
+            
+            
+        }];
+    }
+    
+    
+    
 //    [afnhelper callWebserviceWithMethod:@"login" andBody:<#(NSString *)#>]
 }
 

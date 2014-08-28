@@ -7,6 +7,7 @@
 //
 
 #import "Utils.h"
+#import "ReachabilityNew.h"
 #define kTitle @"Dating"
 
 @implementation Utils
@@ -311,6 +312,27 @@
 	
 }
 
++(BOOL)isInternetAvailable
+{
+    BOOL isInternetAvailable = false;
+    ReachabilityNew *internetReach = [ReachabilityNew reachabilityForInternetConnection];
+    [internetReach startNotifier];
+    NetworkStatus netStatus = [internetReach currentReachabilityStatus];
+    switch (netStatus)
+    {
+        case NotReachable:
+            isInternetAvailable = FALSE;
+            break;
+        case ReachableViaWWAN:
+            isInternetAvailable = TRUE;
+            break;
+        case ReachableViaWiFi:
+            isInternetAvailable = TRUE;
+            break;
+    }
+    [internetReach stopNotifier];
+    return isInternetAvailable;
+}
 
 #pragma mark-Check Email Formate
 

@@ -10,13 +10,13 @@
 
 @interface Message : NSObject
 
-+ (instancetype)messageWithString:(NSString *)message;
-+ (instancetype)messageWithString:(NSString *)message image:(UIImage *)image;
++ (instancetype)messageWithString:(NSString *)message isMySentMessage:(BOOL)isMySentMessage;
++ (instancetype)messageWithString:(NSString *)message image:(UIImage *)image isMySentMessage:(BOOL)isMySentMessage;
 
-- (instancetype)initWithString:(NSString *)message;
-- (instancetype)initWithString:(NSString *)message image:(UIImage *)image;
+- (instancetype)initWithString:(NSString *)message isMySentMessage:(BOOL)isMySentMessage;
+- (instancetype)initWithString:(NSString *)message image:(UIImage *)image isMySentMessage:(BOOL)isMySentMessage;
 
 @property (nonatomic, copy) NSString *message;
 @property (nonatomic, strong) UIImage *avatar;
-
+@property (assign, nonatomic) BOOL isMySentMessage;
 @end

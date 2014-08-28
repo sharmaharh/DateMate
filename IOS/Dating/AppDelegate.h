@@ -19,6 +19,7 @@ extern AppDelegate *appDelegate;
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property (strong, nonatomic) SWRevealViewController *revealController;
 @property (strong, nonatomic) UINavigationController *frontNavigationController;
+@property (assign, nonatomic) BOOL isAppinBackground;
 
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;

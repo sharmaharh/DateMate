@@ -11,10 +11,14 @@
 
 @interface PreferencesViewController : UIViewController <UITextFieldDelegate>
 
-@property (weak, nonatomic) IBOutlet UISwitch *switchPrefferedSex;
+
+@property (weak, nonatomic) IBOutlet UISegmentedControl *segmentPrefferedSex;
+
+
 @property (weak, nonatomic) IBOutlet UITextField *textfieldPrefferdLowerAge;
 @property (weak, nonatomic) IBOutlet UITextField *textfieldPrefferdUpperAge;
 @property (weak, nonatomic) IBOutlet UITextField *textfieldPrefferdRadius;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
 
 - (IBAction)buttonSubmitPrefferencesPressed:(id)sender;
 

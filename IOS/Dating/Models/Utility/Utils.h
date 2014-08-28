@@ -91,6 +91,7 @@
 #pragma mark Field Validations
 
 +(BOOL)emailValidate:(NSString *)email;
++(BOOL)isInternetAvailable;
 
 // -----------------------------------------------------------------------------------------------
 

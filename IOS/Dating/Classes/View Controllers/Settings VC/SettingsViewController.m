@@ -29,7 +29,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    settingOptionsArray = @[@"Preferences",@"Block List",@"Option 3", @"Option 4", @"Option 5"];
+    settingOptionsArray = @[@"Preferences",@"Log Out",@"Option 3", @"Option 4", @"Option 5"];
 }
 
 - (void)didReceiveMemoryWarning
@@ -64,7 +64,7 @@
             break;
             
         case 1:
-            
+            [self logout];
             break;
             
         case 2:
@@ -78,6 +78,20 @@
         default:
             break;
     }
+}
+
+- (void)logout
+{
+//    AFNHelper *afnHelper = [AFNHelper new];
+//    [afnHelper getDataFromPath:@"logout" withParamData:@{@"ent_sess_token": [[NSUserDefaults standardUserDefaults] objectForKey:@"deviceToken"], @"ent_dev_id":} withBlock:<#^(id response, NSError *error)block#>]
+    
+    [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"fbID"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    [FacebookUtility sharedObject].fbID = @"";
+    appDelegate.frontNavigationController = [self.storyboard instantiateViewControllerWithIdentifier:@"FirstNavigationController"];
+    
+    appDelegate.window.rootViewController = appDelegate.frontNavigationController;
+    [appDelegate.window makeKeyAndVisible];
 }
 
 - (IBAction)btnRevealPressed:(id)sender

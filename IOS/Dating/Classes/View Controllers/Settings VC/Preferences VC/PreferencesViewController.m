@@ -7,6 +7,7 @@
 //
 
 #import "PreferencesViewController.h"
+#import "FindMatchViewController.h"
 
 @interface PreferencesViewController ()
 
@@ -50,15 +51,50 @@
 
 - (IBAction)buttonSubmitPrefferencesPressed:(id)sender
 {
-    [self performSegueWithIdentifier:@"PreferencesToChatIdentifier" sender:self];
-    NSDictionary *responseDict = @{@"ent_user_fbid": [FacebookUtility sharedObject].fbID, @"ent_sex" : @"1" , @"ent_pref_sex" : [NSString stringWithFormat:@"%i",self.switchPrefferedSex.on+1], @"ent_pref_lower_age" : self.textfieldPrefferdLowerAge.text , @"ent_pref_upper_age" : self.textfieldPrefferdUpperAge.text , @"ent_pref_radius" : self.textfieldPrefferdRadius.text};
+    NSMutableArray *array = [NSMutableArray array];
     
-    AFNHelper *afnhelper = [AFNHelper new];
-    [afnhelper getDataFromPath:@"updatePreferences" withParamData:[responseDict mutableCopy] withBlock:^(id response, NSError *error) {
-        [self performSegueWithIdentifier:@"LoginToPreferncesViewController" sender:self];
+    if (!self.textfieldPrefferdUpperAge.text.length)
+    {
+        [array addObject:@"Please fill the following Information first \n:"];
+        [array addObject:@"- Upper Age"];
+    }
+    if (!self.textfieldPrefferdLowerAge.text.length)
+    {
+        [array addObject:@"- Lower Age"];
+    }
+    if (!self.textfieldPrefferdRadius.text.length)
+    {
+        [array addObject:@"- Area Range (Radius)"];
+    }
+    
+    if (array.count)
+    {
+        NSString *tempStr = @"Please fill the following Information first \n:";
+        tempStr = [tempStr stringByAppendingString:[array componentsJoinedByString:@"\n"]];
+        [Utils showOKAlertWithTitle:@"Dating" message:tempStr];
+        return;
+    }
+    
+    if (![Utils isInternetAvailable])
+    {
+        [Utils showOKAlertWithTitle:@"Dating" message:@"No Internet Connection!"];
+    }
+    else
+    {
+        [self.activityIndicator startAnimating];
+        NSDictionary *responseDict = @{@"ent_user_fbid": [FacebookUtility sharedObject].fbID, @"ent_sex" : @"1" , @"ent_pref_sex" : [NSString stringWithFormat:@"%i",self.segmentPrefferedSex.state+1], @"ent_pref_lower_age" : self.textfieldPrefferdLowerAge.text , @"ent_pref_upper_age" : self.textfieldPrefferdUpperAge.text , @"ent_pref_radius" : self.textfieldPrefferdRadius.text};
         
-        NSLog(@"%@",response);
-    }];
+        AFNHelper *afnhelper = [AFNHelper new];
+        [afnhelper getDataFromPath:@"updatePreferences" withParamData:[responseDict mutableCopy] withBlock:^(id response, NSError *error) {
+            [self.activityIndicator stopAnimating];
+            FindMatchViewController *findMatchViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FindMatchViewController"];
+            UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:findMatchViewController];
+            [appDelegate.revealController pushFrontViewController:navigationController animated:YES];
+            
+            NSLog(@"%@",response);
+        }];
+    }
+
 }
 
 
@@ -74,12 +110,19 @@
                                                                   action:@selector(doneClicked:)];
     [keyboardDoneButtonView setItems:[NSArray arrayWithObjects:doneButton, nil]];
     textField.inputAccessoryView = keyboardDoneButtonView;
+    
+    [UIView animateWithDuration:0.3 animations:^{
+        [self.view setTransform:CGAffineTransformMakeTranslation(0, -130)];
+    }];
     return YES;
 }
 
 - (void)doneClicked:(id)sender
 {
     [self.view endEditing:YES];
+    [UIView animateWithDuration:0.3 animations:^{
+        [self.view setTransform:CGAffineTransformMakeTranslation(0, 0)];
+    }];
 }
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField

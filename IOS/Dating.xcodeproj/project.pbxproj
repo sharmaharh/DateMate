@@ -47,6 +47,8 @@
 		3ABC28C1198C121A00E598B5 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3ABC28C0198C121A00E598B5 /* SystemConfiguration.framework */; };
 		3AC3637A19A7EDB100C7E273 /* PreferencesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AC3637919A7EDB100C7E273 /* PreferencesViewController.m */; };
 		3AC3637D19A7EDC100C7E273 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AC3637C19A7EDC100C7E273 /* SettingsViewController.m */; };
+		3AC805A919AF91F5000C8E5B /* RecentChatsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AC805A819AF91F5000C8E5B /* RecentChatsViewController.m */; };
+		3AC805B219AFA0D4000C8E5B /* ReachabilityNew.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AC805B119AFA0D4000C8E5B /* ReachabilityNew.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		AA3D7F831991FBF400C862CF /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3D7F821991FBF400C862CF /* SWRevealViewController.m */; };
 		AA3D7F87199200C100C862CF /* RearMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3D7F86199200C100C862CF /* RearMenuViewController.m */; };
 		AA3D7F8B1992045100C862CF /* FindMatchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3D7F8A1992045100C862CF /* FindMatchViewController.m */; };
@@ -145,6 +147,10 @@
 		3AC3637919A7EDB100C7E273 /* PreferencesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreferencesViewController.m; sourceTree = "<group>"; };
 		3AC3637B19A7EDC100C7E273 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		3AC3637C19A7EDC100C7E273 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
+		3AC805A719AF91F5000C8E5B /* RecentChatsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecentChatsViewController.h; sourceTree = "<group>"; };
+		3AC805A819AF91F5000C8E5B /* RecentChatsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecentChatsViewController.m; sourceTree = "<group>"; };
+		3AC805B019AFA0D4000C8E5B /* ReachabilityNew.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReachabilityNew.h; sourceTree = "<group>"; };
+		3AC805B119AFA0D4000C8E5B /* ReachabilityNew.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReachabilityNew.m; sourceTree = "<group>"; };
 		AA3D7F811991FBF400C862CF /* SWRevealViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWRevealViewController.h; sourceTree = "<group>"; };
 		AA3D7F821991FBF400C862CF /* SWRevealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWRevealViewController.m; sourceTree = "<group>"; };
 		AA3D7F85199200C100C862CF /* RearMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RearMenuViewController.h; sourceTree = "<group>"; };
@@ -308,6 +314,7 @@
 		3A2DE89A1983C4870035FA1B /* ThirdParty */ = {
 			isa = PBXGroup;
 			children = (
+				3AC805AF19AFA08A000C8E5B /* Reachability */,
 				AA3D7FBF19921B5B00C862CF /* STBubbleTableViewCell */,
 				AA3D7F801991FBF400C862CF /* SWRevealViewController */,
 				3ABC28BB198BEA7400E598B5 /* WebserviceHelper */,
@@ -367,6 +374,8 @@
 		3A2DE8A71983C6F30035FA1B /* Chat VC */ = {
 			isa = PBXGroup;
 			children = (
+				3AC805A719AF91F5000C8E5B /* RecentChatsViewController.h */,
+				3AC805A819AF91F5000C8E5B /* RecentChatsViewController.m */,
 				3A9D16031986A2E40049CE09 /* ChatViewController.h */,
 				3A9D16041986A2E40049CE09 /* ChatViewController.m */,
 			);
@@ -456,6 +465,16 @@
 			);
 			path = "Preferences VC";
 			sourceTree = "<group>";
+		};
+		3AC805AF19AFA08A000C8E5B /* Reachability */ = {
+			isa = PBXGroup;
+			children = (
+				3AC805B019AFA0D4000C8E5B /* ReachabilityNew.h */,
+				3AC805B119AFA0D4000C8E5B /* ReachabilityNew.m */,
+			);
+			name = Reachability;
+			path = Dating/Classes/ThirdParty/Reachability;
+			sourceTree = SOURCE_ROOT;
 		};
 		AA3D7F801991FBF400C862CF /* SWRevealViewController */ = {
 			isa = PBXGroup;
@@ -664,6 +683,7 @@
 				3ABC28BE198BEA7400E598B5 /* AFNHelper.m in Sources */,
 				3AA4CB32198AAA6F005D82AF /* AFXMLRequestOperation.m in Sources */,
 				3AA4CB2E198AAA6F005D82AF /* AFJSONRequestOperation.m in Sources */,
+				3AC805B219AFA0D4000C8E5B /* ReachabilityNew.m in Sources */,
 				3AA4CB2C198AAA6F005D82AF /* AFHTTPRequestOperation.m in Sources */,
 				3A2DE8AB1983C7240035FA1B /* LogInViewController.m in Sources */,
 				3ABC28B3198BE09900E598B5 /* FacebookUtility.m in Sources */,
@@ -678,6 +698,7 @@
 				3AA4CB2D198AAA6F005D82AF /* AFImageRequestOperation.m in Sources */,
 				3AA4CB2F198AAA6F005D82AF /* AFNetworkActivityIndicatorManager.m in Sources */,
 				3AA4CB33198AAA6F005D82AF /* UIImageView+AFNetworking.m in Sources */,
+				3AC805A919AF91F5000C8E5B /* RecentChatsViewController.m in Sources */,
 				3A0883AD1986D18400BCC79C /* Utils.m in Sources */,
 				3A9D16091986C01A0049CE09 /* ChatAttachmentHelperClass.m in Sources */,
 				3AA4CB2B198AAA6F005D82AF /* AFHTTPClient.m in Sources */,
