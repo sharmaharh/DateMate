@@ -476,6 +476,20 @@
 			path = Dating/Classes/ThirdParty/Reachability;
 			sourceTree = SOURCE_ROOT;
 		};
+		3AC805B319AFC826000C8E5B /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Audio;
+			sourceTree = "<group>";
+		};
+		3AC805B419AFC871000C8E5B /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
 		AA3D7F801991FBF400C862CF /* SWRevealViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -507,6 +521,8 @@
 		AA3D7F901992066300C862CF /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				3AC805B419AFC871000C8E5B /* Fonts */,
+				3AC805B319AFC826000C8E5B /* Audio */,
 				AA3D7F931992066300C862CF /* Images */,
 			);
 			path = Resources;
