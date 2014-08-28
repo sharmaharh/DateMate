@@ -49,6 +49,10 @@
 		3AC3637D19A7EDC100C7E273 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AC3637C19A7EDC100C7E273 /* SettingsViewController.m */; };
 		3AC805A919AF91F5000C8E5B /* RecentChatsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AC805A819AF91F5000C8E5B /* RecentChatsViewController.m */; };
 		3AC805B219AFA0D4000C8E5B /* ReachabilityNew.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AC805B119AFA0D4000C8E5B /* ReachabilityNew.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		3AC805B619AFC96D000C8E5B /* alert.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3AC805B519AFC96D000C8E5B /* alert.mp3 */; };
+		3AC805B819AFC9BC000C8E5B /* SEGOEUI_0.TTF in Resources */ = {isa = PBXBuildFile; fileRef = 3AC805B719AFC9BC000C8E5B /* SEGOEUI_0.TTF */; };
+		3AC805B919AFC9BC000C8E5B /* SEGOEUI_0.TTF in Resources */ = {isa = PBXBuildFile; fileRef = 3AC805B719AFC9BC000C8E5B /* SEGOEUI_0.TTF */; };
+		3AC805BA19AFC9C3000C8E5B /* alert.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3AC805B519AFC96D000C8E5B /* alert.mp3 */; };
 		AA3D7F831991FBF400C862CF /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3D7F821991FBF400C862CF /* SWRevealViewController.m */; };
 		AA3D7F87199200C100C862CF /* RearMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3D7F86199200C100C862CF /* RearMenuViewController.m */; };
 		AA3D7F8B1992045100C862CF /* FindMatchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3D7F8A1992045100C862CF /* FindMatchViewController.m */; };
@@ -151,6 +155,8 @@
 		3AC805A819AF91F5000C8E5B /* RecentChatsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecentChatsViewController.m; sourceTree = "<group>"; };
 		3AC805B019AFA0D4000C8E5B /* ReachabilityNew.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReachabilityNew.h; sourceTree = "<group>"; };
 		3AC805B119AFA0D4000C8E5B /* ReachabilityNew.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReachabilityNew.m; sourceTree = "<group>"; };
+		3AC805B519AFC96D000C8E5B /* alert.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = alert.mp3; sourceTree = "<group>"; };
+		3AC805B719AFC9BC000C8E5B /* SEGOEUI_0.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = SEGOEUI_0.TTF; sourceTree = "<group>"; };
 		AA3D7F811991FBF400C862CF /* SWRevealViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWRevealViewController.h; sourceTree = "<group>"; };
 		AA3D7F821991FBF400C862CF /* SWRevealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWRevealViewController.m; sourceTree = "<group>"; };
 		AA3D7F85199200C100C862CF /* RearMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RearMenuViewController.h; sourceTree = "<group>"; };
@@ -479,6 +485,7 @@
 		3AC805B319AFC826000C8E5B /* Audio */ = {
 			isa = PBXGroup;
 			children = (
+				3AC805B519AFC96D000C8E5B /* alert.mp3 */,
 			);
 			path = Audio;
 			sourceTree = "<group>";
@@ -486,6 +493,7 @@
 		3AC805B419AFC871000C8E5B /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
+				3AC805B719AFC9BC000C8E5B /* SEGOEUI_0.TTF */,
 			);
 			path = Fonts;
 			sourceTree = "<group>";
@@ -666,6 +674,8 @@
 				AA3D7FB719921AFD00C862CF /* Bubble-6.png in Resources */,
 				3ABC28B9198BE4BE00E598B5 /* Main.storyboard in Resources */,
 				AA3D7FB919921AFD00C862CF /* Bubble-7.png in Resources */,
+				3AC805B819AFC9BC000C8E5B /* SEGOEUI_0.TTF in Resources */,
+				3AC805B619AFC96D000C8E5B /* alert.mp3 in Resources */,
 				3A2DE8701983C0FD0035FA1B /* InfoPlist.strings in Resources */,
 				AA3D7FB619921AFD00C862CF /* Bubble-5@2x.png in Resources */,
 				AA3D7FB319921AFD00C862CF /* Bubble-4.png in Resources */,
@@ -682,8 +692,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3AC805B919AFC9BC000C8E5B /* SEGOEUI_0.TTF in Resources */,
 				3A2DE88D1983C0FD0035FA1B /* InfoPlist.strings in Resources */,
 				3ABC28BA198BE4BE00E598B5 /* Main.storyboard in Resources */,
+				3AC805BA19AFC9C3000C8E5B /* alert.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
