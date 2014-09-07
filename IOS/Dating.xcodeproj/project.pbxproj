@@ -53,6 +53,8 @@
 		3AC805B819AFC9BC000C8E5B /* SEGOEUI_0.TTF in Resources */ = {isa = PBXBuildFile; fileRef = 3AC805B719AFC9BC000C8E5B /* SEGOEUI_0.TTF */; };
 		3AC805B919AFC9BC000C8E5B /* SEGOEUI_0.TTF in Resources */ = {isa = PBXBuildFile; fileRef = 3AC805B719AFC9BC000C8E5B /* SEGOEUI_0.TTF */; };
 		3AC805BA19AFC9C3000C8E5B /* alert.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3AC805B519AFC96D000C8E5B /* alert.mp3 */; };
+		3AE209C019BA4EA700C47762 /* SplashView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3AE209BF19BA4EA600C47762 /* SplashView.xib */; };
+		3AE209C319BA4ED600C47762 /* SplashView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE209C219BA4ED600C47762 /* SplashView.m */; };
 		AA3D7F831991FBF400C862CF /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3D7F821991FBF400C862CF /* SWRevealViewController.m */; };
 		AA3D7F87199200C100C862CF /* RearMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3D7F86199200C100C862CF /* RearMenuViewController.m */; };
 		AA3D7F8B1992045100C862CF /* FindMatchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3D7F8A1992045100C862CF /* FindMatchViewController.m */; };
@@ -157,6 +159,9 @@
 		3AC805B119AFA0D4000C8E5B /* ReachabilityNew.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReachabilityNew.m; sourceTree = "<group>"; };
 		3AC805B519AFC96D000C8E5B /* alert.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = alert.mp3; sourceTree = "<group>"; };
 		3AC805B719AFC9BC000C8E5B /* SEGOEUI_0.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = SEGOEUI_0.TTF; sourceTree = "<group>"; };
+		3AE209BF19BA4EA600C47762 /* SplashView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = SplashView.xib; path = "Dating/Classes/Helper Classes/SplashView.xib"; sourceTree = SOURCE_ROOT; };
+		3AE209C119BA4ED600C47762 /* SplashView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SplashView.h; path = "Dating/Classes/Helper Classes/SplashView.h"; sourceTree = SOURCE_ROOT; };
+		3AE209C219BA4ED600C47762 /* SplashView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SplashView.m; path = "Dating/Classes/Helper Classes/SplashView.m"; sourceTree = SOURCE_ROOT; };
 		AA3D7F811991FBF400C862CF /* SWRevealViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWRevealViewController.h; sourceTree = "<group>"; };
 		AA3D7F821991FBF400C862CF /* SWRevealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWRevealViewController.m; sourceTree = "<group>"; };
 		AA3D7F85199200C100C862CF /* RearMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RearMenuViewController.h; sourceTree = "<group>"; };
@@ -313,6 +318,9 @@
 		3A2DE8991983C4870035FA1B /* Custom Views */ = {
 			isa = PBXGroup;
 			children = (
+				3AE209C119BA4ED600C47762 /* SplashView.h */,
+				3AE209C219BA4ED600C47762 /* SplashView.m */,
+				3AE209BF19BA4EA600C47762 /* SplashView.xib */,
 			);
 			path = "Custom Views";
 			sourceTree = "<group>";
@@ -669,6 +677,7 @@
 				AA3D7FB219921AFD00C862CF /* Bubble-3@2x.png in Resources */,
 				AA3D7FB519921AFD00C862CF /* Bubble-5.png in Resources */,
 				AA3D7FB119921AFD00C862CF /* Bubble-3.png in Resources */,
+				3AE209C019BA4EA700C47762 /* SplashView.xib in Resources */,
 				AA3D7F951992066300C862CF /* reveal-icon@2x.png in Resources */,
 				AA3D7FBD19921AFD00C862CF /* Bubble-9.png in Resources */,
 				AA3D7FB719921AFD00C862CF /* Bubble-6.png in Resources */,
@@ -731,6 +740,7 @@
 				3A9D16091986C01A0049CE09 /* ChatAttachmentHelperClass.m in Sources */,
 				3AA4CB2B198AAA6F005D82AF /* AFHTTPClient.m in Sources */,
 				3AC3637D19A7EDC100C7E273 /* SettingsViewController.m in Sources */,
+				3AE209C319BA4ED600C47762 /* SplashView.m in Sources */,
 				3AA4CB30198AAA6F005D82AF /* AFPropertyListRequestOperation.m in Sources */,
 				AA3D7F8B1992045100C862CF /* FindMatchViewController.m in Sources */,
 			);

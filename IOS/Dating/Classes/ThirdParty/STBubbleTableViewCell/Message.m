@@ -10,29 +10,36 @@
 
 @implementation Message
 
-+ (instancetype)messageWithString:(NSString *)message isMySentMessage:(BOOL)isMySentMessage
++ (instancetype)messageWithDictionary:(NSDictionary *)messageDict
 {
-	return [Message messageWithString:message image:nil  isMySentMessage:(BOOL)isMySentMessage];
+    return [Message messageWithDictionary:messageDict image:nil];
 }
 
-+ (instancetype)messageWithString:(NSString *)message image:(UIImage *)image isMySentMessage:(BOOL)isMySentMessage
++ (instancetype)messageWithDictionary:(NSDictionary *)messageDict image:(UIImage *)image
 {
-	return [[Message alloc] initWithString:message image:image  isMySentMessage:(BOOL)isMySentMessage];
+    return [[Message alloc] initWithDictionary:messageDict image:image];
 }
 
-- (instancetype)initWithString:(NSString *)message  isMySentMessage:(BOOL)isMySentMessage
+- (instancetype)initWithDictionary:(NSDictionary *)messageDict
 {
-	return [self initWithString:message image:nil isMySentMessage:(BOOL)isMySentMessage];
+	return [self initWithDictionary:messageDict image:nil];
 }
 
-- (instancetype)initWithString:(NSString *)message image:(UIImage *)image isMySentMessage:(BOOL)isMySentMessage
+- (instancetype)initWithDictionary:(NSDictionary *)messageDict image:(UIImage *)image
 {
 	self = [super init];
 	if(self)
 	{
-		_message = message;
 		_avatar = image;
-        _isMySentMessage = isMySentMessage;
+        
+        _message           = messageDict[msg_text];
+        _messageID         = messageDict[msg_ID];
+        _messageDate       = messageDict[msg_Date];
+        _messageSenderID   = messageDict[msg_Sender_ID];
+        _messageReciverID  = messageDict[msg_Reciver_ID];
+        _messageSenderName = messageDict[msg_Sender_Name];
+		
+        _isMySentMessage = [messageDict[msg_Sender_ID] isEqualToString:[FacebookUtility sharedObject].fbID];
 	}
 	return self;
 }

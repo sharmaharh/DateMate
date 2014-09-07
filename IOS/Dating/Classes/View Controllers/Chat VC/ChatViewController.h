@@ -23,6 +23,6 @@
 
 - (IBAction)btnAttachmentPressed:(id)sender;
 - (IBAction)btnSendMessagePressed:(id)sender;
-- (void)recieveMessage:(NSString *)msg;
+- (void)recieveMessage:(NSDictionary *)messageDict;
 
 @end

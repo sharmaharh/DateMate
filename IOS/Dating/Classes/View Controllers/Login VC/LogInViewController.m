@@ -128,14 +128,23 @@
     else
     {
         [FacebookUtility sharedObject].fbID = fbDict[@"id"];
+        [FacebookUtility sharedObject].fbFullName = fbDict[@"name"];
         [[NSUserDefaults standardUserDefaults] setObject:[FacebookUtility sharedObject].fbID forKey:@"fbID"];
+        [[NSUserDefaults standardUserDefaults] setObject:[FacebookUtility sharedObject].fbID forKey:@"fbFullName"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
         NSDictionary *fbInfo = @{@"ent_first_name":fbDict[@"first_name"], @"ent_last_name":fbDict[@"last_name"], @"ent_fbid":fbDict[@"id"], @"ent_sex":@"1", @"ent_curr_lat":@"28.500", @"ent_curr_long":@"77.3", @"ent_dob":@"1991-01-29", @"ent_push_token" : [[NSUserDefaults standardUserDefaults] objectForKey:@"deviceToken"], @"ent_profile_pic":fbDict[@"picture"][@"data"][@"url"], @"ent_device_type":@"1", @"ent_auth_type":@"1"};
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+        
+        [self.activityIndicator startAnimating];
         AFNHelper *afnhelper = [AFNHelper new];
         [afnhelper getDataFromPath:@"login" withParamData:[fbInfo mutableCopy] withBlock:^(id response, NSError *error) {
-            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+            [self.activityIndicator stopAnimating];
+            
+            // Save Auth Token
+            
+            [[NSUserDefaults standardUserDefaults] setObject:response[@"token"] forKey:@"token"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
             FindMatchViewController *findMatchViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FindMatchViewController"];
             appDelegate.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:findMatchViewController];
             

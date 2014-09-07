@@ -9,7 +9,9 @@
 #import "ChatViewController.h"
 
 @interface ChatViewController ()
-
+{
+    NSString *headerTitle;
+}
 
 @end
 
@@ -42,7 +44,69 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.messages = [NSMutableArray array];
+    [self getUserStatus];
+    [self getChatHistory];
+}
+
+- (void)getUserStatus
+{
+    AFNHelper *afnHelper = [AFNHelper new];
+    headerTitle = @"";
+    [afnHelper getDataFromPath:@"getUserStatus" withParamData:[@{@"ent_user_fbid": [FacebookUtility sharedObject].fbID, @"ent_user_recever_fbid" : @"10203175848489479"} mutableCopy] withBlock:^(id response, NSError *error) {
+        
+        headerTitle = response[@"Status"][0][@"lastActiveDateTZ"];
+        
+        if (!headerTitle.length)
+        {
+            headerTitle = @"";
+        }
+        
+        [self.tableViewChat reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
+//        NSDateFormatter *dateFormatter = [NSDateFormatter new];
+//        dateFormatter.dateFormat = @"YYYY-MM-d h:m:s";
+//        NSDate * lastSeenDate = [dateFormatter dateFromString:lastSeenDateString];
+//        [NSDate timeIntervalSinceReferenceDate]
+        
+    }];
+}
+
+
+- (void)getChatHistory
+{
+    AFNHelper *afnHelper = [AFNHelper new];
+    [afnHelper getDataFromPath:@"getChatHistory" withParamData:[@{@"ent_user_fbid": [FacebookUtility sharedObject].fbID, @"ent_user_recever_fbid" : @"10203175848489479", @"ent_chat_page" : @"1"} mutableCopy] withBlock:^(id response, NSError *error) {
+        
+        if ([response[@"chat"] count])
+        {
+            [self filterChatHistoryList:response[@"chat"]];
+        }
+    }];
+}
+
+
+- (void)filterChatHistoryList:(NSArray *)chatHistory
+{
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"yyyy-MM-d h:m:s"];
     
+    NSComparator myDateComparator = ^NSComparisonResult(NSDictionary *obj1,
+                                                        NSDictionary *obj2) {
+        NSDate *date1 = [formatter dateFromString:obj1[@"dt"]];
+        NSDate *date2 = [formatter dateFromString:obj2[@"dt"]];
+        
+        return [date2 compare:date1]; // sort in descending order
+    };
+//    then simply sort the array by doing:
+    
+    NSArray *sortedArray = [chatHistory sortedArrayUsingComparator:myDateComparator];
+    
+    for (int i = 0; i < sortedArray.count; i++)
+    {
+        Message *msg = [Message messageWithDictionary:sortedArray[i]];
+        [self.messages insertObject:msg atIndex:i];
+    }
+    
+    [self.tableViewChat reloadData];
 }
 
 - (void)didReceiveMemoryWarning
@@ -68,6 +132,7 @@
 - (IBAction)btnAttachmentPressed:(id)sender
 {
     [UIView animateWithDuration:0.16 animations:^{
+        [self.tableViewChat setFrame:CGRectMake(0, 0, 320, self.view.frame.size.height-44)];
         [self.viewChatWindow setTransform:CGAffineTransformMakeTranslation(0, 0)];
     }];
     [self.textFieldMessage resignFirstResponder];
@@ -80,7 +145,13 @@
 {
     if (self.textFieldMessage.text.length)
     {
-        [self.messages addObject:[Message messageWithString:self.textFieldMessage.text isMySentMessage:YES]];
+        NSDateFormatter *dateFormatter = [NSDateFormatter new];
+        [dateFormatter setDateFormat:@"YYYY-MM-d h:m:s"];
+        
+        NSDictionary *msgDict = @{msg_ID: @"", msg_Sender_ID : [FacebookUtility sharedObject].fbID, msg_Reciver_ID : @"10203175848489479", msg_Sender_Name : [FacebookUtility sharedObject].fbFullName, msg_text : self.textFieldMessage.text, msg_Date : [dateFormatter stringFromDate:[NSDate date]]};
+        
+        [self.messages addObject:[Message messageWithDictionary:msgDict]];
+//        [self.messages addObject:[Message messageWithString:self.textFieldMessage.text isMySentMessage:YES]];
         [self.tableViewChat reloadData];
         [self sendMessage];
     }
@@ -93,16 +164,21 @@
 
 - (void)sendMessage
 {
-    
+    if (self.tableViewChat.frame.size.height < self.tableViewChat.contentSize.height)
+    {
+        [self.tableViewChat setContentOffset:CGPointMake(0, self.tableViewChat.contentSize.height-self.tableViewChat.frame.size.height) animated:YES];
+        
+    }
     AFNHelper *afnHelper = [AFNHelper new];
     [afnHelper getDataFromPath:@"sendMessage" withParamData:[NSMutableDictionary dictionaryWithObjects:@[[FacebookUtility sharedObject].fbID,@"10203175848489479",self.textFieldMessage.text] forKeys:@[@"ent_user_fbid",@"ent_user_recever_fbid",@"ent_message"]] withBlock:^(id response, NSError *error) {
+        
         NSLog(@"Message Sent Response = %@",response);
     }];
 }
 
-- (void)recieveMessage:(NSString *)msg
+- (void)recieveMessage:(NSDictionary *)messageDict
 {
-    [self.messages addObject:[Message messageWithString:msg isMySentMessage:NO]];
+    [self.messages addObject:[Message messageWithDictionary:messageDict]];
     [self.tableViewChat reloadData];
 }
 
@@ -172,6 +248,16 @@
     return 1;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 22;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    return headerTitle.length?[@"last seen at " stringByAppendingString:headerTitle]:@"";
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return [self.messages count];
@@ -184,7 +270,7 @@
     STBubbleTableViewCell *cell = (STBubbleTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil)
     {
-        cell = [[STBubbleTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell = [[STBubbleTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
         cell.backgroundColor = tableView.backgroundColor;
 		cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
@@ -201,18 +287,8 @@
     // Put your own logic here to determine the author
     
     cell.authorType = !message.isMySentMessage;
+    cell.detailTextLabel.text = @"Today";
     cell.bubbleColor = STBubbleTableViewCellBubbleColorGreen;
-    
-//	if(indexPath.row % 2 != 0 || indexPath.row == 4)
-//	{
-//		cell.authorType = STBubbleTableViewCellAuthorTypeSelf;
-//		cell.bubbleColor = STBubbleTableViewCellBubbleColorGreen;
-//	}
-//	else
-//	{
-//		cell.authorType = STBubbleTableViewCellAuthorTypeOther;
-//		cell.bubbleColor = STBubbleTableViewCellBubbleColorGray;
-//	}
     
     return cell;
 }
@@ -274,8 +350,8 @@
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
     [UIView animateWithDuration:0.3 animations:^{
+        [self.tableViewChat setFrame:CGRectMake(0, 0, 320, self.view.frame.size.height-self.viewChatWindow.frame.size.height-216)];
         [self.viewChatWindow setTransform:CGAffineTransformMakeTranslation(0, -216)];
-        
     }];
     
 }
@@ -288,6 +364,7 @@
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
     [UIView animateWithDuration:0.16 animations:^{
+        [self.tableViewChat setFrame:CGRectMake(0, 0, 320, self.view.frame.size.height-44)];
         [self.viewChatWindow setTransform:CGAffineTransformMakeTranslation(0, 0)];
     }];
     
@@ -296,7 +373,9 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [UIView animateWithDuration:0.16 animations:^{
+        [self.tableViewChat setFrame:CGRectMake(0, 0, 320, self.view.frame.size.height-44)];
         [self.viewChatWindow setTransform:CGAffineTransformMakeTranslation(0, 0)];
+        
     }];
     [textField resignFirstResponder];
     return YES;

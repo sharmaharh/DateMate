@@ -11,6 +11,7 @@
 
 const CGFloat STBubbleWidthOffset = 30.0f;
 const CGFloat STBubbleImageSize = 50.0f;
+const CGFloat STBubbleDateTimeHeight = 12.0f;
 
 @implementation STBubbleTableViewCell
 
@@ -31,7 +32,14 @@ const CGFloat STBubbleImageSize = 50.0f;
 		self.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
 		self.textLabel.textColor = [UIColor blackColor];
 		self.textLabel.font = [UIFont systemFontOfSize:14.0];
-		
+        
+        self.detailTextLabel.backgroundColor = [UIColor redColor];
+		self.detailTextLabel.numberOfLines = 0;
+		self.detailTextLabel.lineBreakMode = NSLineBreakByWordWrapping;
+		self.detailTextLabel.textColor = [UIColor lightGrayColor];
+		self.detailTextLabel.font = [UIFont systemFontOfSize:10.0];
+		self.detailTextLabel.textAlignment = NSTextAlignmentRight;
+        
 		self.imageView.userInteractionEnabled = YES;
 		self.imageView.layer.cornerRadius = 5.0;
 		self.imageView.layer.masksToBounds = YES;
@@ -76,18 +84,23 @@ const CGFloat STBubbleImageSize = 50.0f;
 	{
 		if(self.imageView.image)
 		{
-			self.bubbleView.frame = CGRectMake(self.frame.size.width - (size.width + STBubbleWidthOffset) - STBubbleImageSize - 8.0f, self.frame.size.height - (size.height + 15.0f), size.width + STBubbleWidthOffset, size.height + 15.0f);
+			self.bubbleView.frame = CGRectMake(self.frame.size.width - (size.width + STBubbleWidthOffset) - STBubbleImageSize - 8.0f, self.frame.size.height - (size.height + 15.0f), size.width + STBubbleWidthOffset, size.height + 15.0f + STBubbleDateTimeHeight);
 			self.imageView.frame = CGRectMake(self.frame.size.width - STBubbleImageSize - 5.0f, self.frame.size.height - STBubbleImageSize - 2.0f, STBubbleImageSize, STBubbleImageSize);
 			self.textLabel.frame = CGRectMake(self.frame.size.width - (size.width + STBubbleWidthOffset - 10.0f) - STBubbleImageSize - 8.0f, self.frame.size.height - (size.height + 15.0f) + 6.0f, size.width + STBubbleWidthOffset - 23.0f, size.height);
+            
 		}
 		else
 		{
-			self.bubbleView.frame = CGRectMake(self.frame.size.width - (size.width + STBubbleWidthOffset), 0.0f, size.width + STBubbleWidthOffset, size.height + 15.0f);
+			self.bubbleView.frame = CGRectMake(self.frame.size.width - (size.width + STBubbleWidthOffset), 0.0f, size.width + STBubbleWidthOffset, size.height + 15.0f + STBubbleDateTimeHeight);
 			self.imageView.frame = CGRectZero;
 			self.textLabel.frame = CGRectMake(self.frame.size.width - (size.width + STBubbleWidthOffset - 10.0f), 6.0f, size.width + STBubbleWidthOffset - 23.0f, size.height);
 		}
 		
 		self.textLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+        
+        self.detailTextLabel.frame = CGRectMake(self.textLabel.frame.origin.x, self.textLabel.frame.origin.y + self.textLabel.frame.size.height, self.textLabel.frame.size.width, STBubbleDateTimeHeight);
+		
+        self.detailTextLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
 		self.bubbleView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
 		self.bubbleView.transform = CGAffineTransformIdentity;
 	}
@@ -95,18 +108,23 @@ const CGFloat STBubbleImageSize = 50.0f;
 	{
 		if(self.imageView.image)
 		{
-			self.bubbleView.frame = CGRectMake(STBubbleImageSize + 8.0f, self.frame.size.height - (size.height + 15.0f), size.width + STBubbleWidthOffset, size.height + 15.0f);
+			self.bubbleView.frame = CGRectMake(STBubbleImageSize + 8.0f, self.frame.size.height - (size.height + 15.0f), size.width + STBubbleWidthOffset, size.height + 15.0f + STBubbleDateTimeHeight);
 			self.imageView.frame = CGRectMake(5.0, self.frame.size.height - STBubbleImageSize - 2.0f, STBubbleImageSize, STBubbleImageSize);
 			self.textLabel.frame = CGRectMake(STBubbleImageSize + 8.0f + 16.0f, self.frame.size.height - (size.height + 15.0f) + 6.0f, size.width + STBubbleWidthOffset - 23.0f, size.height);
 		}
 		else
 		{
-			self.bubbleView.frame = CGRectMake(0.0f, 0.0f, size.width + STBubbleWidthOffset, size.height + 15.0f);
+			self.bubbleView.frame = CGRectMake(0.0f, 0.0f, size.width + STBubbleWidthOffset, size.height + 15.0f + STBubbleDateTimeHeight);
 			self.imageView.frame = CGRectZero;
 			self.textLabel.frame = CGRectMake(16.0f, 6.0f, size.width + STBubbleWidthOffset - 23.0f, size.height);
 		}
+        
+        self.textLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
+		self.detailTextLabel.frame = CGRectMake(self.textLabel.frame.origin.x, self.textLabel.frame.origin.y + self.textLabel.frame.size.height,  self.textLabel.frame.size.width, STBubbleDateTimeHeight);
+        
 		
-		self.textLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
+        self.detailTextLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
+        
 		self.bubbleView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
 		self.bubbleView.transform = CGAffineTransformIdentity;
 		self.bubbleView.transform = CGAffineTransformMakeScale(-1.0f, 1.0f);
@@ -115,7 +133,7 @@ const CGFloat STBubbleImageSize = 50.0f;
 
 - (void)setImageForBubbleColor:(BubbleColor)color
 {
-	self.bubbleView.image = [[UIImage imageNamed:[NSString stringWithFormat:@"Bubble-%i.png", color]] resizableImageWithCapInsets:UIEdgeInsetsMake(12.0f, 15.0f, 16.0f, 18.0f)];
+	self.bubbleView.image = [[UIImage imageNamed:[NSString stringWithFormat:@"Bubble-%u.png", color]] resizableImageWithCapInsets:UIEdgeInsetsMake(12.0f, 15.0f, 16.0f, 18.0f)];
 }
 
 - (void)layoutSubviews

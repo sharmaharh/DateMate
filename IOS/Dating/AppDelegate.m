@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "SplashView.h"
 #import "ChatViewController.h"
 #import "FindMatchViewController.h"
 #import "SWRevealViewController.h"
@@ -32,6 +33,7 @@ AppDelegate* appDelegate = nil;
     
     // Condition Determines that if user is already logged in previously in the device, than he/she will not log in again. To Login again firstly Logout from Settings.
     
+//    [self getSplashImages];
     
     NSDictionary *serverNotif =
     [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
@@ -49,13 +51,15 @@ AppDelegate* appDelegate = nil;
             
             RearMenuViewController *rearMenuViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RearMenuViewController"];
             [FacebookUtility sharedObject].fbID = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbID"];
+            [FacebookUtility sharedObject].fbFullName = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbFullName"];
+            
             self.revealController = [[SWRevealViewController alloc] initWithRearViewController:rearMenuViewController frontViewController:self.frontNavigationController];
             
             [self.window setRootViewController:self.revealController];
 
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [[ChatViewController sharedChatInstance] recieveMessage:serverNotif[@"aps"][@"alert"]];
+                [[ChatViewController sharedChatInstance] recieveMessage:serverNotif[@"aps"]];
             });
             
         });
@@ -70,6 +74,8 @@ AppDelegate* appDelegate = nil;
             FindMatchViewController *findMatchViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"FindMatchViewController"];
             appDelegate.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:findMatchViewController];
             [FacebookUtility sharedObject].fbID = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbID"];
+            [FacebookUtility sharedObject].fbFullName = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbFullName"];
+            
             RearMenuViewController *rearMenuViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RearMenuViewController"];
             appDelegate.revealController = [[SWRevealViewController alloc] initWithRearViewController:rearMenuViewController frontViewController:appDelegate.frontNavigationController];
             
@@ -86,7 +92,84 @@ AppDelegate* appDelegate = nil;
     }
     
     [self.window makeKeyAndVisible];
+    
+//    SplashView *splashView = [[SplashView alloc] initWithFrame:self.window.bounds];
+//    
+//    [self.window addSubview:splashView];
+//    [self.window bringSubviewToFront:splashView];
+//    [self setImagesOnWall:splashView];
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(90 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        [splashView removeFromSuperview];
+//    });
+//    
+    
     return YES;
+}
+
+- (void)setImagesOnWall:(SplashView *)splashView
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *basePath = [paths objectAtIndex:0];
+    
+    basePath = [basePath stringByAppendingPathComponent:@"Splash_Images"];
+    
+    for (int i = 0 ; i < 10; i++)
+    {
+        UIImageView *imageView = (UIImageView *)[splashView viewWithTag:i+1];
+        
+        NSString *filePath = [basePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%i.png",i+1]];
+        UIImage *image = [UIImage imageWithContentsOfFile:filePath];
+        [imageView setImage:image];
+    }
+}
+
+- (void)getSplashImages
+{
+    AFNHelper *afnHelper = [AFNHelper new];
+    [afnHelper getDataFromPath:@"splashImages" withParamData:nil withBlock:^(id response, NSError *error) {
+        
+        if ([[response objectForKey:@"Userphotos"] count])
+        {
+            NSArray *imageURLArray = [response objectForKey:@"Userphotos"];
+            
+            NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+            NSString *basePath = [paths objectAtIndex:0];
+            
+            basePath = [basePath stringByAppendingPathComponent:@"Splash_Images"];
+            
+            if ([[NSFileManager defaultManager] fileExistsAtPath:basePath])
+            {
+                [[NSFileManager defaultManager] removeItemAtPath:basePath error:nil];
+            }
+            
+            [[NSFileManager defaultManager] createDirectoryAtPath:basePath withIntermediateDirectories:YES attributes:nil error:nil];
+            
+            for (NSDictionary *dict in imageURLArray)
+            {
+                [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:dict[@"image_url"]]] queue:[NSOperationQueue currentQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                    
+                    if (!connectionError)
+                    {
+                        UIImage *image = [UIImage imageWithData:data];
+                        
+                        if (image)
+                        {
+                            
+                            NSString *filePath = [basePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%i.png",[imageURLArray indexOfObject:dict]+1]];
+                            
+                            [[NSFileManager defaultManager] createFileAtPath:filePath contents:data attributes:nil];
+                            
+                            
+                        }
+                    }
+                    
+                    
+                }];
+            }
+        }
+        
+        
+    }];
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication
@@ -167,8 +250,6 @@ AppDelegate* appDelegate = nil;
 - (void)application:(UIApplication*)application didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
 
-//    [self callLogOut];
-    NSLog(@"Reveal Position = %i",self.revealController.frontViewPosition);
     UINavigationController *frontNavigationController = (id)self.revealController.frontViewController;
     [Utils showOKAlertWithTitle:@"DateMate" message:@"Push Recieved"];
     if ([frontNavigationController.topViewController isKindOfClass:[ChatViewController class]])

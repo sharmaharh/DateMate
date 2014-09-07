@@ -82,16 +82,27 @@
 
 - (void)logout
 {
-//    AFNHelper *afnHelper = [AFNHelper new];
-//    [afnHelper getDataFromPath:@"logout" withParamData:@{@"ent_sess_token": [[NSUserDefaults standardUserDefaults] objectForKey:@"deviceToken"], @"ent_dev_id":} withBlock:<#^(id response, NSError *error)block#>]
+    AFNHelper *afnHelper = [AFNHelper new];
+    [afnHelper getDataFromPath:@"logout" withParamData:[@{@"ent_sess_token": [[NSUserDefaults standardUserDefaults] objectForKey:@"token"],@"ent_dev_id":[[NSUserDefaults standardUserDefaults] objectForKey:@"deviceToken"]} mutableCopy] withBlock:^(id response, NSError *error) {
+        if (!error)
+        {
+            [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"fbID"];
+            [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"fbFullName"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            [FacebookUtility sharedObject].fbID = @"";
+            appDelegate.frontNavigationController = [self.storyboard instantiateViewControllerWithIdentifier:@"FirstNavigationController"];
+            
+            appDelegate.window.rootViewController = appDelegate.frontNavigationController;
+            [appDelegate.window makeKeyAndVisible];
+        }
+        else
+        {
+            [Utils showOKAlertWithTitle:@"Dating" message:@"Unable to Logout, Please try Again."];
+        }
+        
+    }];
     
-    [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"fbID"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-    [FacebookUtility sharedObject].fbID = @"";
-    appDelegate.frontNavigationController = [self.storyboard instantiateViewControllerWithIdentifier:@"FirstNavigationController"];
     
-    appDelegate.window.rootViewController = appDelegate.frontNavigationController;
-    [appDelegate.window makeKeyAndVisible];
 }
 
 - (IBAction)btnRevealPressed:(id)sender

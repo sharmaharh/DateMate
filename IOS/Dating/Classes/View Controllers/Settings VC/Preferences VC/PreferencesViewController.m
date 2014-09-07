@@ -55,7 +55,6 @@
     
     if (!self.textfieldPrefferdUpperAge.text.length)
     {
-        [array addObject:@"Please fill the following Information first \n:"];
         [array addObject:@"- Upper Age"];
     }
     if (!self.textfieldPrefferdLowerAge.text.length)
@@ -69,7 +68,7 @@
     
     if (array.count)
     {
-        NSString *tempStr = @"Please fill the following Information first \n:";
+        NSString *tempStr = @"Please fill the following Information \n:";
         tempStr = [tempStr stringByAppendingString:[array componentsJoinedByString:@"\n"]];
         [Utils showOKAlertWithTitle:@"Dating" message:tempStr];
         return;

@@ -14,6 +14,7 @@
 #pragma mark IBActions
 
 - (IBAction)btnLoginFBPressed:(id)sender;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
 
 
 @end

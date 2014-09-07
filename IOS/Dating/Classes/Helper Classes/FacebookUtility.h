@@ -32,6 +32,7 @@ typedef void (^FBFriendCompletionBlock)(NSArray *friends, NSError *error);
 @property (strong, nonatomic) NSMutableArray *arrFBFriendList;
 @property (strong, nonatomic) NSMutableArray *arrFBLikesList;
 @property (strong, nonatomic) NSString *fbID;
+@property (strong, nonatomic) NSString *fbFullName;
 @property (strong, nonatomic) NSString *fbAccesToken;
 @property (strong, nonatomic) FBSession *session;
 
