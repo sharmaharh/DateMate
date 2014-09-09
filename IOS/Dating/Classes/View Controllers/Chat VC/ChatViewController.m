@@ -287,7 +287,7 @@
     // Put your own logic here to determine the author
     
     cell.authorType = !message.isMySentMessage;
-    cell.detailTextLabel.text = @"Today";
+    cell.detailTextLabel.text = message.messageDate;
     cell.bubbleColor = STBubbleTableViewCellBubbleColorGreen;
     
     return cell;
