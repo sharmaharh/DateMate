@@ -11,7 +11,8 @@
 
 const CGFloat STBubbleWidthOffset = 30.0f;
 const CGFloat STBubbleImageSize = 50.0f;
-const CGFloat STBubbleDateTimeHeight = 12.0f;
+const CGFloat STBubbleDateTimeHeight = 16.0f;
+const CGFloat STBubbleMinWidth = 100.0f;
 
 @implementation STBubbleTableViewCell
 
@@ -36,7 +37,7 @@ const CGFloat STBubbleDateTimeHeight = 12.0f;
         self.detailTextLabel.backgroundColor = [UIColor redColor];
 		self.detailTextLabel.numberOfLines = 0;
 		self.detailTextLabel.lineBreakMode = NSLineBreakByWordWrapping;
-		self.detailTextLabel.textColor = [UIColor lightGrayColor];
+		self.detailTextLabel.textColor = [UIColor darkGrayColor];
 		self.detailTextLabel.font = [UIFont systemFontOfSize:10.0];
 		self.detailTextLabel.textAlignment = NSTextAlignmentRight;
         
@@ -78,6 +79,10 @@ const CGFloat STBubbleDateTimeHeight = 12.0f;
     {
 		size = [self.textLabel.text sizeWithFont:self.textLabel.font constrainedToSize:CGSizeMake(self.frame.size.width - minInset - STBubbleWidthOffset, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping];
     }
+    if (size.width < STBubbleMinWidth)
+    {
+        size.width = STBubbleMinWidth;
+    }
 	
 	// You can always play with these values if you need to
 	if(type == STBubbleTableViewCellAuthorTypeSelf)
@@ -97,7 +102,7 @@ const CGFloat STBubbleDateTimeHeight = 12.0f;
 		}
 		
 		self.textLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-        
+        self.textLabel.textAlignment = NSTextAlignmentRight;
         self.detailTextLabel.frame = CGRectMake(self.textLabel.frame.origin.x, self.textLabel.frame.origin.y + self.textLabel.frame.size.height, self.textLabel.frame.size.width, STBubbleDateTimeHeight);
 		
         self.detailTextLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;

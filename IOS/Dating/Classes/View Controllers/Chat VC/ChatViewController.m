@@ -107,6 +107,9 @@
     }
     
     [self.tableViewChat reloadData];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.tableViewChat setContentOffset:CGPointMake(0, self.tableViewChat.contentSize.height-self.tableViewChat.frame.size.height) animated:YES];
+    });
 }
 
 - (void)didReceiveMemoryWarning
@@ -316,7 +319,7 @@
 		return STBubbleImageSize + 4.0f;
     }
 	
-	return size.height + 15.0f;
+	return size.height + 40.0f;
 }
 
 #pragma mark - STBubbleTableViewCellDataSource methods
