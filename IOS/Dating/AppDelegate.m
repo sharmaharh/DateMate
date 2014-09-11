@@ -254,7 +254,7 @@ AppDelegate* appDelegate = nil;
     [Utils showOKAlertWithTitle:@"DateMate" message:@"Push Recieved"];
     if ([frontNavigationController.topViewController isKindOfClass:[ChatViewController class]])
     {
-        [[ChatViewController sharedChatInstance] recieveMessage:userInfo[@"aps"][@"alert"]];
+        [[ChatViewController sharedChatInstance] recieveMessage:userInfo[@"aps"]];
     }
     else if (self.isAppinBackground)
     {
@@ -276,7 +276,7 @@ AppDelegate* appDelegate = nil;
              recentChatViewController.isFromPush = YES;
              [self.revealController pushFrontViewController:frontNavigationController animated:YES];
              dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                 [[ChatViewController sharedChatInstance] recieveMessage:userInfo[@"aps"][@"alert"]];
+                 [[ChatViewController sharedChatInstance] recieveMessage:userInfo[@"aps"]];
              });
          }
     }

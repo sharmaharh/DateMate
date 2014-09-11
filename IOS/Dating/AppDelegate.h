@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ChatViewController.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 

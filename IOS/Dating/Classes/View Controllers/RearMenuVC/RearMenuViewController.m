@@ -8,6 +8,7 @@
 
 #import "RearMenuViewController.h"
 #import "RecentChatsViewController.h"
+#import "KeepingConnectingViewController.h"
 
 @interface RearMenuViewController ()
 {
@@ -30,7 +31,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    arrOptions = @[@"Profile", @"Keep Connecting", @"Pending Emotions", @"Chat", @"Settings"];
+    arrOptions = @[@"Profile", @"Keep Connecting", @"Pending Emotions", @"Chats", @"Settings"];
 }
 
 - (void)didReceiveMemoryWarning
@@ -89,6 +90,17 @@
             
         case 2:
             // Pending Emotions
+            if ( ![frontNavigationController.topViewController isKindOfClass:[KeepingConnectingViewController class]] )
+            {
+                KeepingConnectingViewController *keepConnectingViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"KeepingConnectingViewController"];
+                UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:keepConnectingViewController];
+                [revealController pushFrontViewController:navigationController animated:YES];
+            }
+            // Seems the user attempts to 'switch' to exactly the same controller he came from!
+            else
+            {
+                [revealController revealToggle:self];
+            }
             break;
             
         case 3:

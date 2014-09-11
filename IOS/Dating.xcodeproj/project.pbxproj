@@ -25,6 +25,7 @@
 		3A2DE88D1983C0FD0035FA1B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3A2DE88B1983C0FD0035FA1B /* InfoPlist.strings */; };
 		3A2DE88F1983C0FD0035FA1B /* DatingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2DE88E1983C0FD0035FA1B /* DatingTests.m */; };
 		3A2DE8AB1983C7240035FA1B /* LogInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2DE8AA1983C7240035FA1B /* LogInViewController.m */; };
+		3A66C2C519C23AD800AA1718 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A66C2C419C23AD800AA1718 /* QuartzCore.framework */; };
 		3A9D16051986A2E40049CE09 /* ChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A9D16041986A2E40049CE09 /* ChatViewController.m */; };
 		3A9D16091986C01A0049CE09 /* ChatAttachmentHelperClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A9D16081986C01A0049CE09 /* ChatAttachmentHelperClass.m */; };
 		3A9D160B1986C2010049CE09 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A9D160A1986C2010049CE09 /* AVFoundation.framework */; };
@@ -53,6 +54,7 @@
 		3AC805B819AFC9BC000C8E5B /* SEGOEUI_0.TTF in Resources */ = {isa = PBXBuildFile; fileRef = 3AC805B719AFC9BC000C8E5B /* SEGOEUI_0.TTF */; };
 		3AC805B919AFC9BC000C8E5B /* SEGOEUI_0.TTF in Resources */ = {isa = PBXBuildFile; fileRef = 3AC805B719AFC9BC000C8E5B /* SEGOEUI_0.TTF */; };
 		3AC805BA19AFC9C3000C8E5B /* alert.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3AC805B519AFC96D000C8E5B /* alert.mp3 */; };
+		3AE13A5019C0C9570090A105 /* KeepingConnectingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE13A4F19C0C9570090A105 /* KeepingConnectingViewController.m */; };
 		3AE209C019BA4EA700C47762 /* SplashView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3AE209BF19BA4EA600C47762 /* SplashView.xib */; };
 		3AE209C319BA4ED600C47762 /* SplashView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE209C219BA4ED600C47762 /* SplashView.m */; };
 		AA3D7F831991FBF400C862CF /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3D7F821991FBF400C862CF /* SWRevealViewController.m */; };
@@ -116,6 +118,7 @@
 		3A2DE88E1983C0FD0035FA1B /* DatingTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DatingTests.m; sourceTree = "<group>"; };
 		3A2DE8A91983C7240035FA1B /* LogInViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogInViewController.h; sourceTree = "<group>"; };
 		3A2DE8AA1983C7240035FA1B /* LogInViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogInViewController.m; sourceTree = "<group>"; };
+		3A66C2C419C23AD800AA1718 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		3A9D16031986A2E40049CE09 /* ChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatViewController.h; sourceTree = "<group>"; };
 		3A9D16041986A2E40049CE09 /* ChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatViewController.m; sourceTree = "<group>"; };
 		3A9D16071986C01A0049CE09 /* ChatAttachmentHelperClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatAttachmentHelperClass.h; sourceTree = "<group>"; };
@@ -159,6 +162,8 @@
 		3AC805B119AFA0D4000C8E5B /* ReachabilityNew.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReachabilityNew.m; sourceTree = "<group>"; };
 		3AC805B519AFC96D000C8E5B /* alert.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = alert.mp3; sourceTree = "<group>"; };
 		3AC805B719AFC9BC000C8E5B /* SEGOEUI_0.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = SEGOEUI_0.TTF; sourceTree = "<group>"; };
+		3AE13A4E19C0C9570090A105 /* KeepingConnectingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeepingConnectingViewController.h; sourceTree = "<group>"; };
+		3AE13A4F19C0C9570090A105 /* KeepingConnectingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeepingConnectingViewController.m; sourceTree = "<group>"; };
 		3AE209BF19BA4EA600C47762 /* SplashView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = SplashView.xib; path = "Dating/Classes/Helper Classes/SplashView.xib"; sourceTree = SOURCE_ROOT; };
 		3AE209C119BA4ED600C47762 /* SplashView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SplashView.h; path = "Dating/Classes/Helper Classes/SplashView.h"; sourceTree = SOURCE_ROOT; };
 		3AE209C219BA4ED600C47762 /* SplashView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SplashView.m; path = "Dating/Classes/Helper Classes/SplashView.m"; sourceTree = SOURCE_ROOT; };
@@ -200,6 +205,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3A66C2C519C23AD800AA1718 /* QuartzCore.framework in Frameworks */,
 				3ABC28C1198C121A00E598B5 /* SystemConfiguration.framework in Frameworks */,
 				3AA19C921987C94900AA6871 /* MobileCoreServices.framework in Frameworks */,
 				3A9D160B1986C2010049CE09 /* AVFoundation.framework in Frameworks */,
@@ -247,6 +253,7 @@
 		3A2DE8621983C0FD0035FA1B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3A66C2C419C23AD800AA1718 /* QuartzCore.framework */,
 				3ABC28C0198C121A00E598B5 /* SystemConfiguration.framework */,
 				3AA19C911987C94900AA6871 /* MobileCoreServices.framework */,
 				3A9D160A1986C2010049CE09 /* AVFoundation.framework */,
@@ -342,6 +349,7 @@
 		3A2DE89B1983C4870035FA1B /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				3AE13A4D19C0C92A0090A105 /* Keep Connecting */,
 				3AC3637619A7EDB100C7E273 /* Settings VC */,
 				AA3D7F881992044500C862CF /* FindMatchVC */,
 				AA3D7F84199200AF00C862CF /* RearMenuVC */,
@@ -504,6 +512,15 @@
 				3AC805B719AFC9BC000C8E5B /* SEGOEUI_0.TTF */,
 			);
 			path = Fonts;
+			sourceTree = "<group>";
+		};
+		3AE13A4D19C0C92A0090A105 /* Keep Connecting */ = {
+			isa = PBXGroup;
+			children = (
+				3AE13A4E19C0C9570090A105 /* KeepingConnectingViewController.h */,
+				3AE13A4F19C0C9570090A105 /* KeepingConnectingViewController.m */,
+			);
+			path = "Keep Connecting";
 			sourceTree = "<group>";
 		};
 		AA3D7F801991FBF400C862CF /* SWRevealViewController */ = {
@@ -735,6 +752,7 @@
 				3AA4CB2D198AAA6F005D82AF /* AFImageRequestOperation.m in Sources */,
 				3AA4CB2F198AAA6F005D82AF /* AFNetworkActivityIndicatorManager.m in Sources */,
 				3AA4CB33198AAA6F005D82AF /* UIImageView+AFNetworking.m in Sources */,
+				3AE13A5019C0C9570090A105 /* KeepingConnectingViewController.m in Sources */,
 				3AC805A919AF91F5000C8E5B /* RecentChatsViewController.m in Sources */,
 				3A0883AD1986D18400BCC79C /* Utils.m in Sources */,
 				3A9D16091986C01A0049CE09 /* ChatAttachmentHelperClass.m in Sources */,

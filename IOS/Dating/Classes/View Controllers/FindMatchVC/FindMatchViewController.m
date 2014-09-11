@@ -7,6 +7,7 @@
 //
 
 #import "FindMatchViewController.h"
+#import "RecentChatsViewController.h"
 
 @interface FindMatchViewController ()
 {
@@ -31,6 +32,12 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self findMatchesList];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -103,11 +110,36 @@
                  if ([[response objectForKey:@"matches"] isKindOfClass:[NSArray class]])
                  {
                      matchedProfilesArray = [response objectForKey:@"matches"];
-                     [self setProfileOnLayout];
+                     if ([matchedProfilesArray count])
+                     {
+                         [self setProfileOnLayout];
+                         for (UIView *view in self.view.subviews)
+                         {
+                             [view setHidden:NO];
+                         }
+                         UILabel *errorMsgLabel = (UILabel *)[self.view viewWithTag:100];
+                         [errorMsgLabel setHidden:YES];
+                     }
+                     else
+                     {
+                         for (UIView *view in self.view.subviews)
+                         {
+                             [view setHidden:YES];
+                         }
+                         UILabel *errorMsgLabel = (UILabel *)[self.view viewWithTag:100];
+                         [errorMsgLabel setHidden:NO];
+                     }
+                     
                  }
                  else
                  {
                      matchedProfilesArray = [NSMutableArray array];
+                     for (UIView *view in self.view.subviews)
+                     {
+                         [view setHidden:YES];
+                     }
+                     UILabel *errorMsgLabel = (UILabel *)[self.view viewWithTag:100];
+                     [errorMsgLabel setHidden:NO];
                  }
              }
              
@@ -125,7 +157,15 @@
     }
     else
     {
-        [Utils showOKAlertWithTitle:@"Dating" message:@"Sorry, Boss No More Entry Available"];
+        
+        for (UIView *view in self.view.subviews)
+        {
+            [view setHidden:YES];
+        }
+        UILabel *errorLabel = (UILabel *)[self.view viewWithTag:100];
+        [errorLabel setHidden:NO];
+        
+//        [Utils showOKAlertWithTitle:@"Dating" message:@"Sorry, Boss No More Entry Available"];
     }
     
 }
@@ -147,11 +187,38 @@
              if (!error)
              {
                  [self passProfileButtonPressed:nil];
-                 [Utils showOKAlertWithTitle:@"Dating" message:response[@"errMsg"]];
+                 
+                 if ([response[@"errMsg"] isEqualToString:@"Congrats! You got a match"]) {
+                     // Now Winked Back, Start Conversation
+                     [[Utils sharedInstance] openAlertViewWithTitle:@"Dating" message:response[@"errMsg"] buttons:@[@"Cancel",@"Chat"] completion:^(UIAlertView *alert, NSInteger buttonIndex)
+                     {
+                         if (buttonIndex)
+                         {
+                             
+                             UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
+                             RecentChatsViewController *recentChatViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecentChatsViewController"];
+                             appDelegate.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:recentChatViewController];
+                             recentChatViewController.isFromPush = NO;
+                             [appDelegate.revealController pushFrontViewController:appDelegate.frontNavigationController animated:NO];
+                             ChatViewController *chatViewConrtroller = [ChatViewController sharedChatInstance];
+                             chatViewConrtroller.recieveFBID = response[@"uFbId"];
+                             chatViewConrtroller.userName = response[@"uName"];
+                             [appDelegate.frontNavigationController pushViewController:chatViewConrtroller animated:YES];
+                         }
+                         
+                     }];
+                     
+                 }
+                 else
+                 {
+                     [Utils showOKAlertWithTitle:@"Dating" message:response[@"errMsg"]];
+                 }
+                 
+                 
              }
              else
              {
-                 [Utils showOKAlertWithTitle:@"Dating" message:response[@"Error Occured, Please Try Again"]];
+                 [Utils showOKAlertWithTitle:@"Dating" message:@"Error Occured, Please Try Again"];
              }
              
              //         emotionsButton.selected = YES;

@@ -43,7 +43,7 @@
  
  Copyright (C) 2010 Apple Inc. All Rights Reserved.
  
-*/
+ */
 
 
 #import <Foundation/Foundation.h>
@@ -62,13 +62,13 @@ typedef enum {
 	SCNetworkReachabilityRef reachabilityRef;
 }
 
-//reachabilityWithHostName- Use to check the reachability of a particular host name. 
+//reachabilityWithHostName- Use to check the reachability of a particular host name.
 + (ReachabilityNew*) reachabilityWithHostName: (NSString*) hostName;
 
-//reachabilityWithAddress- Use to check the reachability of a particular IP address. 
+//reachabilityWithAddress- Use to check the reachability of a particular IP address.
 + (ReachabilityNew*) reachabilityWithAddress: (const struct sockaddr_in*) hostAddress;
 
-//reachabilityForInternetConnection- checks whether the default route is available.  
+//reachabilityForInternetConnection- checks whether the default route is available.
 //  Should be used by applications that do not connect to a particular host
 + (ReachabilityNew*) reachabilityForInternetConnection;
 

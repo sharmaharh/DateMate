@@ -43,7 +43,18 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
     self.messages = [NSMutableArray array];
+    [self.tableViewChat reloadData];
+    if (![self.recieveFBID length])
+    {
+        self.recieveFBID = @"";
+    }
     [self getUserStatus];
     [self getChatHistory];
 }
@@ -52,16 +63,20 @@
 {
     AFNHelper *afnHelper = [AFNHelper new];
     headerTitle = @"";
-    [afnHelper getDataFromPath:@"getUserStatus" withParamData:[@{@"ent_user_fbid": [FacebookUtility sharedObject].fbID, @"ent_user_recever_fbid" : @"10203175848489479"} mutableCopy] withBlock:^(id response, NSError *error) {
+    [afnHelper getDataFromPath:@"getUserStatus" withParamData:[@{@"ent_user_fbid": [FacebookUtility sharedObject].fbID, @"ent_user_recever_fbid" : self.recieveFBID} mutableCopy] withBlock:^(id response, NSError *error) {
         
-        headerTitle = response[@"Status"][0][@"lastActiveDateTZ"];
-        
-        if (!headerTitle.length)
+        if ([response[@"Status"] count])
         {
-            headerTitle = @"";
+            headerTitle = response[@"Status"][0][@"lastActiveDateTZ"];
+            
+            if (!headerTitle.length)
+            {
+                headerTitle = @"";
+            }
+            
+            [self.tableViewChat reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
         }
         
-        [self.tableViewChat reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
 //        NSDateFormatter *dateFormatter = [NSDateFormatter new];
 //        dateFormatter.dateFormat = @"YYYY-MM-d h:m:s";
 //        NSDate * lastSeenDate = [dateFormatter dateFromString:lastSeenDateString];
@@ -74,7 +89,7 @@
 - (void)getChatHistory
 {
     AFNHelper *afnHelper = [AFNHelper new];
-    [afnHelper getDataFromPath:@"getChatHistory" withParamData:[@{@"ent_user_fbid": [FacebookUtility sharedObject].fbID, @"ent_user_recever_fbid" : @"10203175848489479", @"ent_chat_page" : @"1"} mutableCopy] withBlock:^(id response, NSError *error) {
+    [afnHelper getDataFromPath:@"getChatHistory" withParamData:[@{@"ent_user_fbid": [FacebookUtility sharedObject].fbID, @"ent_user_recever_fbid" : self.recieveFBID, @"ent_chat_page" : @"1"} mutableCopy] withBlock:^(id response, NSError *error) {
         
         if ([response[@"chat"] count])
         {
@@ -86,23 +101,23 @@
 
 - (void)filterChatHistoryList:(NSArray *)chatHistory
 {
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"yyyy-MM-d h:m:s"];
+//    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+//    [formatter setDateFormat:@"yyyy-MM-d h:m:s"];
+//    
+//    NSComparator myDateComparator = ^NSComparisonResult(NSDictionary *obj1,
+//                                                        NSDictionary *obj2) {
+//        NSDate *date1 = [formatter dateFromString:obj1[@"dt"]];
+//        NSDate *date2 = [formatter dateFromString:obj2[@"dt"]];
+//        
+//        return [date2 compare:date1]; // sort in descending order
+//    };
+////    then simply sort the array by doing:
+//    
+//    NSArray *sortedArray = [chatHistory sortedArrayUsingComparator:myDateComparator];
     
-    NSComparator myDateComparator = ^NSComparisonResult(NSDictionary *obj1,
-                                                        NSDictionary *obj2) {
-        NSDate *date1 = [formatter dateFromString:obj1[@"dt"]];
-        NSDate *date2 = [formatter dateFromString:obj2[@"dt"]];
-        
-        return [date2 compare:date1]; // sort in descending order
-    };
-//    then simply sort the array by doing:
-    
-    NSArray *sortedArray = [chatHistory sortedArrayUsingComparator:myDateComparator];
-    
-    for (int i = 0; i < sortedArray.count; i++)
+    for (int i = 0; i < chatHistory.count; i++)
     {
-        Message *msg = [Message messageWithDictionary:sortedArray[i]];
+        Message *msg = [Message messageWithDictionary:chatHistory[i]];
         [self.messages insertObject:msg atIndex:i];
     }
     
@@ -151,7 +166,7 @@
         NSDateFormatter *dateFormatter = [NSDateFormatter new];
         [dateFormatter setDateFormat:@"YYYY-MM-d h:m:s"];
         
-        NSDictionary *msgDict = @{msg_ID: @"", msg_Sender_ID : [FacebookUtility sharedObject].fbID, msg_Reciver_ID : @"10203175848489479", msg_Sender_Name : [FacebookUtility sharedObject].fbFullName, msg_text : self.textFieldMessage.text, msg_Date : [dateFormatter stringFromDate:[NSDate date]]};
+        NSDictionary *msgDict = @{msg_ID: @"", msg_Sender_ID : [FacebookUtility sharedObject].fbID, msg_Reciver_ID : self.recieveFBID, msg_Sender_Name : [FacebookUtility sharedObject].fbFullName, msg_text : self.textFieldMessage.text, msg_Date : [dateFormatter stringFromDate:[NSDate date]]};
         
         [self.messages addObject:[Message messageWithDictionary:msgDict]];
 //        [self.messages addObject:[Message messageWithString:self.textFieldMessage.text isMySentMessage:YES]];
@@ -173,7 +188,7 @@
         
     }
     AFNHelper *afnHelper = [AFNHelper new];
-    [afnHelper getDataFromPath:@"sendMessage" withParamData:[NSMutableDictionary dictionaryWithObjects:@[[FacebookUtility sharedObject].fbID,@"10203175848489479",self.textFieldMessage.text] forKeys:@[@"ent_user_fbid",@"ent_user_recever_fbid",@"ent_message"]] withBlock:^(id response, NSError *error) {
+    [afnHelper getDataFromPath:@"sendMessage" withParamData:[NSMutableDictionary dictionaryWithObjects:@[[FacebookUtility sharedObject].fbID,self.recieveFBID,self.textFieldMessage.text] forKeys:@[@"ent_user_fbid",@"ent_user_recever_fbid",@"ent_message"]] withBlock:^(id response, NSError *error) {
         
         NSLog(@"Message Sent Response = %@",response);
     }];
@@ -181,8 +196,18 @@
 
 - (void)recieveMessage:(NSDictionary *)messageDict
 {
-    [self.messages addObject:[Message messageWithDictionary:messageDict]];
-    [self.tableViewChat reloadData];
+    if ([[messageDict allKeys] containsObject:@"alert"])
+    {
+        NSDictionary *tempDict = @{msg_text: messageDict[@"alert"], msg_Date: messageDict[msg_Date], msg_ID: messageDict[msg_ID], msg_Reciver_ID: [FacebookUtility sharedObject].fbID, msg_Sender_ID: messageDict[msg_Sender_ID],msg_Sender_Name: messageDict[msg_Sender_Name]};
+        [self.messages addObject:[Message messageWithDictionary:tempDict]];
+        [self.tableViewChat reloadData];
+    }
+    else
+    {
+        [self.messages addObject:[Message messageWithDictionary:messageDict]];
+        [self.tableViewChat reloadData];
+    }
+    
 }
 
 #pragma mark -----

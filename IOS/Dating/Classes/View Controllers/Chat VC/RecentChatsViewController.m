@@ -31,12 +31,31 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    nameArray = [NSMutableArray arrayWithObjects:@"Harsh",@"Navneet",@"Rahul",@"Basant", nil];
-    self.title = @"Chats";
+    nameArray = [NSMutableArray array];
     if (self.isFromPush)
     {
         [self.navigationController pushViewController:[ChatViewController sharedChatInstance] animated:YES];
+        return;
     }
+    [self getRecentChatUsers];
+}
+
+- (void)getRecentChatUsers
+{
+    AFNHelper *afnHelper = [AFNHelper new];
+    [afnHelper getDataFromPath:@"getProfileMatches" withParamData:[@{@"ent_user_fbid": [FacebookUtility sharedObject].fbID, @"ent_user_action": @"5"} mutableCopy] withBlock:^(id response, NSError *error)
+    {
+        if ([response[@"likes"] count])
+        {
+            nameArray = response[@"likes"];
+        }
+        else
+        {
+            nameArray = [NSMutableArray array];
+        }
+        [self.tableViewRecentChats reloadData];
+        
+    }];
 }
 
 - (void)didReceiveMemoryWarning
@@ -78,10 +97,29 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
     }
     
-    cell.textLabel.text = nameArray[indexPath.row];
+    cell.textLabel.text = nameArray[indexPath.row][@"fName"];
     cell.detailTextLabel.text = @"Last Message to be seen here";
     cell.imageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"Bubble-%i",indexPath.row]];
+    cell.imageView.clipsToBounds = YES;
+    [self setImageOnTableViewCell:cell AtIndexPath:indexPath];
     return cell;
+}
+
+- (void)setImageOnTableViewCell:(UITableViewCell *)cell AtIndexPath:(NSIndexPath *)indexPath
+{
+    
+    NSURLRequest *imageURLRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:nameArray[indexPath.row][@"pPic"]]];
+    [NSURLConnection sendAsynchronousRequest:imageURLRequest queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError)
+    {
+        if (!connectionError)
+        {
+            UIImage *cellImage = [UIImage imageWithData:data];
+            if (cellImage)
+            {
+                cell.imageView.image = cellImage;
+            }
+        }
+    }];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

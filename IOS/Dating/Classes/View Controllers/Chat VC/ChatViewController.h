@@ -18,6 +18,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *textFieldMessage;
 @property (nonatomic, strong) NSMutableArray *messages;
 @property (strong, nonatomic) NSString *userName;
+@property (strong, nonatomic) NSString *recieveFBID;
 
 + (id)sharedChatInstance;
 

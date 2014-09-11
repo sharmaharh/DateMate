@@ -1,4 +1,3 @@
-//
 //  Utils.m
 //  Dating
 //
@@ -56,7 +55,7 @@
                      cancelButtonTitle:(NSString*)CbtnTitle otherButtonTitles:(NSString*)otherBtnTitles
 {
     
-//    if(![NULLVALUE(msg) length]>0)return;
+    //    if(![NULLVALUE(msg) length]>0)return;
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:msg delegate:delegate
                                           cancelButtonTitle:CbtnTitle otherButtonTitles:otherBtnTitles, nil];
@@ -605,19 +604,19 @@
 //{
 //    //NSString *filepath   =   [[NSBundle mainBundle] pathForResource:videoFile ofType:@"mp4"];
 //    //NSURL    *fileURL    =   [NSURL fileURLWithPath:filepath];
-//    
+//
 //    NSURL    *fileURL    =   [NSURL URLWithString:videoFile];
 //    UIGraphicsBeginImageContext(CGSizeMake(1,1));
-//    
+//
 //    MPMoviePlayerViewController *moviePlayerController = [[MPMoviePlayerViewController alloc] initWithContentURL:fileURL ];
-//    
+//
 //    [[NSNotificationCenter defaultCenter] addObserver:[self class] selector:@selector(moviePlayBackComplete:) name:MPMoviePlayerPlaybackDidFinishNotification object:moviePlayerController.moviePlayer];
-//    
+//
 //    moviePlayerController.moviePlayer.controlStyle = MPMovieControlStyleFullscreen;
 //    [viewController presentMoviePlayerViewControllerAnimated:moviePlayerController];
 //    [moviePlayerController.moviePlayer play];
-//    
-//    
+//
+//
 //}
 //
 //
@@ -626,7 +625,7 @@
 //    NSLog(@"moviePlaybackComplete");
 //    MPMoviePlayerViewController* moviePlayerController = [notification object];
 //    //[moviePlayerController. dismissMoviePlayerViewControllerAnimated];
-//    
+//
 //    [[NSNotificationCenter defaultCenter] removeObserver:self
 //                                                    name:MPMoviePlayerPlaybackDidFinishNotification object:moviePlayerController];
 //}

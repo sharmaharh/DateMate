@@ -129,4 +129,6 @@
 +(NSString *)localDateForGmtDateString:(NSString *)messageDate;
 +(void)addPickerWithToolBarFrame:(UIView *)picker toolBar:(UIToolbar *)doneToolBar inView:(UIView *)view;
 
+-(void)openAlertViewWithTitle:(NSString *)title message:(NSString *)message buttons:(NSArray *)buttons completion:(void(^)(UIAlertView *alert,NSInteger buttonIndex))alertBlock;
+
 @end
