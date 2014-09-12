@@ -198,7 +198,7 @@
 {
     if ([[messageDict allKeys] containsObject:@"alert"])
     {
-        NSDictionary *tempDict = @{msg_text: messageDict[@"alert"], msg_Date: messageDict[msg_Date], msg_ID: messageDict[msg_ID], msg_Reciver_ID: [FacebookUtility sharedObject].fbID, msg_Sender_ID: messageDict[msg_Sender_ID],msg_Sender_Name: messageDict[msg_Sender_Name]};
+        NSDictionary *tempDict = @{msg_text: messageDict[@"alert"], msg_Date: messageDict[msg_Date], msg_ID: messageDict[msg_ID], msg_Reciver_ID: [FacebookUtility sharedObject].fbID, msg_Sender_ID: messageDict[@"sFid"],msg_Sender_Name: messageDict[msg_Sender_Name]};
         [self.messages addObject:[Message messageWithDictionary:tempDict]];
         [self.tableViewChat reloadData];
     }
