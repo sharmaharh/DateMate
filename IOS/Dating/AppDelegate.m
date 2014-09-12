@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "SplashView.h"
+//#import "SplashView.h"
 #import "ChatViewController.h"
 #import "FindMatchViewController.h"
 #import "SWRevealViewController.h"
@@ -106,22 +106,22 @@ AppDelegate* appDelegate = nil;
     return YES;
 }
 
-- (void)setImagesOnWall:(SplashView *)splashView
-{
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *basePath = [paths objectAtIndex:0];
-    
-    basePath = [basePath stringByAppendingPathComponent:@"Splash_Images"];
-    
-    for (int i = 0 ; i < 10; i++)
-    {
-        UIImageView *imageView = (UIImageView *)[splashView viewWithTag:i+1];
-        
-        NSString *filePath = [basePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%i.png",i+1]];
-        UIImage *image = [UIImage imageWithContentsOfFile:filePath];
-        [imageView setImage:image];
-    }
-}
+//- (void)setImagesOnWall:(SplashView *)splashView
+//{
+//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//    NSString *basePath = [paths objectAtIndex:0];
+//    
+//    basePath = [basePath stringByAppendingPathComponent:@"Splash_Images"];
+//    
+//    for (int i = 0 ; i < 10; i++)
+//    {
+//        UIImageView *imageView = (UIImageView *)[splashView viewWithTag:i+1];
+//        
+//        NSString *filePath = [basePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%i.png",i+1]];
+//        UIImage *image = [UIImage imageWithContentsOfFile:filePath];
+//        [imageView setImage:image];
+//    }
+//}
 
 - (void)getSplashImages
 {
