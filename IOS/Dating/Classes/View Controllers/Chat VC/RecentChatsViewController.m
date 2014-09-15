@@ -131,7 +131,8 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     ChatViewController *chatViewController = [segue destinationViewController];
-    chatViewController.userName = nameArray[selectedIndex];
+    chatViewController.userName = nameArray[selectedIndex][@"fName"];
+    chatViewController.recieveFBID = nameArray[selectedIndex][@"fbId"];
 }
 
 
