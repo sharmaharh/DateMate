@@ -132,6 +132,7 @@
 {
     ChatViewController *chatViewController = [segue destinationViewController];
     chatViewController.userName = nameArray[selectedIndex];
+    
 }
 
 
