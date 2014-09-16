@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13E28" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
-    <entity name="Message" syncable="YES">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13D65" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="ChatHistory" syncable="YES">
+        <attribute name="chatid" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="dt" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="mid" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="msg" optional="YES" attributeType="String" syncable="YES"/>
@@ -8,7 +9,16 @@
         <attribute name="sfid" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="sname" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
+    <entity name="RecentChats" syncable="YES">
+        <attribute name="chatid" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="fbId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="fName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lastseen" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pPic_local" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pPic_remote" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
     <elements>
-        <element name="Message" positionX="-54" positionY="-9" width="128" height="135"/>
+        <element name="ChatHistory" positionX="-54" positionY="-9" width="128" height="148"/>
+        <element name="RecentChats" positionX="-45" positionY="45" width="128" height="133"/>
     </elements>
 </model>
