@@ -7,6 +7,7 @@
 //
 
 #import "ChatViewController.h"
+#import "ChatHistory.h"
 
 @interface ChatViewController ()
 {
@@ -55,76 +56,150 @@
     {
         self.recieveFBID = @"";
     }
+    
     [self getUserStatus];
+    
     [self getChatHistory];
 }
 
+
 - (void)getUserStatus
 {
-    AFNHelper *afnHelper = [AFNHelper new];
-    headerTitle = @"";
-    [afnHelper getDataFromPath:@"getUserStatus" withParamData:[@{@"ent_user_fbid": [FacebookUtility sharedObject].fbID, @"ent_user_recever_fbid" : self.recieveFBID} mutableCopy] withBlock:^(id response, NSError *error) {
-        
-        if ([response[@"Status"] count])
-        {
-            headerTitle = response[@"Status"][0][@"lastActiveDateTZ"];
+    if ([Utils isInternetAvailable])
+    {
+        AFNHelper *afnHelper = [AFNHelper new];
+        headerTitle = @"";
+        [afnHelper getDataFromPath:@"getUserStatus" withParamData:[@{@"ent_user_fbid": [FacebookUtility sharedObject].fbID, @"ent_user_recever_fbid" : self.recieveFBID} mutableCopy] withBlock:^(id response, NSError *error) {
             
-            if (!headerTitle.length)
+            if ([response[@"Status"] count])
             {
-                headerTitle = @"";
+                headerTitle = response[@"Status"][0][@"lastActiveDateTZ"];
+                
+                if (!headerTitle.length)
+                {
+                    headerTitle = @"";
+                }
+                
+                [self.tableViewChat reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
             }
             
-            [self.tableViewChat reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
-        }
-        
-//        NSDateFormatter *dateFormatter = [NSDateFormatter new];
-//        dateFormatter.dateFormat = @"YYYY-MM-d h:m:s";
-//        NSDate * lastSeenDate = [dateFormatter dateFromString:lastSeenDateString];
-//        [NSDate timeIntervalSinceReferenceDate]
-        
-    }];
+            //        NSDateFormatter *dateFormatter = [NSDateFormatter new];
+            //        dateFormatter.dateFormat = @"YYYY-MM-d h:m:s";
+            //        NSDate * lastSeenDate = [dateFormatter dateFromString:lastSeenDateString];
+            //        [NSDate timeIntervalSinceReferenceDate]
+            
+        }];
+    }
+    
 }
 
 
 - (void)getChatHistory
 {
-    AFNHelper *afnHelper = [AFNHelper new];
-    [afnHelper getDataFromPath:@"getChatHistory" withParamData:[@{@"ent_user_fbid": [FacebookUtility sharedObject].fbID, @"ent_user_recever_fbid" : self.recieveFBID, @"ent_chat_page" : @"1"} mutableCopy] withBlock:^(id response, NSError *error) {
-        
-        if ([response[@"chat"] count])
+    NSFetchRequest *request = [[NSFetchRequest alloc]initWithEntityName:@"ChatHistory"];
+    NSPredicate *chatPredicate  = [NSPredicate predicateWithFormat:@"(%K = %@ AND %K = %@) OR (%K = %@ AND %K = %@)",msg_Sender_ID,[FacebookUtility sharedObject].fbID,msg_Reciver_ID,self.recieveFBID,      msg_Sender_ID,self.recieveFBID,msg_Reciver_ID,[FacebookUtility sharedObject].fbID];
+    
+    [request setPredicate:chatPredicate];
+    NSError *error = nil;
+    
+    NSArray *results = [appDelegate.managedObjectContext executeFetchRequest:request error:&error];
+    
+    if ([results count] || ![Utils isInternetAvailable])
+    {
+        //Deal with Database
+        NSMutableArray *tempArray = [NSMutableArray array];
+        for (ChatHistory *chat in results)
         {
-            [self filterChatHistoryList:response[@"chat"]];
+            NSMutableDictionary *msgDict = [NSMutableDictionary dictionary];
+            msgDict[msg_ID]          = chat.mid;
+            msgDict[msg_Date]        = chat.dt;
+            msgDict[msg_text]        = chat.msg;
+            msgDict[msg_Sender_ID]   = chat.sfid;
+            msgDict[msg_Reciver_ID]  = chat.rfid;
+            msgDict[msg_Sender_Name] = chat.sname;
+            [tempArray addObject:msgDict];
+            
         }
-    }];
+        
+        NSArray *sortedArray = [self filterArrayInChronologicalDescendingOrderFromArray:tempArray];
+        
+        for (int i = 0; i < sortedArray.count; i++)
+        {
+            Message *msg = [Message messageWithDictionary:sortedArray[i]];
+            [self.messages addObject:msg];
+        }
+        
+        [self.tableViewChat reloadData];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self.tableViewChat setContentOffset:CGPointMake(0, self.tableViewChat.contentSize.height-self.tableViewChat.frame.size.height) animated:YES];
+            
+        });
+
+    }
+    
+    else
+    {
+        //Deal with Service
+        AFNHelper *afnHelper = [AFNHelper new];
+        [afnHelper getDataFromPath:@"getChatHistory" withParamData:[@{@"ent_user_fbid": [FacebookUtility sharedObject].fbID, @"ent_user_recever_fbid" : self.recieveFBID, @"ent_chat_page" : @"1"} mutableCopy] withBlock:^(id response, NSError *error) {
+            
+            if ([response[@"chat"] count])
+            {
+                [self filterChatHistoryList:response[@"chat"]];
+            }
+        }];
+    }
+
 }
 
 
 - (void)filterChatHistoryList:(NSArray *)chatHistory
 {
-//    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-//    [formatter setDateFormat:@"yyyy-MM-d h:m:s"];
-//    
-//    NSComparator myDateComparator = ^NSComparisonResult(NSDictionary *obj1,
-//                                                        NSDictionary *obj2) {
-//        NSDate *date1 = [formatter dateFromString:obj1[@"dt"]];
-//        NSDate *date2 = [formatter dateFromString:obj2[@"dt"]];
-//        
-//        return [date2 compare:date1]; // sort in descending order
-//    };
-////    then simply sort the array by doing:
-//    
-//    NSArray *sortedArray = [chatHistory sortedArrayUsingComparator:myDateComparator];
+    NSArray *sortedArray = [self filterArrayInChronologicalDescendingOrderFromArray:chatHistory];
     
-    for (int i = 0; i < chatHistory.count; i++)
+    for (int i = 0; i < sortedArray.count; i++)
     {
-        Message *msg = [Message messageWithDictionary:chatHistory[i]];
-        [self.messages insertObject:msg atIndex:i];
+        Message *msg = [Message messageWithDictionary:sortedArray[i]];
+        [self.messages addObject:msg];
+        [self addMessageToDatabase:msg];
     }
     
     [self.tableViewChat reloadData];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self.tableViewChat setContentOffset:CGPointMake(0, self.tableViewChat.contentSize.height-self.tableViewChat.frame.size.height) animated:YES];
+        
     });
+}
+
+- (NSArray *)filterArrayInChronologicalDescendingOrderFromArray:(NSArray *)chatArray
+{
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"yyyy-MM-d h:m:s"];
+    
+    NSComparator myDateComparator = ^NSComparisonResult(NSDictionary *obj1,
+                                                        NSDictionary *obj2) {
+        NSDate *date1 = [formatter dateFromString:obj1[@"dt"]];
+        NSDate *date2 = [formatter dateFromString:obj2[@"dt"]];
+        
+        return [date2 compare:date1]; // sort in descending order
+    };
+    //    then simply sort the array by doing:
+    return [chatArray sortedArrayUsingComparator:myDateComparator];
+    
+}
+
+- (void)addMessageToDatabase:(Message *)msg
+{
+    ChatHistory *chat = [NSEntityDescription insertNewObjectForEntityForName:@"ChatHistory" inManagedObjectContext:appDelegate.managedObjectContext];
+    
+    chat.dt    = msg.messageDate;
+    chat.mid   = msg.messageID;
+    chat.msg   = msg.message;
+    chat.rfid  = msg.messageReciverID;
+    chat.sfid  = msg.messageSenderID;
+    chat.sname = msg.messageSenderName;
+    
+    [appDelegate.managedObjectContext save:nil];
 }
 
 - (void)didReceiveMemoryWarning

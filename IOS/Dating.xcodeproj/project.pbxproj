@@ -83,6 +83,8 @@
 		AA3D7FBE19921AFD00C862CF /* Bubble-9@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = AA3D7FAA19921AFD00C862CF /* Bubble-9@2x.png */; };
 		AA3D7FC219921B5B00C862CF /* STBubbleTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3D7FC119921B5B00C862CF /* STBubbleTableViewCell.m */; };
 		AA3D7FC519921BE200C862CF /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3D7FC419921BE200C862CF /* Message.m */; };
+		AACE994A19CABE8A00DEC9D6 /* ChatHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = AACE994719CABE8A00DEC9D6 /* ChatHistory.m */; };
+		AACE994E19CAF5A900DEC9D6 /* RecentChats.m in Sources */ = {isa = PBXBuildFile; fileRef = AACE994D19CAF5A900DEC9D6 /* RecentChats.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -198,6 +200,10 @@
 		AA3D7FC119921B5B00C862CF /* STBubbleTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STBubbleTableViewCell.m; sourceTree = "<group>"; };
 		AA3D7FC319921BE200C862CF /* Message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Message.h; sourceTree = "<group>"; };
 		AA3D7FC419921BE200C862CF /* Message.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Message.m; sourceTree = "<group>"; };
+		AACE994619CABE8A00DEC9D6 /* ChatHistory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatHistory.h; sourceTree = "<group>"; };
+		AACE994719CABE8A00DEC9D6 /* ChatHistory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatHistory.m; sourceTree = "<group>"; };
+		AACE994C19CAF5A900DEC9D6 /* RecentChats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RecentChats.h; path = Dating/Models/DBModelClasses/RecentChats.h; sourceTree = "<group>"; };
+		AACE994D19CAF5A900DEC9D6 /* RecentChats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RecentChats.m; path = Dating/Models/DBModelClasses/RecentChats.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -234,6 +240,8 @@
 		3A2DE8571983C0FD0035FA1B = {
 			isa = PBXGroup;
 			children = (
+				AACE994C19CAF5A900DEC9D6 /* RecentChats.h */,
+				AACE994D19CAF5A900DEC9D6 /* RecentChats.m */,
 				3A2DE86B1983C0FD0035FA1B /* Dating */,
 				3A2DE8881983C0FD0035FA1B /* DatingTests */,
 				3A2DE8621983C0FD0035FA1B /* Frameworks */,
@@ -362,18 +370,11 @@
 		3A2DE89C1983C4870035FA1B /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				3A2DE89D1983C4870035FA1B /* Data Models */,
+				AACE994519CABE8A00DEC9D6 /* DBModelClasses */,
 				3A2DE89E1983C4870035FA1B /* Defines&Constants */,
 				3A2DE89F1983C4870035FA1B /* Utility */,
 			);
 			path = Models;
-			sourceTree = "<group>";
-		};
-		3A2DE89D1983C4870035FA1B /* Data Models */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "Data Models";
 			sourceTree = "<group>";
 		};
 		3A2DE89E1983C4870035FA1B /* Defines&Constants */ = {
@@ -609,6 +610,15 @@
 			path = Dating/Classes/ThirdParty/STBubbleTableViewCell;
 			sourceTree = SOURCE_ROOT;
 		};
+		AACE994519CABE8A00DEC9D6 /* DBModelClasses */ = {
+			isa = PBXGroup;
+			children = (
+				AACE994619CABE8A00DEC9D6 /* ChatHistory.h */,
+				AACE994719CABE8A00DEC9D6 /* ChatHistory.m */,
+			);
+			path = DBModelClasses;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -743,6 +753,7 @@
 				3ABC28B3198BE09900E598B5 /* FacebookUtility.m in Sources */,
 				AA3D7F831991FBF400C862CF /* SWRevealViewController.m in Sources */,
 				3A2DE8761983C0FD0035FA1B /* AppDelegate.m in Sources */,
+				AACE994E19CAF5A900DEC9D6 /* RecentChats.m in Sources */,
 				3A9D16051986A2E40049CE09 /* ChatViewController.m in Sources */,
 				AA3D7FC219921B5B00C862CF /* STBubbleTableViewCell.m in Sources */,
 				3A2DE8791983C0FD0035FA1B /* Dating.xcdatamodeld in Sources */,
@@ -754,6 +765,7 @@
 				3AA4CB33198AAA6F005D82AF /* UIImageView+AFNetworking.m in Sources */,
 				3AE13A5019C0C9570090A105 /* KeepingConnectingViewController.m in Sources */,
 				3AC805A919AF91F5000C8E5B /* RecentChatsViewController.m in Sources */,
+				AACE994A19CABE8A00DEC9D6 /* ChatHistory.m in Sources */,
 				3A0883AD1986D18400BCC79C /* Utils.m in Sources */,
 				3A9D16091986C01A0049CE09 /* ChatAttachmentHelperClass.m in Sources */,
 				3AA4CB2B198AAA6F005D82AF /* AFHTTPClient.m in Sources */,
