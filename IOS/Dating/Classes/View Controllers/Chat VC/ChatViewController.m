@@ -196,7 +196,7 @@
     ChatHistory *chat = [NSEntityDescription insertNewObjectForEntityForName:@"ChatHistory" inManagedObjectContext:appDelegate.managedObjectContext];
     
     chat.dt    = msg.messageDate;
-    chat.mid   = msg.messageID;
+    chat.mid   = [NSString stringWithFormat:@"%@",msg.messageID];
     chat.msg   = msg.message;
     chat.rfid  = msg.messageReciverID;
     chat.sfid  = msg.messageSenderID;
@@ -247,6 +247,7 @@
         NSDictionary *msgDict = @{msg_ID: @"", msg_Sender_ID : [FacebookUtility sharedObject].fbID, msg_Reciver_ID : self.recieveFBID, msg_Sender_Name : [FacebookUtility sharedObject].fbFullName, msg_text : self.textFieldMessage.text, msg_Date : [dateFormatter stringFromDate:[NSDate date]]};
         
         [self.messages addObject:[Message messageWithDictionary:msgDict]];
+        [self addMessageToDatabase:[self.messages lastObject]];
 //        [self.messages addObject:[Message messageWithString:self.textFieldMessage.text isMySentMessage:YES]];
         [self.tableViewChat reloadData];
         [self sendMessage];

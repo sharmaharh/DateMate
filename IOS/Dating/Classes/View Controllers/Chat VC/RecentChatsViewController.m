@@ -51,7 +51,7 @@
 {
     NSFetchRequest *request = [[NSFetchRequest alloc]initWithEntityName:@"ChatPartners"];
     NSError *error = nil;
-    
+    nameArray = [NSMutableArray array];
     NSArray *results = [appDelegate.managedObjectContext executeFetchRequest:request error:&error];
     
     if ([results count] || ![Utils isInternetAvailable])
