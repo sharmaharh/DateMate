@@ -31,11 +31,12 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [self findMatchesList];
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [self findMatchesList];
     [super viewWillAppear:animated];
     
 }
@@ -141,6 +142,15 @@
                      UILabel *errorMsgLabel = (UILabel *)[self.view viewWithTag:100];
                      [errorMsgLabel setHidden:NO];
                  }
+             }
+             else
+             {
+                 for (UIView *view in self.view.subviews)
+                 {
+                     [view setHidden:YES];
+                 }
+                 UILabel *errorMsgLabel = (UILabel *)[self.view viewWithTag:100];
+                 [errorMsgLabel setHidden:NO];
              }
              
          }];

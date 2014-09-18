@@ -1,15 +1,15 @@
 //
-//  RecentChats.m
+//  ChatPartners.m
 //  Dating
 //
-//  Created by Harsh Sharma on 18/09/14.
+//  Created by Harsh Sharma on 9/18/14.
 //  Copyright (c) 2014 IncredTechnologies. All rights reserved.
 //
 
-#import "RecentChats.h"
+#import "ChatPartners.h"
 
 
-@implementation RecentChats
+@implementation ChatPartners
 
 @dynamic fbId;
 @dynamic fName;

@@ -1,8 +1,8 @@
 //
-//  RecentChats.h
+//  ChatPartners.h
 //  Dating
 //
-//  Created by Harsh Sharma on 18/09/14.
+//  Created by Harsh Sharma on 9/18/14.
 //  Copyright (c) 2014 IncredTechnologies. All rights reserved.
 //
 
@@ -10,7 +10,7 @@
 #import <CoreData/CoreData.h>
 
 
-@interface RecentChats : NSManagedObject
+@interface ChatPartners : NSManagedObject
 
 @property (nonatomic, retain) NSString * fbId;
 @property (nonatomic, retain) NSString * fName;

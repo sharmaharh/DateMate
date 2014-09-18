@@ -165,10 +165,13 @@
     }
     
     [self.tableViewChat reloadData];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self.tableViewChat setContentOffset:CGPointMake(0, self.tableViewChat.contentSize.height-self.tableViewChat.frame.size.height) animated:YES];
-        
-    });
+    if (self.tableViewChat.contentSize.height > self.tableViewChat.frame.size.height)
+    {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self.tableViewChat setContentOffset:CGPointMake(0, self.tableViewChat.contentSize.height-self.tableViewChat.frame.size.height) animated:YES];
+        });
+    }
+    
 }
 
 - (NSArray *)filterArrayInChronologicalDescendingOrderFromArray:(NSArray *)chatArray
@@ -281,8 +284,12 @@
     {
         [self.messages addObject:[Message messageWithDictionary:messageDict]];
         [self.tableViewChat reloadData];
+        
     }
-    
+    if (self.tableViewChat.contentSize.height > self.tableViewChat.frame.size.height)
+    {
+        [self.tableViewChat setContentOffset:CGPointMake(0, self.tableViewChat.contentSize.height-self.tableViewChat.frame.size.height) animated:YES];
+    }
 }
 
 #pragma mark -----
@@ -454,6 +461,10 @@
 {
     [UIView animateWithDuration:0.3 animations:^{
         [self.tableViewChat setFrame:CGRectMake(0, 0, 320, self.view.frame.size.height-self.viewChatWindow.frame.size.height-216)];
+        if (self.tableViewChat.contentSize.height > self.tableViewChat.frame.size.height)
+        {
+            [self.tableViewChat setContentOffset:CGPointMake(0, self.tableViewChat.contentSize.height-self.tableViewChat.frame.size.height) animated:YES];
+        }
         [self.viewChatWindow setTransform:CGAffineTransformMakeTranslation(0, -216)];
     }];
     

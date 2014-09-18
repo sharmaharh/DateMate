@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13D65" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
-    <entity name="ChatHistory" representedClassName="ChatHistory" syncable="YES">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13E28" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="ChatHistory" syncable="YES">
         <attribute name="dt" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="mid" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="msg" optional="YES" attributeType="String" syncable="YES"/>
@@ -8,7 +8,7 @@
         <attribute name="sfid" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="sname" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
-    <entity name="RecentChats" representedClassName="RecentChats" syncable="YES">
+    <entity name="ChatPartners" representedClassName="ChatPartners" syncable="YES">
         <attribute name="fbId" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="fName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="ladt" optional="YES" attributeType="String" syncable="YES"/>
@@ -17,7 +17,7 @@
         <attribute name="unreadCount" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
     </entity>
     <elements>
-        <element name="ChatHistory" positionX="-54" positionY="-9" width="128" height="133"/>
-        <element name="RecentChats" positionX="-45" positionY="45" width="128" height="133"/>
+        <element name="ChatHistory" positionX="97" positionY="27" width="128" height="133"/>
+        <element name="ChatPartners" positionX="268" positionY="27" width="128" height="133"/>
     </elements>
 </model>

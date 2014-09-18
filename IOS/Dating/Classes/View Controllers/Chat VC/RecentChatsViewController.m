@@ -8,7 +8,7 @@
 
 #import "RecentChatsViewController.h"
 #import "ChatViewController.h"
-#import "RecentChats.h"
+#import "ChatPartners.h"
 
 @interface RecentChatsViewController ()
 {
@@ -38,12 +38,18 @@
         [self.navigationController pushViewController:[ChatViewController sharedChatInstance] animated:YES];
         return;
     }
+    
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
     [self getRecentChatUsers];
+    [super viewWillAppear:animated];
 }
 
 - (void)getRecentChatUsers
 {
-    NSFetchRequest *request = [[NSFetchRequest alloc]initWithEntityName:@"RecentChats"];
+    NSFetchRequest *request = [[NSFetchRequest alloc]initWithEntityName:@"ChatPartners"];
     NSError *error = nil;
     
     NSArray *results = [appDelegate.managedObjectContext executeFetchRequest:request error:&error];
@@ -52,7 +58,7 @@
     {
         //Deal with Database
         
-        for (RecentChats *recentChats in results)
+        for (ChatPartners *recentChats in results)
         {
             /*
              [
@@ -105,7 +111,7 @@
 {
     for (NSDictionary *dict in nameArray)
     {
-        RecentChats *recentChat = [NSEntityDescription insertNewObjectForEntityForName:@"RecentChats" inManagedObjectContext:appDelegate.managedObjectContext];
+        ChatPartners *recentChat = [NSEntityDescription insertNewObjectForEntityForName:@"ChatPartners" inManagedObjectContext:appDelegate.managedObjectContext];
         recentChat.unreadCount = [NSNumber numberWithInt:0];
         recentChat.fbId = dict[@"fbId"];
         recentChat.fName = dict[@"fName"];

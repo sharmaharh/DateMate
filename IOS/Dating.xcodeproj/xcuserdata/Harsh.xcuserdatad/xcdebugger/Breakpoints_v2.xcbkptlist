@@ -77,13 +77,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Dating/AppDelegate.m"
-            timestampString = "432157780.871638"
+            filePath = "Dating/Classes/View Controllers/FindMatchVC/FindMatchViewController.m"
+            timestampString = "432754560.267478"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "253"
-            endingLineNumber = "253"
-            landmarkName = "-application:didReceiveRemoteNotification:"
+            startingLineNumber = "94"
+            endingLineNumber = "94"
+            landmarkName = "-findMatchesList"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -93,13 +93,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Dating/Classes/View Controllers/Chat VC/RecentChatsViewController.m"
-            timestampString = "432160109.689413"
+            filePath = "Dating/Classes/View Controllers/FindMatchVC/FindMatchViewController.m"
+            timestampString = "432754574.465614"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "102"
-            endingLineNumber = "102"
-            landmarkName = "-tableView:cellForRowAtIndexPath:"
+            startingLineNumber = "107"
+            endingLineNumber = "107"
+            landmarkName = "-findMatchesList"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

@@ -54,6 +54,7 @@
 		3AC805B819AFC9BC000C8E5B /* SEGOEUI_0.TTF in Resources */ = {isa = PBXBuildFile; fileRef = 3AC805B719AFC9BC000C8E5B /* SEGOEUI_0.TTF */; };
 		3AC805B919AFC9BC000C8E5B /* SEGOEUI_0.TTF in Resources */ = {isa = PBXBuildFile; fileRef = 3AC805B719AFC9BC000C8E5B /* SEGOEUI_0.TTF */; };
 		3AC805BA19AFC9C3000C8E5B /* alert.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3AC805B519AFC96D000C8E5B /* alert.mp3 */; };
+		3ADFBB4019CB3247008F48C5 /* ChatPartners.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ADFBB3F19CB3247008F48C5 /* ChatPartners.m */; };
 		3AE13A5019C0C9570090A105 /* KeepingConnectingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE13A4F19C0C9570090A105 /* KeepingConnectingViewController.m */; };
 		3AE209C019BA4EA700C47762 /* SplashView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3AE209BF19BA4EA600C47762 /* SplashView.xib */; };
 		3AE209C319BA4ED600C47762 /* SplashView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE209C219BA4ED600C47762 /* SplashView.m */; };
@@ -84,7 +85,6 @@
 		AA3D7FC219921B5B00C862CF /* STBubbleTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3D7FC119921B5B00C862CF /* STBubbleTableViewCell.m */; };
 		AA3D7FC519921BE200C862CF /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3D7FC419921BE200C862CF /* Message.m */; };
 		AACE994A19CABE8A00DEC9D6 /* ChatHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = AACE994719CABE8A00DEC9D6 /* ChatHistory.m */; };
-		AACE994E19CAF5A900DEC9D6 /* RecentChats.m in Sources */ = {isa = PBXBuildFile; fileRef = AACE994D19CAF5A900DEC9D6 /* RecentChats.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -164,6 +164,8 @@
 		3AC805B119AFA0D4000C8E5B /* ReachabilityNew.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReachabilityNew.m; sourceTree = "<group>"; };
 		3AC805B519AFC96D000C8E5B /* alert.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = alert.mp3; sourceTree = "<group>"; };
 		3AC805B719AFC9BC000C8E5B /* SEGOEUI_0.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = SEGOEUI_0.TTF; sourceTree = "<group>"; };
+		3ADFBB3E19CB3247008F48C5 /* ChatPartners.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatPartners.h; sourceTree = "<group>"; };
+		3ADFBB3F19CB3247008F48C5 /* ChatPartners.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatPartners.m; sourceTree = "<group>"; };
 		3AE13A4E19C0C9570090A105 /* KeepingConnectingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeepingConnectingViewController.h; sourceTree = "<group>"; };
 		3AE13A4F19C0C9570090A105 /* KeepingConnectingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeepingConnectingViewController.m; sourceTree = "<group>"; };
 		3AE209BF19BA4EA600C47762 /* SplashView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = SplashView.xib; path = "Dating/Classes/Helper Classes/SplashView.xib"; sourceTree = SOURCE_ROOT; };
@@ -202,8 +204,6 @@
 		AA3D7FC419921BE200C862CF /* Message.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Message.m; sourceTree = "<group>"; };
 		AACE994619CABE8A00DEC9D6 /* ChatHistory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatHistory.h; sourceTree = "<group>"; };
 		AACE994719CABE8A00DEC9D6 /* ChatHistory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatHistory.m; sourceTree = "<group>"; };
-		AACE994C19CAF5A900DEC9D6 /* RecentChats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RecentChats.h; path = Dating/Models/DBModelClasses/RecentChats.h; sourceTree = "<group>"; };
-		AACE994D19CAF5A900DEC9D6 /* RecentChats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RecentChats.m; path = Dating/Models/DBModelClasses/RecentChats.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -240,8 +240,6 @@
 		3A2DE8571983C0FD0035FA1B = {
 			isa = PBXGroup;
 			children = (
-				AACE994C19CAF5A900DEC9D6 /* RecentChats.h */,
-				AACE994D19CAF5A900DEC9D6 /* RecentChats.m */,
 				3A2DE86B1983C0FD0035FA1B /* Dating */,
 				3A2DE8881983C0FD0035FA1B /* DatingTests */,
 				3A2DE8621983C0FD0035FA1B /* Frameworks */,
@@ -613,6 +611,8 @@
 		AACE994519CABE8A00DEC9D6 /* DBModelClasses */ = {
 			isa = PBXGroup;
 			children = (
+				3ADFBB3E19CB3247008F48C5 /* ChatPartners.h */,
+				3ADFBB3F19CB3247008F48C5 /* ChatPartners.m */,
 				AACE994619CABE8A00DEC9D6 /* ChatHistory.h */,
 				AACE994719CABE8A00DEC9D6 /* ChatHistory.m */,
 			);
@@ -753,7 +753,6 @@
 				3ABC28B3198BE09900E598B5 /* FacebookUtility.m in Sources */,
 				AA3D7F831991FBF400C862CF /* SWRevealViewController.m in Sources */,
 				3A2DE8761983C0FD0035FA1B /* AppDelegate.m in Sources */,
-				AACE994E19CAF5A900DEC9D6 /* RecentChats.m in Sources */,
 				3A9D16051986A2E40049CE09 /* ChatViewController.m in Sources */,
 				AA3D7FC219921B5B00C862CF /* STBubbleTableViewCell.m in Sources */,
 				3A2DE8791983C0FD0035FA1B /* Dating.xcdatamodeld in Sources */,
@@ -773,6 +772,7 @@
 				3AE209C319BA4ED600C47762 /* SplashView.m in Sources */,
 				3AA4CB30198AAA6F005D82AF /* AFPropertyListRequestOperation.m in Sources */,
 				AA3D7F8B1992045100C862CF /* FindMatchViewController.m in Sources */,
+				3ADFBB4019CB3247008F48C5 /* ChatPartners.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

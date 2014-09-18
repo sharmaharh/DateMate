@@ -25,5 +25,6 @@
 - (IBAction)btnAttachmentPressed:(id)sender;
 - (IBAction)btnSendMessagePressed:(id)sender;
 - (void)recieveMessage:(NSDictionary *)messageDict;
+- (void)addMessageToDatabase:(Message *)msg;
 
 @end

@@ -13,6 +13,7 @@
 #import "SWRevealViewController.h"
 #import "RearMenuViewController.h"
 #import "RecentChatsViewController.h"
+#import "KeepingConnectingViewController.h"
 
 @implementation AppDelegate
 
@@ -41,26 +42,49 @@ AppDelegate* appDelegate = nil;
     {
         // After Recieving Push Notification, go to Message View controller
         NSLog(@"Server Notification = %@",serverNotif);
+        
+        
+        
         double delayInSeconds = 2.0;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
             
-            RecentChatsViewController *recentChatViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecentChatsViewController"];
-            recentChatViewController.isFromPush = YES;
-            self.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:recentChatViewController];
-            
-            RearMenuViewController *rearMenuViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RearMenuViewController"];
-            [FacebookUtility sharedObject].fbID = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbID"];
-            [FacebookUtility sharedObject].fbFullName = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbFullName"];
-            
-            self.revealController = [[SWRevealViewController alloc] initWithRearViewController:rearMenuViewController frontViewController:self.frontNavigationController];
-            
-            [self.window setRootViewController:self.revealController];
+            if ([serverNotif[@"aps"][@"alert"] isEqualToString:@"1"])
+            {
 
+                KeepingConnectingViewController *keepConnectingViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"KeepingConnectingViewController"];
+                self.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:keepConnectingViewController];
+                [FacebookUtility sharedObject].fbID = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbID"];
+                [FacebookUtility sharedObject].fbFullName = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbFullName"];
+                
+                RearMenuViewController *rearMenuViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RearMenuViewController"];
+                self.revealController = [[SWRevealViewController alloc] initWithRearViewController:rearMenuViewController frontViewController:self.frontNavigationController];
+                
+                [self.window setRootViewController:self.revealController];
+
+            }
+            else
+            {
+                RecentChatsViewController *recentChatViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecentChatsViewController"];
+                recentChatViewController.isFromPush = YES;
+                self.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:recentChatViewController];
+                
+                RearMenuViewController *rearMenuViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RearMenuViewController"];
+                [FacebookUtility sharedObject].fbID = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbID"];
+                [FacebookUtility sharedObject].fbFullName = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbFullName"];
+                
+                self.revealController = [[SWRevealViewController alloc] initWithRearViewController:rearMenuViewController frontViewController:self.frontNavigationController];
+                
+                [self.window setRootViewController:self.revealController];
+                
+                
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    NSDictionary *messageDict = @{msg_text: serverNotif[@"aps"][@"alert"], msg_Date: serverNotif[@"aps"][msg_Date], msg_ID: serverNotif[@"aps"][msg_ID], msg_Reciver_ID: [FacebookUtility sharedObject].fbID, msg_Sender_ID: serverNotif[@"aps"][@"sFid"],msg_Sender_Name: serverNotif[@"aps"][msg_Sender_Name]};
+                    [[ChatViewController sharedChatInstance] recieveMessage:serverNotif[@"aps"]];
+                    [[ChatViewController sharedChatInstance] addMessageToDatabase:[Message messageWithDictionary:messageDict]];
+                });
+            }
             
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [[ChatViewController sharedChatInstance] recieveMessage:serverNotif[@"aps"]];
-            });
             
         });
         
@@ -72,12 +96,12 @@ AppDelegate* appDelegate = nil;
             // Find Match
             
             FindMatchViewController *findMatchViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"FindMatchViewController"];
-            appDelegate.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:findMatchViewController];
+            self.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:findMatchViewController];
             [FacebookUtility sharedObject].fbID = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbID"];
             [FacebookUtility sharedObject].fbFullName = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbFullName"];
             
             RearMenuViewController *rearMenuViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RearMenuViewController"];
-            appDelegate.revealController = [[SWRevealViewController alloc] initWithRearViewController:rearMenuViewController frontViewController:appDelegate.frontNavigationController];
+            self.revealController = [[SWRevealViewController alloc] initWithRearViewController:rearMenuViewController frontViewController:appDelegate.frontNavigationController];
             
             [self.window setRootViewController:self.revealController];
             
@@ -251,52 +275,74 @@ AppDelegate* appDelegate = nil;
 {
 
     UINavigationController *frontNavigationController = (id)self.revealController.frontViewController;
-    [Utils showOKAlertWithTitle:@"DateMate" message:@"Push Recieved"];
-    if ([frontNavigationController.topViewController isKindOfClass:[ChatViewController class]])
+    if ([userInfo[@"aps"][@"nt"] isEqualToString:@"2"])
     {
-        [[ChatViewController sharedChatInstance] recieveMessage:userInfo[@"aps"]];
-    }
-    else if (self.isAppinBackground)
-    {
-        self.isAppinBackground = NO;
-         if ([frontNavigationController.topViewController isKindOfClass:[RecentChatsViewController class]])
-         {
-             [frontNavigationController pushViewController:[ChatViewController sharedChatInstance] animated:YES];
-             if (self.revealController.frontViewPosition != 3)
-             {
-                 [self.revealController revealToggle:self];
-             }
-             
-         }
-         else
-         {
-             UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
-             RecentChatsViewController *recentChatViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecentChatsViewController"];
-             frontNavigationController = [[UINavigationController alloc] initWithRootViewController:recentChatViewController];
-             recentChatViewController.isFromPush = YES;
-             [self.revealController pushFrontViewController:frontNavigationController animated:YES];
-             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                 [[ChatViewController sharedChatInstance] recieveMessage:userInfo[@"aps"]];
-             });
-         }
+         NSDictionary *messageDict = @{msg_text: userInfo[@"aps"][@"alert"], msg_Date: userInfo[@"aps"][msg_Date], msg_ID: userInfo[@"aps"][msg_ID], msg_Reciver_ID: [FacebookUtility sharedObject].fbID, msg_Sender_ID: userInfo[@"aps"][@"sFid"],msg_Sender_Name: userInfo[@"aps"][msg_Sender_Name]};
+        if ([frontNavigationController.topViewController isKindOfClass:[ChatViewController class]])
+        {
+            ChatViewController *chatViewController = (ChatViewController *)frontNavigationController.topViewController;
+            if ([chatViewController.recieveFBID isEqualToString:userInfo[@"aps"][@"sFid"]])
+            {
+                [chatViewController recieveMessage:userInfo[@"aps"]];
+            }
+           
+            [chatViewController addMessageToDatabase:[Message messageWithDictionary:messageDict]];
+        }
+        else if (self.isAppinBackground)
+        {
+            self.isAppinBackground = NO;
+            if ([frontNavigationController.topViewController isKindOfClass:[RecentChatsViewController class]])
+            {
+                [frontNavigationController pushViewController:[ChatViewController sharedChatInstance] animated:YES];
+                if (self.revealController.frontViewPosition != 3)
+                {
+                    [self.revealController revealToggle:self];
+                }
+                
+            }
+            else
+            {
+                UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
+                RecentChatsViewController *recentChatViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecentChatsViewController"];
+                frontNavigationController = [[UINavigationController alloc] initWithRootViewController:recentChatViewController];
+                recentChatViewController.isFromPush = YES;
+                [self.revealController pushFrontViewController:frontNavigationController animated:YES];
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    
+                    [[ChatViewController sharedChatInstance] recieveMessage:userInfo[@"aps"]];
+                    [[ChatViewController sharedChatInstance] addMessageToDatabase:[Message messageWithDictionary:messageDict]];
+                });
+            }
+        }
+
     }
     
-//    else if ([frontNavigationController.topViewController isKindOfClass:[RecentChatsViewController class]])
-//    {
-//        [frontNavigationController pushViewController:[ChatViewController sharedChatInstance] animated:YES];
-//        [self.revealController revealToggle:self];
-//    }
-//    else
-//    {
-//        UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
-//        RecentChatsViewController *recentChatViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecentChatsViewController"];
-//        frontNavigationController = [[UINavigationController alloc] initWithRootViewController:recentChatViewController];
-//        recentChatViewController.isFromPush = YES;
-//        [self.revealController pushFrontViewController:frontNavigationController animated:YES];
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//            [[ChatViewController sharedChatInstance] recieveMessage:userInfo[@"aps"][@"alert"]];
-//        });
-//    }
+    else
+    {
+        
+        if ([frontNavigationController.topViewController isKindOfClass:[KeepingConnectingViewController class]])
+        {
+            if (self.revealController.frontViewPosition != 3)
+            {
+                [self.revealController revealToggle:self];
+            }
+            else
+            {
+                [Utils showOKAlertWithTitle:@"Dating" message:userInfo[@"aps"][@"alert"]];
+            }
+            
+        }
+        else
+        {
+            UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
+            KeepingConnectingViewController *keepConnectingViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"KeepingConnectingViewController"];
+            UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:keepConnectingViewController];
+            [self.revealController pushFrontViewController:navigationController animated:YES];
+        }
+        
+        
+        
+    }
     
 }
 
