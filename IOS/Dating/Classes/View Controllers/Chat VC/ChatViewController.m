@@ -93,7 +93,6 @@
     
 }
 
-
 - (void)getChatHistory
 {
     NSFetchRequest *request = [[NSFetchRequest alloc]initWithEntityName:@"ChatHistory"];
@@ -130,10 +129,13 @@
         }
         
         [self.tableViewChat reloadData];
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self.tableViewChat setContentOffset:CGPointMake(0, self.tableViewChat.contentSize.height-self.tableViewChat.frame.size.height) animated:YES];
+        if (self.tableViewChat.contentSize.height > self.tableViewChat.frame.size.height)
+        {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [self.tableViewChat setContentOffset:CGPointMake(0, self.tableViewChat.contentSize.height-self.tableViewChat.frame.size.height) animated:YES];
+            });
             
-        });
+        }
 
     }
     
@@ -184,7 +186,7 @@
         NSDate *date1 = [formatter dateFromString:obj1[@"dt"]];
         NSDate *date2 = [formatter dateFromString:obj2[@"dt"]];
         
-        return [date2 compare:date1]; // sort in descending order
+        return [date1 compare:date2]; // sort in descending order
     };
     //    then simply sort the array by doing:
     return [chatArray sortedArrayUsingComparator:myDateComparator];
@@ -361,7 +363,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 22;
+    return headerTitle.length?22:0;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
@@ -391,14 +393,16 @@
 	
 	Message *message = [self.messages objectAtIndex:indexPath.row];
 	
+    cell.authorType = !message.isMySentMessage;
 	cell.textLabel.font = [UIFont systemFontOfSize:14.0f];
 	cell.textLabel.text = message.message;
+    cell.textLabel.textAlignment = cell.authorType?NSTextAlignmentLeft:NSTextAlignmentRight;
 	cell.imageView.image = message.avatar;
 	
     // Put your own logic here to determine the author
-    
-    cell.authorType = !message.isMySentMessage;
     cell.detailTextLabel.text = message.messageDate;
+    cell.detailTextLabel.textAlignment = cell.authorType?NSTextAlignmentLeft:NSTextAlignmentRight;
+    
     cell.bubbleColor = STBubbleTableViewCellBubbleColorGreen;
     
     return cell;

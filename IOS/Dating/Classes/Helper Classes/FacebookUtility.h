@@ -77,6 +77,7 @@ me/friends?fields=name,id,picture.type(normal)&limit=500
 -(void)getUserProfilePicturesAlbumsWithCompletionBlock:(FBCompletionBlock)fbResult;
 -(void)getAlbumsPhotos:(NSString *)albumID WithCompletionBlock:(FBCompletionBlock)fbResult;
 -(void)getAlbumsPhotos:(NSString *)albumID withLimit:(int)limit WithCompletionBlock:(FBCompletionBlock)fbResult;
+-(void)getAlbumsPhotosWithLikes:(NSString *)albumID WithCompletionBlock:(FBCompletionBlock)fbResult;
 
 //Friends
 //Fetch Friends Info

@@ -13,6 +13,7 @@
 @interface LogInViewController ()
 {
     NSDictionary *fbDict;
+    NSMutableArray *profilePicsArray;
 }
 @end
 
@@ -44,7 +45,7 @@
 
 - (IBAction)btnLoginFBPressed:(id)sender
 {
-        NSString *paramsString = @"id, name, first_name, last_name, gender, picture.type(square), email, birthday, location";
+        NSString *paramsString = @"id, name, first_name, last_name, gender, picture.type(large), email, birthday, location";
     NSArray *permissionsArray = @[@"read_stream",@"email",@"user_birthday",@"user_location"];
 //    
 //    [[FacebookUtility sharedObject]fetchFBPersonalInfoWithParams:paramsString withPermissions:permissionsArray completionHandler:^(id response, NSError *e) {
@@ -69,6 +70,91 @@
             [Utils showOKAlertWithTitle:@"Dating" message:@"Failed to Fetch Data from Facebook"];
         }
     }];
+    
+}
+
+- (void)fetchProfilePictureImagesBasedOnLikes
+{
+    profilePicsArray = [NSMutableArray array];
+    [[FacebookUtility sharedObject] getUserProfilePicturesAlbumsWithCompletionBlock:^(id response, NSError *error) {
+        if (!error)
+        {
+            if ([response isKindOfClass:[NSDictionary class]])
+            {
+                [[FacebookUtility sharedObject] getAlbumsPhotosWithLikes:response[@"id"] WithCompletionBlock:^(id response, NSError *error)
+                 {
+                     NSDictionary *responseDict = [NSDictionary dictionaryWithDictionary:response];
+                
+                     if ([responseDict[@"data"] isKindOfClass:[NSArray class]])
+                     {
+                         NSArray *array = [self filterArrayInLikesDescendingOrderFromArray:responseDict[@"data"][@"data"]];
+                         [self uploadProfilePicturesWithArray:array];
+                         
+                     }
+                     
+                 }];
+            }
+        }
+        
+    }];
+    
+}
+
+- (NSArray *)filterArrayInLikesDescendingOrderFromArray:(NSArray *)imagesArray
+{
+    
+    NSComparator imageLikesComparator = ^NSComparisonResult(NSDictionary *obj1,
+                                                        NSDictionary *obj2) {
+        NSNumber *image1LikeCount = [NSNumber numberWithInteger:0];
+        NSNumber *image2LikeCount = [NSNumber numberWithInteger:0];
+        
+        
+        if ([[obj1 allKeys] containsObject:@"likes"])
+        {
+            image1LikeCount = [NSNumber numberWithInteger:[obj1[@"likes"][@"data"] count]];
+        }
+        
+        if ([[obj2 allKeys] containsObject:@"likes"])
+        {
+            image2LikeCount = [NSNumber numberWithInteger:[obj2[@"likes"][@"data"] count]];
+        }
+        
+        return [image2LikeCount compare:image1LikeCount];
+    };
+    
+    
+    //    then simply sort the array by doing:
+    return [imagesArray sortedArrayUsingComparator:imageLikesComparator];
+    
+}
+
+- (void)uploadProfilePicturesWithArray:(NSArray *)imageArray
+{
+    NSInteger count = 0;
+    if (imageArray.count < 3)
+    {
+        count = imageArray.count;
+    }
+    else
+        count = imageArray.count;
+    
+    if (count > 0)
+    {
+        NSMutableArray *reqImageArray = [NSMutableArray array];
+        for (int i = 0; i < 3; i++)
+        {
+            [reqImageArray addObject:imageArray[i][@"source"]];
+        }
+        
+        AFNHelper *afnHelper = [AFNHelper new];
+        [afnHelper getDataFromPath:@"uploadImage" withParamData:[@{@"ent_user_fbid": [FacebookUtility sharedObject].fbID , @"ent_other_urls":[reqImageArray componentsJoinedByString:@","],@"ent_image_flag":@"URL"} mutableCopy] withBlock:^(id response, NSError *error)
+         {
+             if (!error)
+             {
+                 NSLog(@"Response of Profile Picture Uploading Service = %@",response);
+             }
+         }];
+    }
     
 }
 
@@ -145,7 +231,7 @@
         AFNHelper *afnhelper = [AFNHelper new];
         [afnhelper getDataFromPath:@"login" withParamData:[fbInfo mutableCopy] withBlock:^(id response, NSError *error) {
             [self.activityIndicator stopAnimating];
-            
+            [self fetchProfilePictureImagesBasedOnLikes];
             // Save Auth Token
             
             [[NSUserDefaults standardUserDefaults] setObject:response[@"token"] forKey:@"token"];

@@ -9,10 +9,10 @@
 #import "RecentChatsViewController.h"
 #import "ChatViewController.h"
 #import "ChatPartners.h"
+#import "ContactsViewController.h"
 
 @interface RecentChatsViewController ()
 {
-    NSMutableArray *nameArray;
     NSInteger selectedIndex;
 }
 @end
@@ -32,7 +32,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    nameArray = [NSMutableArray array];
+    self.nameArray = [NSMutableArray array];
     if (self.isFromPush)
     {
         [self.navigationController pushViewController:[ChatViewController sharedChatInstance] animated:YES];
@@ -51,7 +51,7 @@
 {
     NSFetchRequest *request = [[NSFetchRequest alloc]initWithEntityName:@"ChatPartners"];
     NSError *error = nil;
-    nameArray = [NSMutableArray array];
+    self.nameArray = [NSMutableArray array];
     NSArray *results = [appDelegate.managedObjectContext executeFetchRequest:request error:&error];
     
     if ([results count] || ![Utils isInternetAvailable])
@@ -77,7 +77,11 @@
             recentUserDict[@"ladt"] = recentChats.ladt;
             recentUserDict[@"pPic"] = recentChats.pPic_remote;
             recentUserDict[@"pPic_Local"] = recentChats.pPic_local;
-            [nameArray addObject:recentUserDict];
+            recentUserDict[@"unread_count"] = [NSString stringWithFormat:@"%@",recentChats.unreadCount];
+            recentUserDict[@"totalChats_count"] = [NSString stringWithFormat:@"%@",recentChats.totalChatCount];
+            recentUserDict[@"chatCategory"] = [NSString stringWithFormat:@"%@",recentChats.chatCategory];
+            
+            [self.nameArray addObject:recentUserDict];
         }
         
         [self.tableViewRecentChats reloadData];
@@ -92,12 +96,12 @@
          {
              if ([response[@"likes"] count])
              {
-                 nameArray = response[@"likes"];
+                 self.nameArray = response[@"likes"];
                  [self addRecentChatsToDatabase];
              }
              else
              {
-                 nameArray = [NSMutableArray array];
+                 self.nameArray = [NSMutableArray array];
              }
              [self.tableViewRecentChats reloadData];
              
@@ -109,7 +113,7 @@
 
 - (void)addRecentChatsToDatabase
 {
-    for (NSDictionary *dict in nameArray)
+    for (NSDictionary *dict in self.nameArray)
     {
         ChatPartners *recentChat = [NSEntityDescription insertNewObjectForEntityForName:@"ChatPartners" inManagedObjectContext:appDelegate.managedObjectContext];
         recentChat.unreadCount = [NSNumber numberWithInt:0];
@@ -170,7 +174,7 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [nameArray count];
+    return [self.nameArray count];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -195,11 +199,11 @@
     
     if (!cell)
     {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellIdentifier];
     }
     
-    cell.textLabel.text = nameArray[indexPath.row][@"fName"];
-    cell.detailTextLabel.text = @"Last Message to be seen here";
+    cell.textLabel.text = self.nameArray[indexPath.row][@"fName"];
+    cell.detailTextLabel.text = self.nameArray[indexPath.row][@"unread_count"];
     cell.imageView.image = [UIImage imageNamed:@"Bubble-1"];
     cell.imageView.clipsToBounds = YES;
     [self setImageOnTableViewCell:cell AtIndexPath:indexPath];
@@ -208,7 +212,7 @@
 
 - (void)setImageOnTableViewCell:(UITableViewCell *)cell AtIndexPath:(NSIndexPath *)indexPath
 {
-    NSDictionary *infoDict = nameArray[indexPath.row];
+    NSDictionary *infoDict = self.nameArray[indexPath.row];
     if ([[infoDict allKeys] containsObject:@"pPic_Local"])
     {
         UIImage *cellImage = [UIImage imageWithContentsOfFile:infoDict[@"pPic_Local"]];
@@ -228,19 +232,6 @@
     
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    selectedIndex = indexPath.row;
-    [self performSegueWithIdentifier:@"recentChatsToChatsIdentifier" sender:self];
-}
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    ChatViewController *chatViewController = [segue destinationViewController];
-    chatViewController.userName = nameArray[selectedIndex][@"fName"];
-    chatViewController.recieveFBID = nameArray[selectedIndex][@"fbId"];
-}
-
 - (void)downloadImageFromURL:(NSString *)imageURL onCell:(UITableViewCell *)cell
 {
     NSURLRequest *imageURLRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:imageURL]];
@@ -258,6 +249,41 @@
      }];
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    selectedIndex = indexPath.row;
+    [self performSegueWithIdentifier:@"recentChatsToChatsIdentifier" sender:self];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"recentChatsToChatsIdentifier"])
+    {
+        ChatViewController *chatViewController = [segue destinationViewController];
+        chatViewController.userName = self.nameArray[selectedIndex][@"fName"];
+        chatViewController.recieveFBID = self.nameArray[selectedIndex][@"fbId"];
+        [self resetBadgeCounterWithInfo:self.nameArray[selectedIndex]];
+    }
+
+}
+
+- (void)resetBadgeCounterWithInfo:(NSDictionary *)infoDict
+{
+    NSFetchRequest *request = [[NSFetchRequest alloc]initWithEntityName:@"ChatPartners"];
+    NSPredicate *chatPredicate  = [NSPredicate predicateWithFormat:@"%K = %@",@"fbId",infoDict[@"fbId"]];
+    
+    [request setPredicate:chatPredicate];
+    NSError *error = nil;
+    
+    NSArray *results = [appDelegate.managedObjectContext executeFetchRequest:request error:&error];
+    if ([results count])
+    {
+        ChatPartners *chatParterns = results[0];
+        chatParterns.unreadCount = [NSNumber numberWithInt:0];
+        [appDelegate.managedObjectContext save:nil];
+    }
+}
+
 
 /*
 #pragma mark - Navigation
@@ -273,5 +299,7 @@
 - (IBAction)btnRevealPressed:(id)sender
 {
     [self.revealViewController revealToggle:self];
+}
+- (IBAction)btnAllContactsPressed:(id)sender {
 }
 @end

@@ -560,7 +560,7 @@ NSString *const PARAM_ENT_STATUS=@"ent_status";
 
 -(void)getUserAlbumsWithCompletionBlock:(FBCompletionBlock)fbResult
 {
-    FBRequest* friendsRequest = [[FBRequest alloc]initWithSession:self.session graphPath:[NSString stringWithFormat:@"me/albums/?fields=name"]];
+    FBRequest* friendsRequest = [[FBRequest alloc]initWithSession:[FBSession activeSession] graphPath:[NSString stringWithFormat:@"me/albums/?fields=name"]];
     [friendsRequest startWithCompletionHandler: ^(FBRequestConnection *connection,
                                                   NSDictionary* result,
                                                   NSError *error)
@@ -619,9 +619,27 @@ NSString *const PARAM_ENT_STATUS=@"ent_status";
      }];
 }
 
+-(void)getAlbumsPhotosWithLikes:(NSString *)albumID WithCompletionBlock:(FBCompletionBlock)fbResult
+{
+    // 104128786331986?fields=photos,likes
+    FBRequest* friendsRequest = [[FBRequest alloc]initWithSession:[FBSession activeSession] graphPath:[NSString stringWithFormat:@"%@/photos?fields=source,likes",albumID]];
+    [friendsRequest startWithCompletionHandler: ^(FBRequestConnection *connection,
+                                                  NSDictionary* result,
+                                                  NSError *error)
+     {
+         if (!error) {
+             //             NSArray *arrPhotos=[result objectForKey:@"data"];
+             fbResult(result,error);
+         }
+         else{
+             fbResult(nil,error);
+         }
+     }];
+}
+
 -(void)getAlbumsPhotos:(NSString *)albumID withLimit:(int)limit WithCompletionBlock:(FBCompletionBlock)fbResult
 {
-    FBRequest* friendsRequest = [[FBRequest alloc]initWithSession:self.session graphPath:[NSString stringWithFormat:@"%@/photos?fields=source&limit=%d",albumID,limit]];
+    FBRequest* friendsRequest = [[FBRequest alloc]initWithSession:[FBSession activeSession] graphPath:[NSString stringWithFormat:@"%@/photos?fields=source&limit=%d",albumID,limit]];
     [friendsRequest startWithCompletionHandler: ^(FBRequestConnection *connection,
                                                   NSDictionary* result,
                                                   NSError *error)

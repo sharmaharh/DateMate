@@ -14,6 +14,7 @@
 #import "RearMenuViewController.h"
 #import "RecentChatsViewController.h"
 #import "KeepingConnectingViewController.h"
+#import "ChatPartners.h"
 
 @implementation AppDelegate
 
@@ -41,9 +42,8 @@ AppDelegate* appDelegate = nil;
     if (serverNotif)
     {
         // After Recieving Push Notification, go to Message View controller
+        [UIApplication sharedApplication].applicationIconBadgeNumber -= 1;
         NSLog(@"Server Notification = %@",serverNotif);
-        
-        
         
         double delayInSeconds = 2.0;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
@@ -179,7 +179,7 @@ AppDelegate* appDelegate = nil;
                         if (image)
                         {
                             
-                            NSString *filePath = [basePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%i.png",[imageURLArray indexOfObject:dict]+1]];
+                            NSString *filePath = [basePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%u.png",[imageURLArray indexOfObject:dict]+1]];
                             
                             [[NSFileManager defaultManager] createFileAtPath:filePath contents:data attributes:nil];
                             
@@ -254,7 +254,7 @@ AppDelegate* appDelegate = nil;
 {
 	NSLog(@"My token is: %@", deviceToken);
     
-    NSString *devToken = [[deviceToken description]stringByReplacingOccurrencesOfString: @"<" withString: @""];
+    NSString *devToken = [[deviceToken description] stringByReplacingOccurrencesOfString: @"<" withString: @""];
     devToken = [devToken stringByReplacingOccurrencesOfString: @">" withString: @""] ;
     devToken = [devToken stringByReplacingOccurrencesOfString: @" " withString:@""];
     
@@ -273,8 +273,11 @@ AppDelegate* appDelegate = nil;
 
 - (void)application:(UIApplication*)application didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
-
+    NSLog(@"Server Notification = %@",userInfo);
+    
     UINavigationController *frontNavigationController = (id)self.revealController.frontViewController;
+    [UIApplication sharedApplication].applicationIconBadgeNumber -= 1;
+    
     if ([userInfo[@"aps"][@"nt"] isEqualToString:@"2"])
     {
          NSDictionary *messageDict = @{msg_text: userInfo[@"aps"][@"alert"], msg_Date: userInfo[@"aps"][msg_Date], msg_ID: userInfo[@"aps"][msg_ID], msg_Reciver_ID: [FacebookUtility sharedObject].fbID, msg_Sender_ID: userInfo[@"aps"][@"sFid"],msg_Sender_Name: userInfo[@"aps"][msg_Sender_Name]};
@@ -314,9 +317,32 @@ AppDelegate* appDelegate = nil;
                 });
             }
         }
-
+        else
+        {
+            
+            [[ChatViewController sharedChatInstance] addMessageToDatabase:[Message messageWithDictionary:messageDict]];
+            // Update Badge Counter
+            
+            if (![frontNavigationController.topViewController isKindOfClass:[ChatViewController class]])
+            {
+                [self updateBadgeCounterWithInfo:userInfo[@"aps"]];
+                
+            }
+            
+            if ([frontNavigationController.topViewController isKindOfClass:[RecentChatsViewController class]])
+            {
+                RecentChatsViewController *recentChatViewController = (RecentChatsViewController *)frontNavigationController.topViewController;
+                
+                [recentChatViewController getRecentChatUsers];
+            }
+            
+            
+        }
     }
-    
+    else if ([userInfo[@"aps"][@"nt"] isEqualToString:@"2"])
+    {
+        
+    }
     else
     {
         
@@ -339,11 +365,40 @@ AppDelegate* appDelegate = nil;
             UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:keepConnectingViewController];
             [self.revealController pushFrontViewController:navigationController animated:YES];
         }
-        
-        
-        
+
     }
     
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler
+{
+    NSLog(@"Server Notification When Disabled = %@",userInfo);
+}
+
+- (NSInteger)indexOfObjectWithSenderID:(NSString *)sFid InArray:(NSMutableArray *)nameArray
+{
+    NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+        return [evaluatedObject[@"sFid"] isEqualToString:sFid];
+    }];
+    NSDictionary *userInfoDict = [[nameArray filteredArrayUsingPredicate:predicate] firstObject];
+    return [nameArray indexOfObject:userInfoDict];
+}
+
+- (void)updateBadgeCounterWithInfo:(NSDictionary *)infoDict
+{
+    NSFetchRequest *request = [[NSFetchRequest alloc]initWithEntityName:@"ChatPartners"];
+    NSPredicate *chatPredicate  = [NSPredicate predicateWithFormat:@"%K = %@",@"fbId",infoDict[@"sFid"]];
+    
+    [request setPredicate:chatPredicate];
+    NSError *error = nil;
+    
+    NSArray *results = [appDelegate.managedObjectContext executeFetchRequest:request error:&error];
+    if ([results count])
+    {
+        ChatPartners *chatParterns = results[0];
+        chatParterns.unreadCount = [NSNumber numberWithInt:[chatParterns.unreadCount intValue]+1];
+        [appDelegate.managedObjectContext save:nil];
+    }
 }
 
 

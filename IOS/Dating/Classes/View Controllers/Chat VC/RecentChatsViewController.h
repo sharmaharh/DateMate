@@ -13,5 +13,9 @@
 @property (assign, nonatomic) BOOL isFromPush;
 - (IBAction)btnRevealPressed:(id)sender;
 @property (weak, nonatomic) IBOutlet UITableView *tableViewRecentChats;
+- (IBAction)btnAllContactsPressed:(id)sender;
 
+- (void)getRecentChatUsers;
+
+@property (strong, nonatomic) NSMutableArray *nameArray;
 @end

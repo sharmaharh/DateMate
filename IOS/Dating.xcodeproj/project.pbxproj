@@ -54,6 +54,7 @@
 		3AC805B819AFC9BC000C8E5B /* SEGOEUI_0.TTF in Resources */ = {isa = PBXBuildFile; fileRef = 3AC805B719AFC9BC000C8E5B /* SEGOEUI_0.TTF */; };
 		3AC805B919AFC9BC000C8E5B /* SEGOEUI_0.TTF in Resources */ = {isa = PBXBuildFile; fileRef = 3AC805B719AFC9BC000C8E5B /* SEGOEUI_0.TTF */; };
 		3AC805BA19AFC9C3000C8E5B /* alert.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3AC805B519AFC96D000C8E5B /* alert.mp3 */; };
+		3ADF4FA019CD68D60088BEB7 /* ContactsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ADF4F9F19CD68D60088BEB7 /* ContactsViewController.m */; };
 		3ADFBB4019CB3247008F48C5 /* ChatPartners.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ADFBB3F19CB3247008F48C5 /* ChatPartners.m */; };
 		3AE13A5019C0C9570090A105 /* KeepingConnectingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE13A4F19C0C9570090A105 /* KeepingConnectingViewController.m */; };
 		3AE209C019BA4EA700C47762 /* SplashView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3AE209BF19BA4EA600C47762 /* SplashView.xib */; };
@@ -164,6 +165,8 @@
 		3AC805B119AFA0D4000C8E5B /* ReachabilityNew.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReachabilityNew.m; sourceTree = "<group>"; };
 		3AC805B519AFC96D000C8E5B /* alert.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = alert.mp3; sourceTree = "<group>"; };
 		3AC805B719AFC9BC000C8E5B /* SEGOEUI_0.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = SEGOEUI_0.TTF; sourceTree = "<group>"; };
+		3ADF4F9E19CD68D60088BEB7 /* ContactsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactsViewController.h; sourceTree = "<group>"; };
+		3ADF4F9F19CD68D60088BEB7 /* ContactsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactsViewController.m; sourceTree = "<group>"; };
 		3ADFBB3E19CB3247008F48C5 /* ChatPartners.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatPartners.h; sourceTree = "<group>"; };
 		3ADFBB3F19CB3247008F48C5 /* ChatPartners.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatPartners.m; sourceTree = "<group>"; };
 		3AE13A4E19C0C9570090A105 /* KeepingConnectingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeepingConnectingViewController.h; sourceTree = "<group>"; };
@@ -355,6 +358,7 @@
 		3A2DE89B1983C4870035FA1B /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				3ADF4F9D19CD68C40088BEB7 /* Contacts VC */,
 				3AE13A4D19C0C92A0090A105 /* Keep Connecting */,
 				3AC3637619A7EDB100C7E273 /* Settings VC */,
 				AA3D7F881992044500C862CF /* FindMatchVC */,
@@ -511,6 +515,15 @@
 				3AC805B719AFC9BC000C8E5B /* SEGOEUI_0.TTF */,
 			);
 			path = Fonts;
+			sourceTree = "<group>";
+		};
+		3ADF4F9D19CD68C40088BEB7 /* Contacts VC */ = {
+			isa = PBXGroup;
+			children = (
+				3ADF4F9E19CD68D60088BEB7 /* ContactsViewController.h */,
+				3ADF4F9F19CD68D60088BEB7 /* ContactsViewController.m */,
+			);
+			path = "Contacts VC";
 			sourceTree = "<group>";
 		};
 		3AE13A4D19C0C92A0090A105 /* Keep Connecting */ = {
@@ -759,6 +772,7 @@
 				3A2DE8721983C0FD0035FA1B /* main.m in Sources */,
 				AA3D7F87199200C100C862CF /* RearMenuViewController.m in Sources */,
 				3AC3637A19A7EDB100C7E273 /* PreferencesViewController.m in Sources */,
+				3ADF4FA019CD68D60088BEB7 /* ContactsViewController.m in Sources */,
 				3AA4CB2D198AAA6F005D82AF /* AFImageRequestOperation.m in Sources */,
 				3AA4CB2F198AAA6F005D82AF /* AFNetworkActivityIndicatorManager.m in Sources */,
 				3AA4CB33198AAA6F005D82AF /* UIImageView+AFNetworking.m in Sources */,

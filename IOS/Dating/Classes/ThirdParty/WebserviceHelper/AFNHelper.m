@@ -45,6 +45,7 @@
     if (block) {
         dataBlock=[block copy];
     }
+    NSLog(@"Request of Service = %@ %@",path,dictParam);
     NSURL *baseURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@",API_URL]];
     client = [[AFHTTPClient alloc] initWithBaseURL:baseURL];
     [client registerHTTPOperationClass:[AFJSONRequestOperation class]];
