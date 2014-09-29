@@ -7,6 +7,7 @@
 //
 
 #import "LogInViewController.h"
+#import "AddProfileImagesViewController.h"
 #import "FindMatchViewController.h"
 #import "RearMenuViewController.h"
 
@@ -14,6 +15,7 @@
 {
     NSDictionary *fbDict;
     NSMutableArray *profilePicsArray;
+    NSMutableArray *reqImageArray;
 }
 @end
 
@@ -32,6 +34,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    reqImageArray = [NSMutableArray array];
 }
 
 - (void)didReceiveMemoryWarning
@@ -46,18 +49,7 @@
 - (IBAction)btnLoginFBPressed:(id)sender
 {
         NSString *paramsString = @"id, name, first_name, last_name, gender, picture.type(large), email, birthday, location";
-    NSArray *permissionsArray = @[@"read_stream",@"email",@"user_birthday",@"user_location"];
-//    
-//    [[FacebookUtility sharedObject]fetchFBPersonalInfoWithParams:paramsString withPermissions:permissionsArray completionHandler:^(id response, NSError *e) {
-//        if (!e)
-//        {
-//            fbDict = response;
-//        }
-//        else
-//        {
-//            [Utils showOKAlertWithTitle:@"Dating" message:@"Failed to Fetch Data from Facebook"];
-//        }
-//    }];
+    NSArray *permissionsArray = @[@"read_stream",@"email",@"user_birthday",@"user_location",@"user_likes"];
     
     [[FacebookUtility sharedObject]fetchFBPersonalInfoWithParams:paramsString withPermissions:permissionsArray completionHandler:^(id response, NSError *e) {
         if (!e)
@@ -87,8 +79,8 @@
                 
                      if ([responseDict[@"data"] isKindOfClass:[NSArray class]])
                      {
-                         NSArray *array = [self filterArrayInLikesDescendingOrderFromArray:responseDict[@"data"][@"data"]];
-                         [self uploadProfilePicturesWithArray:array];
+                         profilePicsArray = [[self filterArrayInLikesDescendingOrderFromArray:responseDict[@"data"]] mutableCopy];
+                         [self uploadProfilePictures];
                          
                      }
                      
@@ -128,35 +120,54 @@
     
 }
 
-- (void)uploadProfilePicturesWithArray:(NSArray *)imageArray
+- (void)uploadProfilePictures
 {
     NSInteger count = 0;
-    if (imageArray.count < 3)
+    if (profilePicsArray.count < 3)
     {
-        count = imageArray.count;
+        count = profilePicsArray.count;
     }
     else
-        count = imageArray.count;
+        count = profilePicsArray.count;
     
     if (count > 0)
     {
-        NSMutableArray *reqImageArray = [NSMutableArray array];
+        
         for (int i = 0; i < 3; i++)
         {
-            [reqImageArray addObject:imageArray[i][@"source"]];
+            [reqImageArray addObject:profilePicsArray[i][@"source"]];
         }
-        
+        [self.activityIndicator startAnimating];
         AFNHelper *afnHelper = [AFNHelper new];
-        [afnHelper getDataFromPath:@"uploadImage" withParamData:[@{@"ent_user_fbid": [FacebookUtility sharedObject].fbID , @"ent_other_urls":[reqImageArray componentsJoinedByString:@","],@"ent_image_flag":@"URL"} mutableCopy] withBlock:^(id response, NSError *error)
+        [afnHelper getDataFromPath:@"uploadImage" withParamData:[@{@"ent_user_fbid": [FacebookUtility sharedObject].fbID , @"ent_other_urls":[reqImageArray componentsJoinedByString:@","],@"ent_image_flag":@"1"} mutableCopy] withBlock:^(id response, NSError *error)
          {
              if (!error)
              {
                  NSLog(@"Response of Profile Picture Uploading Service = %@",response);
+                 [self.activityIndicator stopAnimating];
+                 [self performSegueWithIdentifier:@"LoginToProfilePicturesIdentifier" sender:self];
+             }
+             else
+             {
+                 [Utils showOKAlertWithTitle:@"Dating" message:@"Error in Uploading Images"];
              }
          }];
     }
     
 }
+
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+ {
+     if ([segue.identifier isEqualToString:@"LoginToProfilePicturesIdentifier"])
+     {
+         AddProfileImagesViewController *addProfileImagesViewController = [segue destinationViewController];
+         addProfileImagesViewController.profileImagesArray = reqImageArray;
+     }
+ }
+ 
 
 -(void)getFacebookUserDetails
 {
@@ -231,43 +242,37 @@
         AFNHelper *afnhelper = [AFNHelper new];
         [afnhelper getDataFromPath:@"login" withParamData:[fbInfo mutableCopy] withBlock:^(id response, NSError *error) {
             [self.activityIndicator stopAnimating];
-            [self fetchProfilePictureImagesBasedOnLikes];
-            // Save Auth Token
+            if (!error)
+            {
+                reqImageArray = [NSMutableArray arrayWithObject:response[@"profilePic"]];
+                // Save Auth Token
+                [[NSUserDefaults standardUserDefaults] setObject:response[@"token"] forKey:@"token"];
+                [[NSUserDefaults standardUserDefaults] setObject:response forKey:@"ProfileInfo"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                [self fetchProfilePictureImagesBasedOnLikes];
+                
+            }
             
-            [[NSUserDefaults standardUserDefaults] setObject:response[@"token"] forKey:@"token"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
             
-            FindMatchViewController *findMatchViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FindMatchViewController"];
-            appDelegate.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:findMatchViewController];
+            // OPEN Screen To Watch Profile Images Uploaded.
             
-            RearMenuViewController *rearMenuViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"RearMenuViewController"];
-            appDelegate.revealController = [[SWRevealViewController alloc] initWithRearViewController:rearMenuViewController frontViewController:appDelegate.frontNavigationController];
             
-            [appDelegate.window setRootViewController:appDelegate.revealController];
-            
-            [appDelegate.window makeKeyAndVisible];
+//            FindMatchViewController *findMatchViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FindMatchViewController"];
+//            appDelegate.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:findMatchViewController];
+//            
+//            RearMenuViewController *rearMenuViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"RearMenuViewController"];
+//            appDelegate.revealController = [[SWRevealViewController alloc] initWithRearViewController:rearMenuViewController frontViewController:appDelegate.frontNavigationController];
+//            
+//            [appDelegate.window setRootViewController:appDelegate.revealController];
+//            
+//            [appDelegate.window makeKeyAndVisible];
             
             
         }];
     }
-    
-    
-    
-//    [afnhelper callWebserviceWithMethod:@"login" andBody:<#(NSString *)#>]
+
 }
 
-
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 
 @end

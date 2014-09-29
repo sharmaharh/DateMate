@@ -59,6 +59,9 @@
 		3AE13A5019C0C9570090A105 /* KeepingConnectingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE13A4F19C0C9570090A105 /* KeepingConnectingViewController.m */; };
 		3AE209C019BA4EA700C47762 /* SplashView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3AE209BF19BA4EA600C47762 /* SplashView.xib */; };
 		3AE209C319BA4ED600C47762 /* SplashView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE209C219BA4ED600C47762 /* SplashView.m */; };
+		3AE4248919D713C40046D144 /* AddProfileImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE4248819D713C40046D144 /* AddProfileImagesViewController.m */; };
+		3AE4248D19D7416B0046D144 /* UserProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE4248C19D7416B0046D144 /* UserProfileViewController.m */; };
+		3AE4249B19D9C3D60046D144 /* FullImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE4249A19D9C3D60046D144 /* FullImageViewController.m */; };
 		AA3D7F831991FBF400C862CF /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3D7F821991FBF400C862CF /* SWRevealViewController.m */; };
 		AA3D7F87199200C100C862CF /* RearMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3D7F86199200C100C862CF /* RearMenuViewController.m */; };
 		AA3D7F8B1992045100C862CF /* FindMatchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3D7F8A1992045100C862CF /* FindMatchViewController.m */; };
@@ -174,6 +177,12 @@
 		3AE209BF19BA4EA600C47762 /* SplashView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = SplashView.xib; path = "Dating/Classes/Helper Classes/SplashView.xib"; sourceTree = SOURCE_ROOT; };
 		3AE209C119BA4ED600C47762 /* SplashView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SplashView.h; path = "Dating/Classes/Helper Classes/SplashView.h"; sourceTree = SOURCE_ROOT; };
 		3AE209C219BA4ED600C47762 /* SplashView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SplashView.m; path = "Dating/Classes/Helper Classes/SplashView.m"; sourceTree = SOURCE_ROOT; };
+		3AE4248719D713C40046D144 /* AddProfileImagesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddProfileImagesViewController.h; sourceTree = "<group>"; };
+		3AE4248819D713C40046D144 /* AddProfileImagesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddProfileImagesViewController.m; sourceTree = "<group>"; };
+		3AE4248B19D7416B0046D144 /* UserProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserProfileViewController.h; sourceTree = "<group>"; };
+		3AE4248C19D7416B0046D144 /* UserProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserProfileViewController.m; sourceTree = "<group>"; };
+		3AE4249919D9C3D60046D144 /* FullImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FullImageViewController.h; sourceTree = "<group>"; };
+		3AE4249A19D9C3D60046D144 /* FullImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FullImageViewController.m; sourceTree = "<group>"; };
 		AA3D7F811991FBF400C862CF /* SWRevealViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWRevealViewController.h; sourceTree = "<group>"; };
 		AA3D7F821991FBF400C862CF /* SWRevealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWRevealViewController.m; sourceTree = "<group>"; };
 		AA3D7F85199200C100C862CF /* RearMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RearMenuViewController.h; sourceTree = "<group>"; };
@@ -358,6 +367,9 @@
 		3A2DE89B1983C4870035FA1B /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				3AE4249819D9C3720046D144 /* Full Image VC */,
+				3AE4248A19D741570046D144 /* Profile VC */,
+				3AE4248619D713C40046D144 /* Add Profile Images */,
 				3ADF4F9D19CD68C40088BEB7 /* Contacts VC */,
 				3AE13A4D19C0C92A0090A105 /* Keep Connecting */,
 				3AC3637619A7EDB100C7E273 /* Settings VC */,
@@ -533,6 +545,33 @@
 				3AE13A4F19C0C9570090A105 /* KeepingConnectingViewController.m */,
 			);
 			path = "Keep Connecting";
+			sourceTree = "<group>";
+		};
+		3AE4248619D713C40046D144 /* Add Profile Images */ = {
+			isa = PBXGroup;
+			children = (
+				3AE4248719D713C40046D144 /* AddProfileImagesViewController.h */,
+				3AE4248819D713C40046D144 /* AddProfileImagesViewController.m */,
+			);
+			path = "Add Profile Images";
+			sourceTree = "<group>";
+		};
+		3AE4248A19D741570046D144 /* Profile VC */ = {
+			isa = PBXGroup;
+			children = (
+				3AE4248B19D7416B0046D144 /* UserProfileViewController.h */,
+				3AE4248C19D7416B0046D144 /* UserProfileViewController.m */,
+			);
+			path = "Profile VC";
+			sourceTree = "<group>";
+		};
+		3AE4249819D9C3720046D144 /* Full Image VC */ = {
+			isa = PBXGroup;
+			children = (
+				3AE4249919D9C3D60046D144 /* FullImageViewController.h */,
+				3AE4249A19D9C3D60046D144 /* FullImageViewController.m */,
+			);
+			path = "Full Image VC";
 			sourceTree = "<group>";
 		};
 		AA3D7F801991FBF400C862CF /* SWRevealViewController */ = {
@@ -756,6 +795,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3AA4CB31198AAA6F005D82AF /* AFURLConnectionOperation.m in Sources */,
+				3AE4248D19D7416B0046D144 /* UserProfileViewController.m in Sources */,
 				AA3D7FC519921BE200C862CF /* Message.m in Sources */,
 				3ABC28BE198BEA7400E598B5 /* AFNHelper.m in Sources */,
 				3AA4CB32198AAA6F005D82AF /* AFXMLRequestOperation.m in Sources */,
@@ -772,6 +812,7 @@
 				3A2DE8721983C0FD0035FA1B /* main.m in Sources */,
 				AA3D7F87199200C100C862CF /* RearMenuViewController.m in Sources */,
 				3AC3637A19A7EDB100C7E273 /* PreferencesViewController.m in Sources */,
+				3AE4249B19D9C3D60046D144 /* FullImageViewController.m in Sources */,
 				3ADF4FA019CD68D60088BEB7 /* ContactsViewController.m in Sources */,
 				3AA4CB2D198AAA6F005D82AF /* AFImageRequestOperation.m in Sources */,
 				3AA4CB2F198AAA6F005D82AF /* AFNetworkActivityIndicatorManager.m in Sources */,
@@ -779,6 +820,7 @@
 				3AE13A5019C0C9570090A105 /* KeepingConnectingViewController.m in Sources */,
 				3AC805A919AF91F5000C8E5B /* RecentChatsViewController.m in Sources */,
 				AACE994A19CABE8A00DEC9D6 /* ChatHistory.m in Sources */,
+				3AE4248919D713C40046D144 /* AddProfileImagesViewController.m in Sources */,
 				3A0883AD1986D18400BCC79C /* Utils.m in Sources */,
 				3A9D16091986C01A0049CE09 /* ChatAttachmentHelperClass.m in Sources */,
 				3AA4CB2B198AAA6F005D82AF /* AFHTTPClient.m in Sources */,

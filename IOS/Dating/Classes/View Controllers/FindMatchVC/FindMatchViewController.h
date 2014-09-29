@@ -8,14 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
-@interface FindMatchViewController : UIViewController
+@interface FindMatchViewController : UIViewController <UIScrollViewDelegate>
 
 - (IBAction)passProfileButtonPressed:(id)sender;
 - (IBAction)passEmotionsButtonPressed:(id)sender;
 
-@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (weak, nonatomic) IBOutlet UIImageView *profileImageView;
 @property (weak, nonatomic) IBOutlet UILabel *profileNameLabel;
+@property (weak, nonatomic) IBOutlet UIScrollView *scrollViewImages;
+
 - (IBAction)btnRevealPressed:(id)sender;
 
 @end
