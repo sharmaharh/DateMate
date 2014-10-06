@@ -13,6 +13,8 @@
 - (IBAction)passProfileButtonPressed:(id)sender;
 - (IBAction)passEmotionsButtonPressed:(id)sender;
 
+@property (strong, nonatomic) IBOutlet UIPageControl *pageControl;
+
 @property (weak, nonatomic) IBOutlet UIImageView *profileImageView;
 @property (weak, nonatomic) IBOutlet UILabel *profileNameLabel;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollViewImages;

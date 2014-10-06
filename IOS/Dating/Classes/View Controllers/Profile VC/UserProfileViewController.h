@@ -12,6 +12,7 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *lblUserName;
 @property (strong, nonatomic) NSArray *imagesArray;
+@property (strong, nonatomic) NSString *fbId;
 
 - (IBAction)btnRevealPressed:(id)sender;
 

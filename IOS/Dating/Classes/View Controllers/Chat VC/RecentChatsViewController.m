@@ -79,7 +79,7 @@
             recentUserDict[@"pPic_Local"] = recentChats.pPic_local;
             recentUserDict[@"unread_count"] = [NSString stringWithFormat:@"%@",recentChats.unreadCount];
             recentUserDict[@"totalChats_count"] = [NSString stringWithFormat:@"%@",recentChats.totalChatCount];
-            recentUserDict[@"chatCategory"] = [NSString stringWithFormat:@"%@",recentChats.chatCategory];
+            recentUserDict[@"flag_state"] = [NSString stringWithFormat:@"%@",recentChats.chatCategory];
             
             [self.nameArray addObject:recentUserDict];
         }
@@ -122,7 +122,7 @@
         recentChat.ladt = dict[@"ladt"];
         recentChat.pPic_remote = dict[@"pPic"];
         recentChat.pPic_local = [self localPathForProfileImageWithRemoteURL:dict[@"pPic"]];
-        
+        recentChat.chatCategory = [NSNumber numberWithInt:[dict[@"flag_state"] intValue]];
         [appDelegate.managedObjectContext save:nil];
         
     }
@@ -262,6 +262,7 @@
         ChatViewController *chatViewController = [segue destinationViewController];
         chatViewController.userName = self.nameArray[selectedIndex][@"fName"];
         chatViewController.recieveFBID = self.nameArray[selectedIndex][@"fbId"];
+        chatViewController.chatStatus = self.nameArray[selectedIndex][@"flag_state"];
         [self resetBadgeCounterWithInfo:self.nameArray[selectedIndex]];
     }
 

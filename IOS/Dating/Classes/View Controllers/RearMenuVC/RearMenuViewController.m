@@ -9,6 +9,7 @@
 #import "RearMenuViewController.h"
 #import "RecentChatsViewController.h"
 #import "KeepingConnectingViewController.h"
+#import "UserProfileViewController.h"
 
 @interface RearMenuViewController ()
 {
@@ -79,6 +80,18 @@
     switch (row) {
         case 0:
             // Profile
+            if (![frontNavigationController.topViewController isKindOfClass:[UserProfileViewController class]] )
+            {
+                
+                UserProfileViewController *userProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"UserProfileViewController"];
+                UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:userProfileViewController];
+                [revealController pushFrontViewController:navigationController animated:YES];
+            }
+            // Seems the user attempts to 'switch' to exactly the same controller he came from!
+            else
+            {
+                [revealController revealToggle:self];
+            }
             break;
             
         case 1:

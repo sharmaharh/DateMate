@@ -8,6 +8,7 @@
 
 #import "FindMatchViewController.h"
 #import "RecentChatsViewController.h"
+#import "FullImageViewController.h"
 
 @interface FindMatchViewController ()
 {
@@ -31,14 +32,12 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    [self findMatchesList];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [self findMatchesList];
     [super viewWillAppear:animated];
-    
 }
 
 - (void)didReceiveMemoryWarning
@@ -50,40 +49,23 @@
 - (void)setProfileOnLayout
 {
     NSDictionary *profileDict = matchedProfilesArray[currentProfileIndex];
-    for (int i = 1; i < 4; i++)
-    {
-        UIButton *button = (UIButton *)[self.view viewWithTag:i];
-        button.selected = NO;
-    }
+    
+    UIButton *button = (UIButton *)[self.view viewWithTag:1];
+    button.selected = NO;
+    
     self.profileNameLabel.text = [NSString stringWithFormat:@"%@,%@",profileDict[@"firstName"],profileDict[@"age"]];
     
     [self setImagesOnScrollView];
-    
-//    [self.profileImageView setImage:nil];
-//    [self.activityIndicator startAnimating];
-//    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-//    [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:profileDict[@"pPic"][0][@"pImg"]] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:15] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-//        [self.activityIndicator stopAnimating];
-//        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-//        if (!connectionError)
-//        {
-//            UIImage *image = [UIImage imageWithData:data];
-//            if (image) {
-//                [self.profileImageView setImage:image];
-//            }
-//            
-//        }
-//        else
-//        {
-//            [Utils showOKAlertWithTitle:@"Dating" message:@"Some Error Occured, Please Try Again."];
-//        }
-//    }];
     
 }
 
 - (void)setImagesOnScrollView
 {
     NSArray *userProfileImagesArray = matchedProfilesArray[currentProfileIndex][@"pPic"];
+    [self removeAllSubViewsFromScrollView];
+    [self.pageControl setHidden:NO];
+    self.pageControl.currentPage = 0;
+    self.pageControl.numberOfPages = userProfileImagesArray.count;
     CGFloat x = 3;
     for (int i = 0; i < [userProfileImagesArray count]; i++)
     {
@@ -91,7 +73,7 @@
         UIButton *btnImage = [UIButton buttonWithType:UIButtonTypeCustom];
         [btnImage setFrame:CGRectMake(x, 0, self.scrollViewImages.frame.size.width-6, self.scrollViewImages.frame.size.height)];
         btnImage.tag = i+1;
-        [btnImage.imageView setContentMode:UIViewContentModeCenter];
+        [btnImage.imageView setContentMode:UIViewContentModeScaleAspectFill];
         [btnImage addTarget:self action:@selector(showFullPicture:) forControlEvents:UIControlEventTouchUpInside];
         
         UIActivityIndicatorView *indicatorView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake((self.scrollViewImages.frame.size.width-37)/2, (self.scrollViewImages.frame.size.height-37)/2, 37, 37)];
@@ -107,45 +89,99 @@
     
 }
 
+- (void)removeAllSubViewsFromScrollView
+{
+    for (id View in self.scrollViewImages.subviews)
+    {
+        [View removeFromSuperview];
+    }
+}
+
 - (void)setImageOnButton:(UIButton *)btn WithActivityIndicator:(UIActivityIndicatorView *)activityIndicator WithImageURL:(NSString *)ImageURL
 {
-    //profileDict[@"pPic"][0][@"pImg"]
-    [activityIndicator startAnimating];
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-    [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:ImageURL] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:15] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+    if (!ImageURL || !ImageURL.length) {
+        return;
+    }
+    __block NSString *bigImageURLString = ImageURL;
+    //    BOOL doesExist = [arrFilePath containsObject:filePath];
+    
+    NSString *dirPath = [self ProfileImageFolderPathWithFBID:matchedProfilesArray[currentProfileIndex][@"fbId"]];
+    NSString *filePath = [dirPath stringByAppendingPathComponent:[ImageURL lastPathComponent]];
+    
+    BOOL doesExist = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
+    
+    if (doesExist)
+    {
+        [btn setImage:[UIImage imageWithData:[NSData dataWithContentsOfFile:filePath]] forState:UIControlStateNormal];
         [activityIndicator stopAnimating];
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-        if (!connectionError)
-        {
-            UIImage *image = [UIImage imageWithData:data];
-            if (image)
-            {
-                [btn setImage:image forState:UIControlStateNormal];
-            }
+    }
+    else
+    {
+        dispatch_async(dispatch_queue_create("ProfilePics", nil), ^{
             
-        }
-        else
-        {
-            [Utils showOKAlertWithTitle:@"Dating" message:@"Some Error Occured, Please Try Again."];
-        }
-    }];
+            
+            __block NSData *imageData = nil;
+            [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:bigImageURLString]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *res, NSData *data, NSError *error) {
+    
+                imageData = data;
+                UIImage *image = nil;
+                data = nil;
+                image = [UIImage imageWithData:imageData];
+                if (image == nil)
+                {
+                    image = [UIImage imageNamed:@"Bubble-0"];
+                }
+                
+                [btn setImage:image forState:UIControlStateNormal];
+                
+                [activityIndicator stopAnimating];
+                
+                // Write Image in Document Directory
+                int64_t delayInSeconds = 0.4;
+                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+                
+                
+                dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^(void){
+                    if (![[NSFileManager defaultManager] fileExistsAtPath:filePath])
+                    {
+                        if (![[NSFileManager defaultManager] fileExistsAtPath:dirPath])
+                        {
+                            [[NSFileManager defaultManager] createDirectoryAtPath:dirPath withIntermediateDirectories:YES attributes:nil error:nil];
+                        }
+                        
+                        [[NSFileManager defaultManager] createFileAtPath:filePath contents:imageData attributes:nil];
+                        imageData = nil;
+                    }
+                });
+                
+            }];
+            
+            bigImageURLString = nil;
+            
+            
+        });
+    }
+    
+}
+
+- (NSString *)ProfileImageFolderPathWithFBID:(NSString *)fbID
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *basePath = [paths objectAtIndex:0];
+    
+    basePath = [basePath stringByAppendingPathComponent:@"Profile_Images"];
+    basePath = [basePath stringByAppendingPathComponent:matchedProfilesArray[currentProfileIndex][@"fbId"]];
+    return basePath;
 }
 
 - (void)showFullPicture:(UIButton *)btn
 {
-    
+    FullImageViewController *fullImageViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FullImageViewController"];
+    fullImageViewController.currentPhotoIndex = btn.tag-1;
+    fullImageViewController.arrPhotoGallery = matchedProfilesArray[currentProfileIndex][@"pPic"];
+    fullImageViewController.fbID = matchedProfilesArray[currentProfileIndex][@"fbId"];
+    [self presentViewController:fullImageViewController animated:YES completion:nil];
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 - (void)findMatchesList
 {
@@ -218,11 +254,12 @@
 
 - (IBAction)passProfileButtonPressed:(id)sender
 {
+    [self removeCacheImages];
     currentProfileIndex++;
     if (currentProfileIndex < matchedProfilesArray.count)
     {
         [self setProfileOnLayout];
-        
+        [self downloadNextProfileImagesToProcessFastly];
     }
     else
     {
@@ -233,73 +270,29 @@
         }
         UILabel *errorLabel = (UILabel *)[self.view viewWithTag:100];
         [errorLabel setHidden:NO];
-        
-//        [Utils showOKAlertWithTitle:@"Dating" message:@"Sorry, Boss No More Entry Available"];
+
     }
     
 }
 
+- (void)removeCacheImages
+{
+    NSString *filePath = [self ProfileImageFolderPathWithFBID:matchedProfilesArray[currentProfileIndex][@"fbId"]];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:filePath])
+    {
+        [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+    }
+    [self.scrollViewImages setContentOffset:CGPointZero];
+    
+}
+
+- (void)downloadNextProfileImagesToProcessFastly
+{
+//    NSString *filePath = [self ProfileImageFolderPathWithFBID:matchedProfilesArray[currentProfileIndex + 1][@"fbId"]];
+}
+
 - (void)passProfile
 {
-//    AFNHelper *afnhelper = [AFNHelper new];
-//    NSMutableDictionary *requestDic = [NSMutableDictionary dictionaryWithObjects:@[[FacebookUtility sharedObject].fbID,matchedProfilesArray[currentProfileIndex][@"fbId"],[NSString stringWithFormat:@"%lu",(long)emotionsButton.tag]] forKeys:@[@"ent_user_fbid",@"ent_invitee_fbid",@"ent_user_action"]];
-//    
-//    [afnhelper getDataFromPath:@"getProfileMatches" withParamData:requestDic withBlock:^(id response, NSError *error)
-//     {
-//         if (!error)
-//         {
-//             [self passProfileButtonPressed:nil];
-//             
-//             if ([response[@"errMsg"] isEqualToString:@"Congrats! You got a match"]) {
-//                 // Now Winked Back, Start Conversation
-//                 [[Utils sharedInstance] openAlertViewWithTitle:@"Dating" message:response[@"errMsg"] buttons:@[@"Cancel",@"Chat"] completion:^(UIAlertView *alert, NSInteger buttonIndex)
-//                  {
-//                      if (buttonIndex)
-//                      {
-//                          
-//                          UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
-//                          RecentChatsViewController *recentChatViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecentChatsViewController"];
-//                          appDelegate.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:recentChatViewController];
-//                          recentChatViewController.isFromPush = NO;
-//                          [appDelegate.revealController pushFrontViewController:appDelegate.frontNavigationController animated:NO];
-//                          ChatViewController *chatViewConrtroller = [ChatViewController sharedChatInstance];
-//                          chatViewConrtroller.recieveFBID = response[@"uFbId"];
-//                          chatViewConrtroller.userName = response[@"uName"];
-//                          [appDelegate.frontNavigationController pushViewController:chatViewConrtroller animated:YES];
-//                      }
-//                      
-//                  }];
-//                 
-//             }
-//             else
-//             {
-//                 [Utils showOKAlertWithTitle:@"Dating" message:response[@"errMsg"]];
-//             }
-//             
-//             
-//         }
-//         else
-//         {
-//             [Utils showOKAlertWithTitle:@"Dating" message:@"Error Occured, Please Try Again"];
-//         }
-//         
-//         //         emotionsButton.selected = YES;
-//         
-//         //         if ([[response objectForKey:@"errFlag"] boolValue])
-//         //         {
-//         //             if ([[response objectForKey:@"matches"] isKindOfClass:[NSArray class]])
-//         //             {
-//         //                 matchedProfilesArray = [response objectForKey:@"matches"];
-//         //                 [self setProfileOnLayout];
-//         //             }
-//         //             else
-//         //             {
-//         //                 matchedProfilesArray = [NSMutableArray array];
-//         //             }
-//         //         }
-//         
-//     }];
-//}
 }
 
 - (IBAction)passEmotionsButtonPressed:(id)sender
@@ -353,21 +346,6 @@
                  [Utils showOKAlertWithTitle:@"Dating" message:@"Error Occured, Please Try Again"];
              }
              
-             //         emotionsButton.selected = YES;
-             
-             //         if ([[response objectForKey:@"errFlag"] boolValue])
-             //         {
-             //             if ([[response objectForKey:@"matches"] isKindOfClass:[NSArray class]])
-             //             {
-             //                 matchedProfilesArray = [response objectForKey:@"matches"];
-             //                 [self setProfileOnLayout];
-             //             }
-             //             else
-             //             {
-             //                 matchedProfilesArray = [NSMutableArray array];
-             //             }
-             //         }
-             
          }];
     }
     
@@ -379,37 +357,26 @@
 
 #pragma mark UIScrollViewDelegate
 
-//- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView
-//{
-//    NSInteger currentPageIndex = scrollView.contentOffset.x/scrollView.frame.size.width;
-//    
-//    NSArray *imagesArray = matchedProfilesArray[currentProfileIndex][@"pPic"];
-//    
-//    if (currentPageIndex == 0 && imagesArray.count > 1)
-//    {
-//        UIButton *nextBtnImage = (UIButton *)[scrollView viewWithTag:currentPageIndex+2];
-//        
-//    }
-//    else if (currentPageIndex == [matchedProfilesArray[currentProfileIndex][@"pPic"] count]-1)
-//    {
-//        UIButton *previousBtnImage = (UIButton *)[self.scrollViewImages viewWithTag:currentPageIndex];
-//        
-//    }
-//    else
-//    {
-//        
-//    }
-//        
-//}
-//
-//- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-//{
-//    
-//}
-//
-//- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-//{
-//    
-//}
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView
+{
+    NSInteger currentPageIndex = scrollView.contentOffset.x/scrollView.frame.size.width;
+    
+    self.pageControl.currentPage = currentPageIndex;
+    
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    NSInteger currentPageIndex = scrollView.contentOffset.x/scrollView.frame.size.width;
+    
+    self.pageControl.currentPage = currentPageIndex;
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    NSInteger currentPageIndex = scrollView.contentOffset.x/scrollView.frame.size.width;
+    
+    self.pageControl.currentPage = currentPageIndex;
+}
 
 @end

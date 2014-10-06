@@ -8,7 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@interface FullImageViewController : UIViewController
+@interface FullImageViewController : UIViewController <UIScrollViewDelegate>
 
-@property (weak, nonatomic) IBOutlet UIImageView *imageViewFullPic;
+@property (strong, nonatomic) IBOutlet UICollectionView *collectionViewImages;
+@property (strong, nonatomic) NSArray *arrPhotoGallery;
+@property (assign, nonatomic) NSInteger currentPhotoIndex;
+@property (strong, nonatomic) NSString *fbID;
+
 @end

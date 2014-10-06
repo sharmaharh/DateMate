@@ -50,6 +50,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
     self.messages = [NSMutableArray array];
     [self.tableViewChat reloadData];
     if (![self.recieveFBID length])
@@ -129,6 +130,7 @@
         }
         
         [self.tableViewChat reloadData];
+        [self disableChatAccordingToStatus];
         if (self.tableViewChat.contentSize.height > self.tableViewChat.frame.size.height)
         {
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -167,6 +169,7 @@
     }
     
     [self.tableViewChat reloadData];
+    [self disableChatAccordingToStatus];
     if (self.tableViewChat.contentSize.height > self.tableViewChat.frame.size.height)
     {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -195,6 +198,7 @@
 
 - (void)addMessageToDatabase:(Message *)msg
 {
+    [self disableChatAccordingToStatus];
     ChatHistory *chat = [NSEntityDescription insertNewObjectForEntityForName:@"ChatHistory" inManagedObjectContext:appDelegate.managedObjectContext];
     
     chat.dt    = msg.messageDate;
@@ -259,6 +263,22 @@
         [Utils showOKAlertWithTitle:@"Message" message:@"Please Enter Message"];
     }
     
+}
+
+- (void)disableChatAccordingToStatus
+{
+    if ([self.chatStatus isEqualToString:@"2"] && [self.messages count] >= 10)
+    {
+        [self.viewChatWindow setUserInteractionEnabled:NO];
+        [self.viewChatWindow setAlpha:0.5];
+        [self.tableViewChat reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
+    }
+    else if ([self.chatStatus isEqualToString:@"3"] && [self.messages count] >= 20)
+    {
+        [self.viewChatWindow setUserInteractionEnabled:NO];
+        [self.viewChatWindow setAlpha:0.5];
+        [self.tableViewChat reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
+    }
 }
 
 - (void)sendMessage
@@ -369,6 +389,31 @@
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
     return headerTitle.length?[@"last seen at " stringByAppendingString:headerTitle]:@"";
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    return ([self.chatStatus intValue]!=5)?60:0;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+    UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, ([self.chatStatus intValue]!=5)?60:0)];
+    [footerView setBackgroundColor:[UIColor whiteColor]];
+    UILabel *statusLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, 250, 50)];
+    [statusLabel setNumberOfLines:3];
+    [statusLabel setText:@"Messages Limit is completed for current Emotion, Move to next emotion for more Messages."];
+    [statusLabel setFont:[UIFont systemFontOfSize:13]];
+    UIButton *emotionButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [emotionButton setFrame:CGRectMake(260, 15, 55, 30)];
+    [emotionButton addTarget:self action:@selector(passEmotionPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [emotionButton setBackgroundColor:[UIColor redColor]];
+    NSString *btnTitle = @"Crash";
+    [emotionButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [emotionButton setTitle:btnTitle forState:UIControlStateNormal];
+    [footerView addSubview:statusLabel];
+    [footerView addSubview:emotionButton];
+    return footerView;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section

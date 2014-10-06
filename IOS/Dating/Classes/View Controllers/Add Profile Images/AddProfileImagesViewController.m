@@ -30,6 +30,8 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    [[NSUserDefaults standardUserDefaults] setObject:self.profileImagesArray forKey:@"ProfileImages"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
     [self setProfileImagesOnButtons];
 }
 
@@ -47,28 +49,141 @@
     }
 }
 
+- (void)setImageOnButton:(UIButton *)btn WithURL:(NSString *)imageURL WithProgressIndicator:(UIActivityIndicatorView *)activityIndicator
+{
+    if (!imageURL || !imageURL.length) {
+        return;
+    }
+    __block NSString *bigImageURLString = imageURL;
+    //    BOOL doesExist = [arrFilePath containsObject:filePath];
+    
+    NSString *dirPath = [self ProfileImageFolderPath];
+    NSString *filePath = [dirPath stringByAppendingPathComponent:[imageURL lastPathComponent]];
+    
+    BOOL doesExist = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
+    
+    if (doesExist)
+    {
+        [btn setImage:[UIImage imageWithData:[NSData dataWithContentsOfFile:filePath]] forState:UIControlStateNormal];
+        [activityIndicator stopAnimating];
+    }
+    else
+    {
+        dispatch_async(dispatch_queue_create("ProfilePics", nil), ^{
+            
+            
+            __block NSData *imageData = nil;
+            [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:bigImageURLString]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *res, NSData *data, NSError *error) {
+                
+                imageData = data;
+                UIImage *image = nil;
+                data = nil;
+                image = [UIImage imageWithData:imageData];
+                if (image == nil)
+                {
+                    image = [UIImage imageNamed:@"Bubble-0"];
+                }
+                
+                [btn setImage:image forState:UIControlStateNormal];
+                [activityIndicator stopAnimating];
+                
+                // Write Image in Document Directory
+                int64_t delayInSeconds = 0.4;
+                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+                
+                
+                dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^(void){
+                    if (![[NSFileManager defaultManager] fileExistsAtPath:filePath])
+                    {
+                        if (![[NSFileManager defaultManager] fileExistsAtPath:dirPath])
+                        {
+                            [[NSFileManager defaultManager] createDirectoryAtPath:dirPath withIntermediateDirectories:YES attributes:nil error:nil];
+                        }
+                        
+                        [[NSFileManager defaultManager] createFileAtPath:filePath contents:imageData attributes:nil];
+                        imageData = nil;
+                    }
+                });
+                
+            }];
+            
+            bigImageURLString = nil;
+            
+            
+        });
+    }
+}
+
 - (void)setImageWithButtonIndex:(NSInteger)btnIndex
 {
-    NSURLRequest *imageRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:self.profileImagesArray[btnIndex-1]] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:20];
+    NSString *imgURLString = self.profileImagesArray[btnIndex-1];
+    if (!imgURLString || !imgURLString.length) {
+        return;
+    }
+    //    BOOL doesExist = [arrFilePath containsObject:filePath];
+    NSString *dirPath = [self ProfileImageFolderPath];
+    __block NSString *filePath = [dirPath stringByAppendingPathComponent:[imgURLString lastPathComponent]];
     UIActivityIndicatorView *activityIndicator = (UIActivityIndicatorView *)[self.view viewWithTag:btnIndex+10];
-    [activityIndicator startAnimating];
-    [NSURLConnection sendAsynchronousRequest:imageRequest queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError)
+    BOOL doesExist = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
+    
+    if (doesExist)
     {
+        UIButton *btn = (UIButton *)[self.view viewWithTag:btnIndex];
+        [btn setImage:[UIImage imageWithContentsOfFile:filePath] forState:UIControlStateNormal];
         [activityIndicator stopAnimating];
-        if (!connectionError)
-        {
-            UIImage *image = [UIImage imageWithData:data];
-            if (image)
-            {
-                NSInteger btnIndex = [self.profileImagesArray indexOfObject:[response.URL absoluteString]]+1;
-                [self.profileImagesArray replaceObjectAtIndex:btnIndex-1 withObject:image];
-                UIButton *btn = (UIButton *)[self.view viewWithTag:btnIndex];
-                [btn setImage:image forState:UIControlStateNormal];
-                [btn.imageView setContentMode:UIViewContentModeScaleAspectFit];
-            }
-        }
+    }
+    else
+    {
+        NSURLRequest *imageRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:imgURLString] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:20];
         
-    }];
+        [activityIndicator startAnimating];
+        [NSURLConnection sendAsynchronousRequest:imageRequest queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError)
+         {
+             [activityIndicator stopAnimating];
+             if (!connectionError)
+             {
+                 UIImage *image = [UIImage imageWithData:data];
+                 if (image)
+                 {
+                     NSInteger btnIndex = [self.profileImagesArray indexOfObject:[response.URL absoluteString]]+1;
+                     filePath = [dirPath stringByAppendingPathComponent:[[response.URL absoluteString] lastPathComponent]];
+                     [self.profileImagesArray replaceObjectAtIndex:btnIndex-1 withObject:image];
+                     UIButton *btn = (UIButton *)[self.view viewWithTag:btnIndex];
+                     [btn setImage:image forState:UIControlStateNormal];
+                     [btn.imageView setContentMode:UIViewContentModeScaleAspectFit];
+                     
+                     // Write Image in Document Directory
+                     int64_t delayInSeconds = 0.4;
+                     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+                     
+                     
+                     dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^(void){
+                         if (![[NSFileManager defaultManager] fileExistsAtPath:filePath])
+                         {
+                             if (![[NSFileManager defaultManager] fileExistsAtPath:dirPath])
+                             {
+                                 [[NSFileManager defaultManager] createDirectoryAtPath:dirPath withIntermediateDirectories:YES attributes:nil error:nil];
+                             }
+                             
+                             [[NSFileManager defaultManager] createFileAtPath:filePath contents:data attributes:nil];
+                         }
+                     });
+                 }
+             }
+             
+         }];
+    }
+
+}
+
+- (NSString *)ProfileImageFolderPath
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *basePath = [paths objectAtIndex:0];
+    
+    basePath = [basePath stringByAppendingPathComponent:@"Profile_Images"];
+    basePath = [basePath stringByAppendingPathComponent:[FacebookUtility sharedObject].fbID];
+    return basePath;
 }
 
 /*
