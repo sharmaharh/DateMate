@@ -12,6 +12,8 @@
 {
     UIImagePickerController *imagePickerController;
     NSInteger selectedButtonTag;
+    NSInteger currentPannedButtonTag;
+    NSMutableArray *editedArray;
 }
 @end
 
@@ -34,6 +36,7 @@
     {
         self.imagesArray = [[NSUserDefaults standardUserDefaults] arrayForKey:@"ProfileImages"];
     }
+    editedArray = [NSMutableArray arrayWithObjects:@"",@"",@"",@"", nil];
     [self setImagesOnLayout];
 }
 
@@ -48,6 +51,10 @@
     for (int i = 0; i < 4; i++)
     {
         UIButton *btn = (UIButton *)[self.view viewWithTag:i+1];
+        
+        UILongPressGestureRecognizer *longTapGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongTap:)];
+        [btn addGestureRecognizer:longTapGesture];
+        
         [btn addTarget:self action:@selector(profilePictureBtnPressed:) forControlEvents:UIControlEventTouchUpInside];
         [btn.imageView setContentMode:UIViewContentModeScaleAspectFit];
         UIActivityIndicatorView *activityIndicatorView = (UIActivityIndicatorView *)[self.view viewWithTag:i+11];
@@ -64,6 +71,136 @@
             }            
         }
     }
+}
+
+- (void)handleLongTap:(UILongPressGestureRecognizer *)recognizer
+{
+    
+    UIButton *Btn = (UIButton *)recognizer.view;
+    
+    // Create Temp Button on View
+    UIButton *tempButton = [[UIButton alloc] initWithFrame:recognizer.view.frame];
+    [tempButton setImage:Btn.currentImage forState:UIControlStateNormal];
+    
+    tempButton.tag = Btn.tag;
+    Btn.tag = tempButton.tag*2;
+    
+    [self.view insertSubview:tempButton belowSubview:Btn];
+    [tempButton.layer setBorderColor:[UIColor redColor].CGColor];
+    [tempButton.layer setBorderWidth:1.0];
+    
+    UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
+    panGesture.delegate = self;
+    panGesture.maximumNumberOfTouches=1;
+    panGesture.minimumNumberOfTouches=1;
+    
+    [Btn addGestureRecognizer:panGesture];
+    
+}
+
+- (void)handlePan:(UIPanGestureRecognizer *)recognizer
+{
+    CGPoint translation = [recognizer translationInView:self.view];
+    recognizer.view.center = CGPointMake(recognizer.view.center.x + translation.x,recognizer.view.center.y + translation.y);
+    UIButton *button1 = (UIButton *)[self.view viewWithTag:1];
+    UIButton *button2 = (UIButton *)[self.view viewWithTag:2];
+    UIButton *button3 = (UIButton *)[self.view viewWithTag:3];
+    UIButton *button4 = (UIButton *)[self.view viewWithTag:4];
+    
+    BOOL isIntersect1 = CGRectIntersectsRect(recognizer.view.frame, button1.frame);
+    BOOL isIntersect2 = CGRectIntersectsRect(recognizer.view.frame, button2.frame);
+    BOOL isIntersect3 = CGRectIntersectsRect(recognizer.view.frame, button3.frame);
+    BOOL isIntersect4 = CGRectIntersectsRect(recognizer.view.frame, button4.frame);
+    
+    if([recognizer state] == UIGestureRecognizerStateBegan)
+    {
+        currentPannedButtonTag = recognizer.view.tag/2;
+        
+        if(currentPannedButtonTag==1)
+        {
+            
+        }
+        else if(currentPannedButtonTag==2)
+        {
+            
+        }
+        else if(currentPannedButtonTag==3)
+        {
+            
+        }
+        else
+        {
+            
+        }
+    }
+    else if ([recognizer state] == UIGestureRecognizerStateChanged)
+    {
+        if (isIntersect1)
+        {
+            [button1.layer setBorderColor:[UIColor redColor].CGColor];
+            [button1.layer setBorderWidth:1.0f];
+            [button2.layer setBorderWidth:0.0f];
+            [button3.layer setBorderWidth:0.0f];
+            [button4.layer setBorderWidth:0.0f];
+        }
+        
+        else if (isIntersect2)
+        {
+            [button2.layer setBorderColor:[UIColor redColor].CGColor];
+            [button2.layer setBorderWidth:1.0f];
+            [button1.layer setBorderWidth:0.0f];
+            [button3.layer setBorderWidth:0.0f];
+            [button4.layer setBorderWidth:0.0f];
+        }
+        
+        
+        else if (isIntersect3)
+        {
+            [button3.layer setBorderColor:[UIColor redColor].CGColor];
+            [button3.layer setBorderWidth:1.0f];
+            [button1.layer setBorderWidth:0.0f];
+            [button2.layer setBorderWidth:0.0f];
+            [button4.layer setBorderWidth:0.0f];
+        }
+        else if (isIntersect4)
+        {
+            [button4.layer setBorderColor:[UIColor redColor].CGColor];
+            [button4.layer setBorderWidth:1.0f];
+            [button1.layer setBorderWidth:0.0f];
+            [button2.layer setBorderWidth:0.0f];
+            [button3.layer setBorderWidth:0.0f];
+        }
+    }
+
+    UIButton *tempbutton = (UIButton *)recognizer.view;
+    
+    if([recognizer state] == UIGestureRecognizerStateEnded)
+    {
+        UIImage *intersectedButtonImage = nil;
+        
+        if (isIntersect1)
+            intersectedButtonImage = button1.currentImage;
+        
+        else if (isIntersect2)
+            intersectedButtonImage = button2.currentImage;
+        
+        else if (isIntersect3)
+            intersectedButtonImage = button3.currentImage;
+        
+        else if (isIntersect4)
+            intersectedButtonImage = button4.currentImage;
+        
+        
+        UIImage *tempbuttonImage = tempbutton.currentImage;
+        
+        [button1 setImage:tempbuttonImage forState:UIControlStateNormal];
+        
+        UIButton *pannedButton = (UIButton *)[self.view viewWithTag:tempbutton.tag/2];
+        [tempbutton removeFromSuperview];
+        [pannedButton setImage:intersectedButtonImage forState:UIControlStateNormal];
+    }
+    [recognizer setTranslation:CGPointMake(0, 0) inView:self.view];
+    
 }
 
 - (NSString *)ProfileImageFolderPath
@@ -189,9 +326,6 @@
         }
         
     }];
-    
-    
-    
 }
 
 - (IBAction)btnRevealPressed:(id)sender
@@ -201,7 +335,9 @@
 
 - (IBAction)btnSaveProfilePressed:(id)sender
 {
-    
+//    NSDictionary *reqDict = @{@"ent_user_fbid": [FacebookUtility sharedObject].fbID, };
+//    AFNHelper *afnHelper = [AFNHelper new];
+//    [afnHelper getDataFromPath:<#(NSString *)#> withParamDataImage:<#(NSMutableDictionary *)#> andImage:<#(UIImage *)#> withBlock:<#^(id response, NSError *error)block#>]
 }
 
 #pragma mark ----
@@ -211,6 +347,11 @@
 {
     UIButton *btn = (UIButton *)[self.view viewWithTag:selectedButtonTag];
     [btn setImage:info[UIImagePickerControllerEditedImage] forState:UIControlStateNormal];
+    if (info[UIImagePickerControllerEditedImage])
+    {
+        [editedArray replaceObjectAtIndex:selectedButtonTag-1 withObject:info[UIImagePickerControllerEditedImage]];
+    }
+    
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
