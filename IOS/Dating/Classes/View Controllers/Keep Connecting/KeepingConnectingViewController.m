@@ -48,7 +48,8 @@
     {
         if ([response[@"likes"] count])
         {
-            notificationsArray = response[@"likes"];
+            notificationsArray = [response[@"likes"] mutableCopy];
+            [self filterLikedByBothInNotificationsArray];
             [self.tableViewPendingEmotions reloadData];
         }
         else
@@ -56,6 +57,19 @@
             [Utils showOKAlertWithTitle:@"Dating" message:@"No Pending Notification found."];
         }
     }];
+}
+
+- (void)filterLikedByBothInNotificationsArray
+{
+    NSArray *tempArray = [notificationsArray copy];
+    
+    for (NSDictionary *dict in tempArray)
+    {
+        if ([dict[@"flag"] isEqualToString:@"5"])
+        {
+            [notificationsArray removeObject:dict];
+        }
+    }
 }
 
 /*

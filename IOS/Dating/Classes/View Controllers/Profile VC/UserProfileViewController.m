@@ -14,6 +14,7 @@
     NSInteger selectedButtonTag;
     NSInteger currentPannedButtonTag;
     NSMutableArray *editedArray;
+    BOOL shouldStartPanning;
 }
 @end
 
@@ -52,8 +53,23 @@
     {
         UIButton *btn = (UIButton *)[self.view viewWithTag:i+1];
         
-        UILongPressGestureRecognizer *longTapGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongTap:)];
-        [btn addGestureRecognizer:longTapGesture];
+        if (i)
+        {
+            // Add Long Tap Gesture
+            
+            UILongPressGestureRecognizer *longTapGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongTap:)];
+            longTapGesture.delegate = self;
+            [btn addGestureRecognizer:longTapGesture];
+            
+            // Add Pan Gesture
+            
+            UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
+            panGesture.delegate = self;
+            panGesture.maximumNumberOfTouches=1;
+            panGesture.minimumNumberOfTouches=1;
+            
+            [btn addGestureRecognizer:panGesture];
+        }
         
         [btn addTarget:self action:@selector(profilePictureBtnPressed:) forControlEvents:UIControlEventTouchUpInside];
         [btn.imageView setContentMode:UIViewContentModeScaleAspectFit];
@@ -75,42 +91,71 @@
 
 - (void)handleLongTap:(UILongPressGestureRecognizer *)recognizer
 {
-    
-    UIButton *Btn = (UIButton *)recognizer.view;
-    
-    // Create Temp Button on View
-    UIButton *tempButton = [[UIButton alloc] initWithFrame:recognizer.view.frame];
-    [tempButton setImage:Btn.currentImage forState:UIControlStateNormal];
-    
-    tempButton.tag = Btn.tag;
-    Btn.tag = tempButton.tag*2;
-    
-    [self.view insertSubview:tempButton belowSubview:Btn];
-    [tempButton.layer setBorderColor:[UIColor redColor].CGColor];
-    [tempButton.layer setBorderWidth:1.0];
-    
-    UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
-    panGesture.delegate = self;
-    panGesture.maximumNumberOfTouches=1;
-    panGesture.minimumNumberOfTouches=1;
-    
-    [Btn addGestureRecognizer:panGesture];
-    
+    if([recognizer state] == UIGestureRecognizerStateBegan)
+    {
+        UIButton *Btn = (UIButton *)recognizer.view;
+        NSInteger btnTag = Btn.tag;
+        [self.view bringSubviewToFront:Btn];
+        // Create Replacement Temp Button on View
+        
+        UIButton *tempButton = [[UIButton alloc] initWithFrame:recognizer.view.frame];
+        [tempButton setImage:Btn.currentImage forState:UIControlStateNormal];
+        [tempButton.imageView setContentMode:UIViewContentModeScaleAspectFit];
+        UILongPressGestureRecognizer *longTapGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongTap:)];
+        longTapGesture.delegate = self;
+        [tempButton addGestureRecognizer:longTapGesture];
+        
+        UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
+        panGesture.delegate = self;
+        panGesture.maximumNumberOfTouches=1;
+        panGesture.minimumNumberOfTouches=1;
+        
+        [tempButton addGestureRecognizer:panGesture];
+        tempButton.tag = btnTag;
+        
+        
+        
+        Btn.tag = btnTag*2;
+        
+        [self.view insertSubview:tempButton belowSubview:Btn];
+        [Btn.layer setBorderColor:[UIColor redColor].CGColor];
+        [Btn.layer setBorderWidth:1.0];
+        [self popUpDeleteView];
+    }
+    else if([recognizer state] == UIGestureRecognizerStateEnded)
+    {
+        [recognizer.view.layer setBorderWidth:0.0f];
+        [self dismissDeleteView];
+    }
+}
+
+- (void)popUpDeleteView
+{
+    [UIView animateWithDuration:0.3 animations:^{
+        [self.viewDelete setFrame:CGRectMake(0, self.view.frame.size.height-self.viewDelete.frame.size.height, self.view.frame.size.height, self.viewDelete.frame.size.height)];
+        
+    }];
+}
+
+- (void)dismissDeleteView
+{
+    [UIView animateWithDuration:0.3 animations:^{
+        [self.viewDelete setFrame:CGRectMake(0, self.view.frame.size.height, self.view.frame.size.height, self.viewDelete.frame.size.height)];
+    }];
 }
 
 - (void)handlePan:(UIPanGestureRecognizer *)recognizer
 {
     CGPoint translation = [recognizer translationInView:self.view];
     recognizer.view.center = CGPointMake(recognizer.view.center.x + translation.x,recognizer.view.center.y + translation.y);
+    
     UIButton *button1 = (UIButton *)[self.view viewWithTag:1];
     UIButton *button2 = (UIButton *)[self.view viewWithTag:2];
     UIButton *button3 = (UIButton *)[self.view viewWithTag:3];
     UIButton *button4 = (UIButton *)[self.view viewWithTag:4];
     
-    BOOL isIntersect1 = CGRectIntersectsRect(recognizer.view.frame, button1.frame);
-    BOOL isIntersect2 = CGRectIntersectsRect(recognizer.view.frame, button2.frame);
-    BOOL isIntersect3 = CGRectIntersectsRect(recognizer.view.frame, button3.frame);
-    BOOL isIntersect4 = CGRectIntersectsRect(recognizer.view.frame, button4.frame);
+    BOOL isIntersectWithImage = CGRectIntersectsRect(recognizer.view.frame, button1.frame);
+    BOOL isIntersectWithDeletion = CGRectIntersectsRect(recognizer.view.frame, self.viewDelete.frame);
     
     if([recognizer state] == UIGestureRecognizerStateBegan)
     {
@@ -135,7 +180,9 @@
     }
     else if ([recognizer state] == UIGestureRecognizerStateChanged)
     {
-        if (isIntersect1)
+        [button1.layer setBorderWidth:0.0f];
+        [self.viewDelete.layer setBorderWidth:0.0f];
+        if (isIntersectWithImage)
         {
             [button1.layer setBorderColor:[UIColor redColor].CGColor];
             [button1.layer setBorderWidth:1.0f];
@@ -144,63 +191,69 @@
             [button4.layer setBorderWidth:0.0f];
         }
         
-        else if (isIntersect2)
+        if (isIntersectWithDeletion)
         {
-            [button2.layer setBorderColor:[UIColor redColor].CGColor];
-            [button2.layer setBorderWidth:1.0f];
-            [button1.layer setBorderWidth:0.0f];
-            [button3.layer setBorderWidth:0.0f];
-            [button4.layer setBorderWidth:0.0f];
+            [self.viewDelete.layer setBorderWidth:1.0f];
+            [self.viewDelete.layer setBorderColor:[UIColor yellowColor].CGColor];
         }
+    
         
-        
-        else if (isIntersect3)
-        {
-            [button3.layer setBorderColor:[UIColor redColor].CGColor];
-            [button3.layer setBorderWidth:1.0f];
-            [button1.layer setBorderWidth:0.0f];
-            [button2.layer setBorderWidth:0.0f];
-            [button4.layer setBorderWidth:0.0f];
-        }
-        else if (isIntersect4)
-        {
-            [button4.layer setBorderColor:[UIColor redColor].CGColor];
-            [button4.layer setBorderWidth:1.0f];
-            [button1.layer setBorderWidth:0.0f];
-            [button2.layer setBorderWidth:0.0f];
-            [button3.layer setBorderWidth:0.0f];
-        }
     }
 
     UIButton *tempbutton = (UIButton *)recognizer.view;
     
     if([recognizer state] == UIGestureRecognizerStateEnded)
     {
+        shouldStartPanning = NO;
+        [button1.layer setBorderWidth:0.0f];
         UIImage *intersectedButtonImage = nil;
         
-        if (isIntersect1)
-            intersectedButtonImage = button1.currentImage;
-        
-        else if (isIntersect2)
-            intersectedButtonImage = button2.currentImage;
-        
-        else if (isIntersect3)
-            intersectedButtonImage = button3.currentImage;
-        
-        else if (isIntersect4)
-            intersectedButtonImage = button4.currentImage;
-        
-        
-        UIImage *tempbuttonImage = tempbutton.currentImage;
-        
-        [button1 setImage:tempbuttonImage forState:UIControlStateNormal];
-        
         UIButton *pannedButton = (UIButton *)[self.view viewWithTag:tempbutton.tag/2];
+        
+        if (isIntersectWithImage)
+        {
+            intersectedButtonImage = button1.currentImage;
+                    
+            UIImage *tempbuttonImage = tempbutton.currentImage;
+            
+            [button1 setImage:tempbuttonImage forState:UIControlStateNormal];
+            
+            [pannedButton setImage:intersectedButtonImage forState:UIControlStateNormal];
+        }
+        
+        if (isIntersectWithDeletion)
+        {
+            [pannedButton setImage:nil forState:UIControlStateNormal];
+        }
         [tempbutton removeFromSuperview];
-        [pannedButton setImage:intersectedButtonImage forState:UIControlStateNormal];
+        [self dismissDeleteView];
     }
     [recognizer setTranslation:CGPointMake(0, 0) inView:self.view];
     
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return YES;
+}
+
+-(BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+{
+    NSLog(@"Gesture Class = %@",NSStringFromClass([gestureRecognizer class]));
+    if ([gestureRecognizer isKindOfClass:[UILongPressGestureRecognizer class]])
+    {
+        shouldStartPanning = YES;
+        return YES;
+    }
+    
+    if (shouldStartPanning)
+    {
+        return YES;
+    }
+    else
+    {
+        return NO;
+    }
 }
 
 - (NSString *)ProfileImageFolderPath
@@ -228,51 +281,62 @@
     
     if (doesExist)
     {
-        [btn setImage:[UIImage imageWithData:[NSData dataWithContentsOfFile:filePath]] forState:UIControlStateNormal];
-        [activityIndicator stopAnimating];
+        UIImage *image = [UIImage imageWithContentsOfFile:filePath];
+        if (image)
+        {
+            [btn setImage:[UIImage imageWithData:[NSData dataWithContentsOfFile:filePath]] forState:UIControlStateNormal];
+            
+            [activityIndicator stopAnimating];
+        }
+        else
+        {
+            [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+            [self setImageOnButton:btn WithURL:imageURL WithProgressIndicator:activityIndicator];
+        }
     }
     else
     {
         dispatch_async(dispatch_queue_create("ProfilePics", nil), ^{
             
-            
             __block NSData *imageData = nil;
-            [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:bigImageURLString]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *res, NSData *data, NSError *error) {
-                
-                imageData = data;
-                UIImage *image = nil;
-                data = nil;
-                image = [UIImage imageWithData:imageData];
-                if (image == nil)
+            
+            [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:bigImageURLString]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *res, NSData *data, NSError *error)
+            {
+                if (!error)
                 {
-                    image = [UIImage imageNamed:@"Bubble-0"];
-                }
-                
-                [btn setImage:image forState:UIControlStateNormal];
-                [activityIndicator stopAnimating];
-                
-                // Write Image in Document Directory
-                int64_t delayInSeconds = 0.4;
-                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-                
-                
-                dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^(void){
-                    if (![[NSFileManager defaultManager] fileExistsAtPath:filePath])
+                    imageData = data;
+                    UIImage *image = nil;
+                    data = nil;
+                    image = [UIImage imageWithData:imageData];
+                    if (image == nil)
                     {
-                        if (![[NSFileManager defaultManager] fileExistsAtPath:dirPath])
-                        {
-                            [[NSFileManager defaultManager] createDirectoryAtPath:dirPath withIntermediateDirectories:YES attributes:nil error:nil];
-                        }
-                        
-                        [[NSFileManager defaultManager] createFileAtPath:filePath contents:imageData attributes:nil];
-                        imageData = nil;
+                        image = [UIImage imageNamed:@"Bubble-0"];
                     }
-                });
-                
+                    
+                    [btn setImage:image forState:UIControlStateNormal];
+                    [activityIndicator stopAnimating];
+                    
+                    // Write Image in Document Directory
+                    int64_t delayInSeconds = 0.4;
+                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+                    
+                    
+                    dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^(void){
+                        if (![[NSFileManager defaultManager] fileExistsAtPath:filePath])
+                        {
+                            if (![[NSFileManager defaultManager] fileExistsAtPath:dirPath])
+                            {
+                                [[NSFileManager defaultManager] createDirectoryAtPath:dirPath withIntermediateDirectories:YES attributes:nil error:nil];
+                            }
+                            
+                            [[NSFileManager defaultManager] createFileAtPath:filePath contents:imageData attributes:nil];
+                            imageData = nil;
+                        }
+                    });
+                }
             }];
             
             bigImageURLString = nil;
-            
             
         });
     }
@@ -335,9 +399,9 @@
 
 - (IBAction)btnSaveProfilePressed:(id)sender
 {
-//    NSDictionary *reqDict = @{@"ent_user_fbid": [FacebookUtility sharedObject].fbID, };
-//    AFNHelper *afnHelper = [AFNHelper new];
-//    [afnHelper getDataFromPath:<#(NSString *)#> withParamDataImage:<#(NSMutableDictionary *)#> andImage:<#(UIImage *)#> withBlock:<#^(id response, NSError *error)block#>]
+    NSDictionary *reqDict = @{@"ent_user_fbid": [FacebookUtility sharedObject].fbID, };
+    AFNHelper *afnHelper = [AFNHelper new];
+//    [afnHelper getDataFromPath:@"uploadImage" withParamDataImage:nil andImage:<#(UIImage *)#> withBlock:<#^(id response, NSError *error)block#>]
 }
 
 #pragma mark ----

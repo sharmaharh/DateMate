@@ -31,6 +31,8 @@ AppDelegate* appDelegate = nil;
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
      (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
     
+    [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
+    
     UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
     
     // Condition Determines that if user is already logged in previously in the device, than he/she will not log in again. To Login again firstly Logout from Settings.
@@ -373,6 +375,7 @@ AppDelegate* appDelegate = nil;
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler
 {
     NSLog(@"Server Notification When Disabled = %@",userInfo);
+    
 }
 
 - (NSInteger)indexOfObjectWithSenderID:(NSString *)sFid InArray:(NSMutableArray *)nameArray

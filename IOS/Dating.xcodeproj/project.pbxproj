@@ -971,6 +971,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Basant Sharma (W7SJ3JQT5N)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Basant Sharma (W7SJ3JQT5N)";
 				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/Dating/Classes/ThirdParty";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Dating/Dating-Prefix.pch";

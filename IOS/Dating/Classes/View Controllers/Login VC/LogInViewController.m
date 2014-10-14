@@ -48,7 +48,14 @@
 
 - (IBAction)btnLoginFBPressed:(id)sender
 {
-        NSString *paramsString = @"id, name, first_name, last_name, gender, picture.type(large), email, birthday, location";
+    
+    if (![Utils isInternetAvailable])
+    {
+        [Utils showOKAlertWithTitle:@"Dating" message:@"No Internet Connection!"];
+        return;
+    }
+    
+    NSString *paramsString = @"id, name, first_name, last_name, gender, picture.type(large), email, birthday, location";
     NSArray *permissionsArray = @[@"read_stream",@"email",@"user_birthday",@"user_location",@"user_likes"];
     
     [[FacebookUtility sharedObject]fetchFBPersonalInfoWithParams:paramsString withPermissions:permissionsArray completionHandler:^(id response, NSError *e) {

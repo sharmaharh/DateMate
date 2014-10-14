@@ -100,9 +100,19 @@
     
     if (doesExist)
     {
-        [imageView setImage:[UIImage imageWithData:[NSData dataWithContentsOfFile:filePath]]];
-        [self adjustPhotoIndexLabelAccordingtoImageView:imageView];
-        [activityIndicator stopAnimating];
+        UIImage *image = [UIImage imageWithContentsOfFile:filePath];
+        if (image)
+        {
+            [imageView setImage:[UIImage imageWithData:[NSData dataWithContentsOfFile:filePath]]];
+            [self adjustPhotoIndexLabelAccordingtoImageView:imageView];
+            [activityIndicator stopAnimating];
+        }
+        else
+        {
+            [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+            [self setImageOnImageView:imageView WithActivityIndicator:activityIndicator WithImageURL:ImageURL];
+        }
+        
     }
     else
     {
@@ -110,39 +120,41 @@
             
             
             __block NSData *imageData = nil;
-            [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:bigImageURLString]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *res, NSData *data, NSError *error) {
-                
-                imageData = data;
-                UIImage *image = nil;
-                data = nil;
-                image = [UIImage imageWithData:imageData];
-                if (image == nil)
+            [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:bigImageURLString]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *res, NSData *data, NSError *error)
+            {
+                if (!error)
                 {
-                    image = [UIImage imageNamed:@"Bubble-0"];
-                }
-                
-                [imageView setImage:image];
-                [self adjustPhotoIndexLabelAccordingtoImageView:imageView];
-                [activityIndicator stopAnimating];
-                
-                // Write Image in Document Directory
-                int64_t delayInSeconds = 0.4;
-                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-                
-                
-                dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^(void){
-                    if (![[NSFileManager defaultManager] fileExistsAtPath:filePath])
+                    imageData = data;
+                    UIImage *image = nil;
+                    data = nil;
+                    image = [UIImage imageWithData:imageData];
+                    if (image == nil)
                     {
-                        if (![[NSFileManager defaultManager] fileExistsAtPath:dirPath])
-                        {
-                            [[NSFileManager defaultManager] createDirectoryAtPath:dirPath withIntermediateDirectories:YES attributes:nil error:nil];
-                        }
-                        
-                        [[NSFileManager defaultManager] createFileAtPath:filePath contents:imageData attributes:nil];
-                        imageData = nil;
+                        image = [UIImage imageNamed:@"Bubble-0"];
                     }
-                });
-                
+                    
+                    [imageView setImage:image];
+                    [self adjustPhotoIndexLabelAccordingtoImageView:imageView];
+                    [activityIndicator stopAnimating];
+                    
+                    // Write Image in Document Directory
+                    int64_t delayInSeconds = 0.4;
+                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+                    
+                    
+                    dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^(void){
+                        if (![[NSFileManager defaultManager] fileExistsAtPath:filePath])
+                        {
+                            if (![[NSFileManager defaultManager] fileExistsAtPath:dirPath])
+                            {
+                                [[NSFileManager defaultManager] createDirectoryAtPath:dirPath withIntermediateDirectories:YES attributes:nil error:nil];
+                            }
+                            
+                            [[NSFileManager defaultManager] createFileAtPath:filePath contents:imageData attributes:nil];
+                            imageData = nil;
+                        }
+                    });
+                }
             }];
             
             bigImageURLString = nil;

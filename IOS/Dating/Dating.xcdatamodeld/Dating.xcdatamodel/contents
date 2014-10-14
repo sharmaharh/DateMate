@@ -10,6 +10,7 @@
     </entity>
     <entity name="ChatPartners" representedClassName="ChatPartners" syncable="YES">
         <attribute name="chatCategory" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="chatStatus" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="fbId" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="fName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="ladt" optional="YES" attributeType="String" syncable="YES"/>
@@ -18,8 +19,17 @@
         <attribute name="totalChatCount" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="unreadCount" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
     </entity>
+    <entity name="EmotionsList" representedClassName="ChatPartners" syncable="YES">
+        <attribute name="chatCategory" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="fbId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="fName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="ladt" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pPic_local" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pPic_remote" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
     <elements>
         <element name="ChatHistory" positionX="97" positionY="27" width="128" height="133"/>
-        <element name="ChatPartners" positionX="268" positionY="27" width="128" height="165"/>
+        <element name="ChatPartners" positionX="268" positionY="27" width="128" height="178"/>
+        <element name="EmotionsList" positionX="180" positionY="90" width="128" height="133"/>
     </elements>
 </model>

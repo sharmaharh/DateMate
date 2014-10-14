@@ -96,7 +96,7 @@
     [client enqueueHTTPRequestOperation:operation];
     */
     
-    NSData *imageToUpload = UIImageJPEGRepresentation(image, 1.0);//(uploadedImgView.image);
+    NSData *imageToUpload = UIImagePNGRepresentation(image);//(uploadedImgView.image);
     if (imageToUpload)
     {
         NSURL *baseURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@",API_URL]];
@@ -104,13 +104,15 @@
         
         
         NSMutableURLRequest *request = [client multipartFormRequestWithMethod:@"POST" path:path parameters:dictParam constructingBodyWithBlock: ^(id <AFMultipartFormData>formData) {
-            [formData appendPartWithFileData: imageToUpload name:@"media_chunk" fileName:@"temp.jpeg" mimeType:@"image/jpeg"];
+            [formData appendPartWithFileData: imageToUpload name:@"media_chunk" fileName:@"temp.png" mimeType:@"image/png"];
         }];
         
         AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-        
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject)
          {
+             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+             
              NSDictionary *jsons = [NSJSONSerialization JSONObjectWithData:responseObject options:kNilOptions error:nil];
              NSLog(@"response: %@",jsons);
              if (dataBlock) {

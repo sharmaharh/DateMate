@@ -61,15 +61,24 @@
         for (ChatPartners *recentChats in results)
         {
             /*
-             [
+             (
              {
-             "fbId": "661762160568643",
-             "fName": "Harsh",
-             "ladt": "2014-09-12 03: 20: 48",
-             "pPic": "https: \/\/fbcdn-profile-a.akamaihd.net\/hprofile-ak-xpa1\/v\/t1.0-1\/c0.0.50.50\/p50x50\/6417_608575192554007_3093356137364336146_n.jpg?oh=2386e29e43cf7373c15476fd4c4f2c32&oe=548C4D97&__gda__=1419147389_3fc86889e61d8a861c6a3025e9106b59",
-             "flag": "5"
+             fName = Rahul;
+             fbId = 752656701440251;
+             flag = 5;
+             "flag_state" = 2;
+             ladt = "2014-10-12 07:44:26";
+             pPic = "http://incredtechnologies.com/playground/ws/pics/xffgdf.jpg";
+             },
+             {
+             fName = Navneet;
+             fbId = 10203175848489479;
+             flag = 5;
+             "flag_state" = 2;
+             ladt = "2014-10-12 07:43:11";
+             pPic = "http://incredtechnologies.com/playground/ws/pics/262217_3991638541793_1099481420_n.jpg";
              }
-             ]
+             );
              */
             NSMutableDictionary *recentUserDict = [NSMutableDictionary dictionary];
             recentUserDict[@"fbId"] = recentChats.fbId;
@@ -123,6 +132,7 @@
         recentChat.pPic_remote = dict[@"pPic"];
         recentChat.pPic_local = [self localPathForProfileImageWithRemoteURL:dict[@"pPic"]];
         recentChat.chatCategory = [NSNumber numberWithInt:[dict[@"flag_state"] intValue]];
+        recentChat.chatStatus = [NSNumber numberWithInt:[dict[@"flag"] intValue]];
         [appDelegate.managedObjectContext save:nil];
         
     }

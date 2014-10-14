@@ -40,6 +40,26 @@
     AFNHelper *afnHelper = [AFNHelper new];
     [afnHelper getDataFromPath:@"getProfileMatches" withParamData:[@{@"ent_user_fbid": [FacebookUtility sharedObject].fbID, @"ent_user_action": @"5"} mutableCopy] withBlock:^(id response, NSError *error)
      {
+         /*
+          likes =     (
+          {
+          fName = Rahul;
+          fbId = 752656701440251;
+          flag = 5;
+          "flag_state" = 2;
+          ladt = "2014-10-12 07:44:26";
+          pPic = "http://incredtechnologies.com/playground/ws/pics/xffgdf.jpg";
+          },
+          {
+          fName = Navneet;
+          fbId = 10203175848489479;
+          flag = 5;
+          "flag_state" = 2;
+          ladt = "2014-10-12 07:43:11";
+          pPic = "http://incredtechnologies.com/playground/ws/pics/262217_3991638541793_1099481420_n.jpg";
+          }
+          );
+          */
          if ([response[@"likes"] count])
          {
              contactsArray = response[@"likes"];
