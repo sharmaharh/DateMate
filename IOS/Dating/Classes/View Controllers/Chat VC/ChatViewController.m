@@ -267,13 +267,26 @@
 
 - (void)disableChatAccordingToStatus
 {
-    if ([self.chatStatus isEqualToString:@"2"] && [self.messages count] >= 10)
+    /*
+     (
+     {
+     fName = Navneet;
+     fbId = 10203175848489479;
+     flag = 5;
+     "flag_initiate" = 1;
+     "flag_state" = 2;
+     ladt = "2014-10-14 17:25:54";
+     pPic = "http://graph.facebook.com/10203175848489479/picture?type=large";
+     }
+     );
+     */
+    if ([self.chatFlag_State isEqualToString:@"2"] && ![self.chatFlag isEqualToString:@"5"])
     {
         [self.viewChatWindow setUserInteractionEnabled:NO];
         [self.viewChatWindow setAlpha:0.5];
         [self.tableViewChat reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
     }
-    else if ([self.chatStatus isEqualToString:@"3"] && [self.messages count] >= 20)
+    else if ([self.chatFlag_State isEqualToString:@"3"] && ![self.chatFlag isEqualToString:@"5"])
     {
         [self.viewChatWindow setUserInteractionEnabled:NO];
         [self.viewChatWindow setAlpha:0.5];
@@ -393,12 +406,12 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
-    return ([self.chatStatus intValue]!=5)?60:0;
+    return ([self.chatFlag intValue]!=5)?60:0;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
-    UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, ([self.chatStatus intValue]!=5)?60:0)];
+    UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, ([self.chatFlag intValue]!=5)?60:0)];
     [footerView setBackgroundColor:[UIColor whiteColor]];
     UILabel *statusLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, 250, 50)];
     [statusLabel setNumberOfLines:3];

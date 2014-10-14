@@ -91,6 +91,7 @@
     ChatViewController *chatViewController = [segue destinationViewController];
     chatViewController.userName = contactsArray[selectedIndex][@"fName"];
     chatViewController.recieveFBID = contactsArray[selectedIndex][@"fbId"];
+    chatViewController.chatStatus = contactsArray[selectedIndex][@"flag"];
 }
 
 

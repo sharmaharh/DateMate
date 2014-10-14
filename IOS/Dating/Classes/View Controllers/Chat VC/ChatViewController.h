@@ -19,7 +19,9 @@
 @property (nonatomic, strong) NSMutableArray *messages;
 @property (strong, nonatomic) NSString *userName;
 @property (strong, nonatomic) NSString *recieveFBID;
-@property (strong, nonatomic) NSString *chatStatus;
+@property (strong, nonatomic) NSString *chatFlag;
+@property (strong, nonatomic) NSString *chatFlag_State;
+@property (strong, nonatomic) NSString *chatFlag_Initiate;
 
 + (id)sharedChatInstance;
 
