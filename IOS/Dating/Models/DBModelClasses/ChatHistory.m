@@ -2,7 +2,7 @@
 //  ChatHistory.m
 //  Dating
 //
-//  Created by Harsh Sharma on 18/09/14.
+//  Created by Harsh Sharma on 10/28/14.
 //  Copyright (c) 2014 IncredTechnologies. All rights reserved.
 //
 
@@ -17,5 +17,6 @@
 @dynamic rfid;
 @dynamic sfid;
 @dynamic sname;
+@dynamic attachmentType;
 
 @end

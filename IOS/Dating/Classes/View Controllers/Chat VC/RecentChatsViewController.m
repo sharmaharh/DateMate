@@ -49,12 +49,14 @@
 
 - (void)getRecentChatUsers
 {
-    NSFetchRequest *request = [[NSFetchRequest alloc]initWithEntityName:@"ChatPartners"];
+    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"ChatPartners"];
     NSError *error = nil;
     self.nameArray = [NSMutableArray array];
+    [self.tableViewRecentChats reloadData];
     NSArray *results = [appDelegate.managedObjectContext executeFetchRequest:request error:&error];
     
-    if ([results count] || ![Utils isInternetAvailable])
+//    if ([results count] && ![Utils isInternetAvailable])
+    if(0)
     {
         //Deal with Database
         
@@ -89,7 +91,8 @@
             recentUserDict[@"unread_count"] = [NSString stringWithFormat:@"%@",recentChats.unreadCount];
             recentUserDict[@"totalChats_count"] = [NSString stringWithFormat:@"%@",recentChats.totalChatCount];
             recentUserDict[@"flag_state"] = [NSString stringWithFormat:@"%@",recentChats.chatCategory];
-            
+            recentUserDict[@"flag"] = [NSString stringWithFormat:@"%@",recentChats.chatStatus];
+            recentUserDict[@"flag_initiate"] = [NSString stringWithFormat:@"%@",recentChats.chatFlagInitiate];
             [self.nameArray addObject:recentUserDict];
         }
         
@@ -101,7 +104,7 @@
     {
         //Deal with Service
         AFNHelper *afnHelper = [AFNHelper new];
-        [afnHelper getDataFromPath:@"getProfileMatches" withParamData:[@{@"ent_user_fbid": [FacebookUtility sharedObject].fbID, @"ent_user_action": @"5"} mutableCopy] withBlock:^(id response, NSError *error)
+        [afnHelper getDataFromPath:@"getProfileMatches" withParamData:[@{@"ent_user_fbid": [FacebookUtility sharedObject].fbID} mutableCopy] withBlock:^(id response, NSError *error)
          {
              if ([response[@"likes"] count])
              {
@@ -116,8 +119,6 @@
              
          }];
     }
-    
-    
 }
 
 - (void)addRecentChatsToDatabase
@@ -133,6 +134,7 @@
         recentChat.pPic_local = [self localPathForProfileImageWithRemoteURL:dict[@"pPic"]];
         recentChat.chatCategory = [NSNumber numberWithInt:[dict[@"flag_state"] intValue]];
         recentChat.chatStatus = [NSNumber numberWithInt:[dict[@"flag"] intValue]];
+        recentChat.chatFlagInitiate = [NSNumber numberWithInt:[dict[@"flag_intiate"] intValue]];
         [appDelegate.managedObjectContext save:nil];
         
     }
@@ -261,8 +263,12 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    selectedIndex = indexPath.row;
-    [self performSegueWithIdentifier:@"recentChatsToChatsIdentifier" sender:self];
+    if ([self.nameArray count]>indexPath.row)
+    {
+        selectedIndex = indexPath.row;
+        
+        [self performSegueWithIdentifier:@"recentChatsToChatsIdentifier" sender:self];
+    }
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -272,7 +278,11 @@
         ChatViewController *chatViewController = [segue destinationViewController];
         chatViewController.userName = self.nameArray[selectedIndex][@"fName"];
         chatViewController.recieveFBID = self.nameArray[selectedIndex][@"fbId"];
-        chatViewController.chatStatus = self.nameArray[selectedIndex][@"flag_state"];
+        chatViewController.chatFlag = self.nameArray[selectedIndex][@"flag"];
+        chatViewController.chatFlag_State = self.nameArray[selectedIndex][@"flag_state"];
+        chatViewController.chatFlag_Initiate = self.nameArray[selectedIndex][@"flag_initiate"];
+        chatViewController.chatFlag_Mine = self.nameArray[selectedIndex][@"flag_mine"];
+        chatViewController.chatFlag_Mine_State = self.nameArray[selectedIndex][@"flag_mine_state"];
         [self resetBadgeCounterWithInfo:self.nameArray[selectedIndex]];
     }
 

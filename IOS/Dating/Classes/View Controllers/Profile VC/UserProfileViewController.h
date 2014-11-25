@@ -11,7 +11,7 @@
 @interface UserProfileViewController : UIViewController <UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate, UIGestureRecognizerDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *lblUserName;
-@property (strong, nonatomic) NSArray *imagesArray;
+@property (strong, nonatomic) NSMutableArray *imagesArray;
 @property (strong, nonatomic) NSString *fbId;
 @property (strong, nonatomic) IBOutlet UIView *viewDelete;
 

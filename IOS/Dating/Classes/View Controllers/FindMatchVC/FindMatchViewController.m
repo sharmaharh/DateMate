@@ -321,7 +321,6 @@
 
 - (IBAction)passEmotionsButtonPressed:(id)sender
 {
-    UIButton *emotionsButton = (UIButton *)sender;
     if (![Utils isInternetAvailable])
     {
         [Utils showOKAlertWithTitle:@"Dating" message:@"No Internet Connection!"];
@@ -329,7 +328,7 @@
     else
     {
         AFNHelper *afnhelper = [AFNHelper new];
-        NSMutableDictionary *requestDic = [NSMutableDictionary dictionaryWithObjects:@[[FacebookUtility sharedObject].fbID,matchedProfilesArray[currentProfileIndex][@"fbId"],[NSString stringWithFormat:@"%lu",(long)emotionsButton.tag]] forKeys:@[@"ent_user_fbid",@"ent_invitee_fbid",@"ent_user_action"]];
+        NSMutableDictionary *requestDic = [NSMutableDictionary dictionaryWithObjects:@[[FacebookUtility sharedObject].fbID,matchedProfilesArray[currentProfileIndex][@"fbId"],@"1"] forKeys:@[@"ent_user_fbid",@"ent_invitee_fbid",@"ent_user_action"]];
         
         [afnhelper getDataFromPath:@"inviteAction" withParamData:requestDic withBlock:^(id response, NSError *error)
          {

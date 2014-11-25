@@ -2,7 +2,7 @@
 //  ChatPartners.m
 //  Dating
 //
-//  Created by Harsh Sharma on 10/12/14.
+//  Created by Harsh Sharma on 10/15/14.
 //  Copyright (c) 2014 IncredTechnologies. All rights reserved.
 //
 
@@ -12,6 +12,7 @@
 @implementation ChatPartners
 
 @dynamic chatCategory;
+@dynamic chatStatus;
 @dynamic fbId;
 @dynamic fName;
 @dynamic ladt;
@@ -19,6 +20,6 @@
 @dynamic pPic_remote;
 @dynamic totalChatCount;
 @dynamic unreadCount;
-@dynamic chatStatus;
+@dynamic chatFlagInitiate;
 
 @end

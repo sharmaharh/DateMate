@@ -7,13 +7,15 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "AudioRecordingView.h"
 
 @protocol AttachmentHelperDelegate <NSObject>
 
 
 @end
 
-typedef enum : NSUInteger {
+typedef enum : int {
+    kText = 1,
     kImage,
     KVideo,
     kAudio,
@@ -24,8 +26,12 @@ typedef enum : NSUInteger {
 
 
 @property (strong, nonatomic) UIImagePickerController *imagePickerController;
-@property (strong, nonatomic) AVAudioPlayer *audioPlayer;
+@property (strong, nonatomic) AVPlayer *audioPlayer;
 @property (strong, nonatomic) AVAudioRecorder *audioRecorder;
+@property (strong, nonatomic) NSData *attachmentData;
+@property (strong, nonatomic) NSString *attachmentURL;
+@property (strong, nonatomic) AudioRecordingView *audioRecordingView;
+@property (strong, nonatomic) NSTimer *audioRecordingTimer;
 @property (strong, nonatomic) id <AttachmentHelperDelegate> attchmentDelegate;
 
 /*-----------------------------------------------------
@@ -44,5 +50,7 @@ typedef enum : NSUInteger {
 - (void)openImagePickerControllerForVideo;
 
 - (void)startAudioRecording;
+
+- (void)playAudioWithURLString:(NSString *)audioStrURL;
 
 @end

@@ -8,10 +8,15 @@
 
 #import "ChatViewController.h"
 #import "ChatHistory.h"
+#import "ChatPartners.h"
+#import "AudioRecordingView.h"
 
 @interface ChatViewController ()
 {
     NSString *headerTitle;
+    NSInteger totalChatCount;
+    BOOL isFirstTime;
+    MPMoviePlayerViewController *moviePlayer;
 }
 
 @end
@@ -38,29 +43,34 @@
     return sharedInstance;
 }
 
-
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    isFirstTime = YES;
+    self.tableViewChat.sectionFooterHeight = 0;
+    totalChatCount = 0;
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     
-    self.messages = [NSMutableArray array];
-    [self.tableViewChat reloadData];
-    if (![self.recieveFBID length])
+    if (isFirstTime)
     {
-        self.recieveFBID = @"";
+        isFirstTime = NO;
+        self.messages = [NSMutableArray array];
+        [self.tableViewChat reloadData];
+        if (![self.recieveFBID length])
+        {
+            self.recieveFBID = @"";
+        }
+        
+        [self getUserStatus];
+        
+        [self getChatHistory];
     }
     
-    [self getUserStatus];
-    
-    [self getChatHistory];
 }
 
 
@@ -94,6 +104,21 @@
     
 }
 
+- (void)saveTotalCountofMessages
+{
+//    NSFetchRequest *request = [[NSFetchRequest alloc]initWithEntityName:@"ChatPartners"];
+//    NSPredicate *chatPredicate  = [NSPredicate predicateWithFormat:@"%K = %@",msg_Reciver_ID,self.recieveFBID];
+//    
+//    [request setPredicate:chatPredicate];
+//    NSError *error = nil;
+//    
+//    NSArray *results = [appDelegate.managedObjectContext executeFetchRequest:request error:&error];
+//    
+//    ChatPartners *chatPartner = (ChatPartners *)[results firstObject];
+//    chatPartner.totalChatCount = [NSNumber numberWithInt:totalChatCount];
+//    [appDelegate.managedObjectContext save:nil];
+}
+
 - (void)getChatHistory
 {
     NSFetchRequest *request = [[NSFetchRequest alloc]initWithEntityName:@"ChatHistory"];
@@ -104,7 +129,8 @@
     
     NSArray *results = [appDelegate.managedObjectContext executeFetchRequest:request error:&error];
     
-    if ([results count] || ![Utils isInternetAvailable])
+//    if ([results count] || ![Utils isInternetAvailable])
+    if(0)
     {
         //Deal with Database
         NSMutableArray *tempArray = [NSMutableArray array];
@@ -130,7 +156,7 @@
         }
         
         [self.tableViewChat reloadData];
-        [self disableChatAccordingToStatus];
+        
         if (self.tableViewChat.contentSize.height > self.tableViewChat.frame.size.height)
         {
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -138,7 +164,7 @@
             });
             
         }
-
+        [self disableChatAccordingToStatus];
     }
     
     else
@@ -149,11 +175,13 @@
             
             if ([response[@"chat"] count])
             {
+                totalChatCount = [response[@"chatTotalCount"] integerValue];
+                [self saveTotalCountofMessages];
                 [self filterChatHistoryList:response[@"chat"]];
             }
+            [self disableChatAccordingToStatus];
         }];
     }
-
 }
 
 
@@ -169,7 +197,7 @@
     }
     
     [self.tableViewChat reloadData];
-    [self disableChatAccordingToStatus];
+    
     if (self.tableViewChat.contentSize.height > self.tableViewChat.frame.size.height)
     {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -189,7 +217,7 @@
         NSDate *date1 = [formatter dateFromString:obj1[@"dt"]];
         NSDate *date2 = [formatter dateFromString:obj2[@"dt"]];
         
-        return [date1 compare:date2]; // sort in descending order
+        return [date2 compare:date1]; // sort in descending order
     };
     //    then simply sort the array by doing:
     return [chatArray sortedArrayUsingComparator:myDateComparator];
@@ -245,23 +273,53 @@
 
 - (IBAction)btnSendMessagePressed:(id)sender
 {
-    if (self.textFieldMessage.text.length)
+    NSDateFormatter *dateFormatter = [NSDateFormatter new];
+    [dateFormatter setDateFormat:@"YYYY-MM-d h:m:s"];
+    
+    NSDictionary *msgDict = [NSDictionary dictionary];
+    
+    switch (self.attachmentType)
     {
-        NSDateFormatter *dateFormatter = [NSDateFormatter new];
-        [dateFormatter setDateFormat:@"YYYY-MM-d h:m:s"];
-        
-        NSDictionary *msgDict = @{msg_ID: @"", msg_Sender_ID : [FacebookUtility sharedObject].fbID, msg_Reciver_ID : self.recieveFBID, msg_Sender_Name : [FacebookUtility sharedObject].fbFullName, msg_text : self.textFieldMessage.text, msg_Date : [dateFormatter stringFromDate:[NSDate date]]};
-        
-        [self.messages addObject:[Message messageWithDictionary:msgDict]];
-        [self addMessageToDatabase:[self.messages lastObject]];
-//        [self.messages addObject:[Message messageWithString:self.textFieldMessage.text isMySentMessage:YES]];
-        [self.tableViewChat reloadData];
-        [self sendMessage];
+        case kText:
+        {
+            if (self.textFieldMessage.text.length)
+            {
+                msgDict = @{msg_ID: @"", msg_Sender_ID : [FacebookUtility sharedObject].fbID, msg_Reciver_ID : self.recieveFBID, msg_Sender_Name : [FacebookUtility sharedObject].fbFullName, msg_text : self.textFieldMessage.text, msg_Date : [dateFormatter stringFromDate:[NSDate date]],msg_Media_Section : [NSString stringWithFormat:@"%i",self.attachmentType]};
+                
+            }
+            else
+            {
+                [Utils showOKAlertWithTitle:@"Message" message:@"Please Enter Message"];
+            }
+        }
+            break;
+            
+        case kImage: case KVideo: case kAudio:
+        {
+            if ([ChatAttachmentHelperClass sharedInstance].attachmentData)
+            {
+                msgDict = @{msg_ID: @"", msg_Sender_ID : [FacebookUtility sharedObject].fbID, msg_Reciver_ID : self.recieveFBID, msg_Sender_Name : [FacebookUtility sharedObject].fbFullName, msg_text : @"", msg_Date : [dateFormatter stringFromDate:[NSDate date]],msg_Media:[ChatAttachmentHelperClass sharedInstance].attachmentData,msg_Media_Section : [NSString stringWithFormat:@"%i",self.attachmentType],msg_Media_URL:[ChatAttachmentHelperClass sharedInstance].attachmentURL};
+                
+            }
+            else
+            {
+                [Utils showOKAlertWithTitle:@"Message" message:@"Please Enter Message"];
+            }
+        }
+            break;
+            
+            
+        default:
+            break;
     }
-    else
-    {
-        [Utils showOKAlertWithTitle:@"Message" message:@"Please Enter Message"];
-    }
+    
+    
+    [self.messages addObject:[Message messageWithDictionary:msgDict]];
+    totalChatCount ++;
+    [self addMessageToDatabase:[self.messages lastObject]];
+    //        [self.messages addObject:[Message messageWithString:self.textFieldMessage.text isMySentMessage:YES]];
+    [self.tableViewChat reloadData];
+    [self sendMessage];
     
 }
 
@@ -270,26 +328,50 @@
     /*
      (
      {
-     fName = Navneet;
-     fbId = 10203175848489479;
+     fName = Harsh;
+     fbId = 661762160568643;
      flag = 5;
      "flag_initiate" = 1;
+     "flag_mine" = 5;
+     "flag_mine_state" = 2;
      "flag_state" = 2;
-     ladt = "2014-10-14 17:25:54";
-     pPic = "http://graph.facebook.com/10203175848489479/picture?type=large";
+     ladt = "2014-10-19 01:44:10";
+     pPic = "https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xpa1/v/t1.0-1/p200x200/6417_608575192554007_3093356137364336146_n.jpg?oh=7045032972f327d13d3a49e4ab1fde90&oe=54F06B41&__gda__=1421115652_843d8854c4078520639b5bb65a79b95f";
      }
      );
      */
-    if ([self.chatFlag_State isEqualToString:@"2"] && ![self.chatFlag isEqualToString:@"5"])
+    
+    int minNum = MIN([self.chatFlag_State intValue], [self.chatFlag_Mine_State intValue]);
+    
+    if (minNum == 1 && totalChatCount >= 10)
     {
+        // Stare Emotion
         [self.viewChatWindow setUserInteractionEnabled:NO];
         [self.viewChatWindow setAlpha:0.5];
+        self.tableViewChat.sectionFooterHeight = 60;
         [self.tableViewChat reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
     }
-    else if ([self.chatFlag_State isEqualToString:@"3"] && ![self.chatFlag isEqualToString:@"5"])
+    else if (minNum == 2 && totalChatCount >= 20)
     {
+        // Wave Emotion
         [self.viewChatWindow setUserInteractionEnabled:NO];
         [self.viewChatWindow setAlpha:0.5];
+        self.tableViewChat.sectionFooterHeight = 60;
+        [self.tableViewChat reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
+    }
+    else if (minNum == 3 && totalChatCount >= 30)
+    {
+        // Smile Emotion
+        [self.viewChatWindow setUserInteractionEnabled:NO];
+        [self.viewChatWindow setAlpha:0.5];
+        self.tableViewChat.sectionFooterHeight = 60;
+        [self.tableViewChat reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
+    }
+    else
+    {
+        [self.viewChatWindow setUserInteractionEnabled:YES];
+        [self.viewChatWindow setAlpha:1.0];
+        self.tableViewChat.sectionFooterHeight = 0;
         [self.tableViewChat reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
     }
 }
@@ -301,27 +383,65 @@
         [self.tableViewChat setContentOffset:CGPointMake(0, self.tableViewChat.contentSize.height-self.tableViewChat.frame.size.height) animated:YES];
         
     }
+    
+    NSMutableDictionary *reqDict = [NSMutableDictionary dictionary];
+    
     AFNHelper *afnHelper = [AFNHelper new];
-    [afnHelper getDataFromPath:@"sendMessage" withParamData:[NSMutableDictionary dictionaryWithObjects:@[[FacebookUtility sharedObject].fbID,self.recieveFBID,self.textFieldMessage.text] forKeys:@[@"ent_user_fbid",@"ent_user_recever_fbid",@"ent_message"]] withBlock:^(id response, NSError *error) {
+    
+    if (self.attachmentType == kText)
+    {
+        reqDict = [NSMutableDictionary dictionaryWithObjects:@[[FacebookUtility sharedObject].fbID,self.recieveFBID,[NSString stringWithFormat:@"%i",self.attachmentType],self.textFieldMessage.text,[NSData data]] forKeys:@[@"ent_user_fbid",@"ent_user_recever_fbid",@"ent_media_action",@"ent_message",@"ent_media_file"]];
         
-        NSLog(@"Message Sent Response = %@",response);
-    }];
+        [afnHelper getDataFromPath:@"sendMessage" withParamData:reqDict withBlock:^(id response, NSError *error) {
+            
+            NSLog(@"Message Sent Response = %@",response);
+        }];
+    }
+    else
+    {
+        reqDict = [NSMutableDictionary dictionaryWithObjects:@[[FacebookUtility sharedObject].fbID,self.recieveFBID,[NSString stringWithFormat:@"%i",self.attachmentType],@""] forKeys:@[@"ent_user_fbid",@"ent_user_recever_fbid",@"ent_media_action",@"ent_message"]];
+        
+        if (self.attachmentType == kImage)
+        {
+            [afnHelper getDataFromPath:@"sendMessage" withParamDataImage:reqDict andImage:[UIImage imageWithData:[ChatAttachmentHelperClass sharedInstance].attachmentData] withBlock:^(id response, NSError *error) {
+                NSLog(@"Message Sent Response = %@",response);
+            }];
+        }
+        else
+        {
+            [afnHelper getDataFromPath:@"sendMessage" withMultipartParamDataImage:reqDict withMimeType:[NSString stringWithFormat:@"%@/%@",((self.attachmentType == kAudio)?@"audio":@"video"),[[ChatAttachmentHelperClass sharedInstance].attachmentURL pathExtension]] andData:[ChatAttachmentHelperClass sharedInstance].attachmentData withBlock:^(id response, NSError *error) {
+                NSLog(@"Message Sent Response = %@",response);
+                ((Message *)[self.messages lastObject]).attachmentURL = response[@"chat"][msg_Media_URL];
+            }];
+            
+        }
+        
+    }
+    
+    self.attachmentType = kText;
 }
 
 - (void)recieveMessage:(NSDictionary *)messageDict
 {
+    Message *message = [Message messageWithDictionary:messageDict];
+    
+    if (message.attachmentType == 2 || message.attachmentType == 3 || message.attachmentType == 5)
+    {
+        message.attachmentURL = message.message;
+    }
+    
     if ([[messageDict allKeys] containsObject:@"alert"])
     {
-        NSDictionary *tempDict = @{msg_text: messageDict[@"alert"], msg_Date: messageDict[msg_Date], msg_ID: messageDict[msg_ID], msg_Reciver_ID: [FacebookUtility sharedObject].fbID, msg_Sender_ID: messageDict[@"sFid"],msg_Sender_Name: messageDict[msg_Sender_Name]};
-        [self.messages addObject:[Message messageWithDictionary:tempDict]];
+        [self.messages addObject:message];
         [self.tableViewChat reloadData];
     }
     else
     {
-        [self.messages addObject:[Message messageWithDictionary:messageDict]];
+        [self.messages addObject:message];
         [self.tableViewChat reloadData];
         
     }
+    totalChatCount ++;
     if (self.tableViewChat.contentSize.height > self.tableViewChat.frame.size.height)
     {
         [self.tableViewChat setContentOffset:CGPointMake(0, self.tableViewChat.contentSize.height-self.tableViewChat.frame.size.height) animated:YES];
@@ -333,7 +453,7 @@
 
 -(void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
-    
+    [ChatAttachmentHelperClass sharedInstance].attchmentDelegate = self;
     switch (actionSheet.tag)
     {
             
@@ -352,12 +472,15 @@
                     
                 case 1:
                     // Video
-                    
+                    [[ChatAttachmentHelperClass sharedInstance] openImagePickerControllerForVideo];
                     break;
                     
                 case 2:
                     // Audio
-                    [[ChatAttachmentHelperClass sharedInstance] startAudioRecording];
+                {
+                    AudioRecordingView *audioRecordingView = [[AudioRecordingView alloc] initWithFrame:self.view.frame];
+                    [self.view addSubview:audioRecordingView];
+                }
                     break;
                     
                 default:
@@ -384,6 +507,39 @@
     }
 }
 
+- (void)openAudioRecordingView
+{
+    UIView *audioRecordingView = [[UIView alloc] initWithFrame:self.view.frame];
+    [audioRecordingView setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6]];
+    
+    UIView *audioRecorderframe = [[UIView alloc] initWithFrame:CGRectMake(20, 200, 280, 100)];
+    [audioRecordingView setBackgroundColor:[UIColor whiteColor]];
+    [audioRecordingView addSubview:audioRecorderframe];
+    
+    UIButton *playStopButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [playStopButton setFrame:CGRectMake(0, 30, 40, 40)];
+    [playStopButton setTitle:@"Play" forState:UIControlStateNormal];
+    [playStopButton setTitle:@"Stop" forState:UIControlStateSelected];
+    [playStopButton addTarget:self action:@selector(playStopButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [playStopButton.titleLabel setAdjustsFontSizeToFitWidth:YES];
+    [audioRecorderframe addSubview:playStopButton];
+    
+    
+    UIProgressView *recordingProgressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
+    [recordingProgressView setFrame:CGRectMake(40, 40, 180, 20)];
+    [recordingProgressView setProgress:0];
+    
+    UISlider *playerSlider = [[UISlider alloc] initWithFrame:CGRectMake(40, 40, 180, 20)];
+    [playerSlider setMaximumValue:100];
+    [playerSlider setMinimumValue:0];
+    [playerSlider addTarget:self action:@selector(playerSliderValueChanged:) forControlEvents:UIControlEventValueChanged];
+}
+
+- (void)playerSliderValueChanged: (UISlider *)slider
+{
+    
+}
+
 #pragma mark -----
 #pragma mark UITableViewDelegate & DataSource
 
@@ -399,14 +555,46 @@
     return headerTitle.length?22:0;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    Message *message = [self.messages objectAtIndex:indexPath.row];
+    
+    CGSize size;
+    
+    if (message.attachmentType == kText)
+    {
+        if(message.avatar)
+        {
+            size = [message.message sizeWithFont:[UIFont systemFontOfSize:14.0f] constrainedToSize:CGSizeMake(tableView.frame.size.width - [self minInsetForCell:nil atIndexPath:indexPath] - STBubbleImageSize - 8.0f - STBubbleWidthOffset, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping];
+        }
+        else
+        {
+            size = [message.message sizeWithFont:[UIFont systemFontOfSize:14.0f] constrainedToSize:CGSizeMake(tableView.frame.size.width - [self minInsetForCell:nil atIndexPath:indexPath] - STBubbleWidthOffset, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping];
+        }
+        
+        // This makes sure the cell is big enough to hold the avatar
+        if(size.height + 15.0f < STBubbleImageSize + 4.0f && message.avatar)
+        {
+            return STBubbleImageSize + 4.0f;
+        }
+    }
+    else if(message.attachmentType == kAudio)
+    {
+        size = CGSizeMake(200, 40);
+    }
+    else
+    {
+        size = CGSizeMake(200, 160);
+    }
+    
+    
+    return size.height + 40.0f;
+}
+
+
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
     return headerTitle.length?[@"last seen at " stringByAppendingString:headerTitle]:@"";
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
-{
-    return ([self.chatFlag intValue]!=5)?60:0;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
@@ -421,9 +609,9 @@
     [emotionButton setFrame:CGRectMake(260, 15, 55, 30)];
     [emotionButton addTarget:self action:@selector(passEmotionPressed:) forControlEvents:UIControlEventTouchUpInside];
     [emotionButton setBackgroundColor:[UIColor redColor]];
-    NSString *btnTitle = @"Crash";
     [emotionButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [emotionButton setTitle:btnTitle forState:UIControlStateNormal];
+    [self titleForPassEmotionButton:emotionButton];
+    [emotionButton.titleLabel setAdjustsFontSizeToFitWidth:YES];
     [footerView addSubview:statusLabel];
     [footerView addSubview:emotionButton];
     return footerView;
@@ -439,6 +627,7 @@
     static NSString *CellIdentifier = @"Bubble Cell";
     
     STBubbleTableViewCell *cell = (STBubbleTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    
     if (cell == nil)
     {
         cell = [[STBubbleTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
@@ -448,48 +637,416 @@
 		cell.dataSource = self;
 		cell.delegate = self;
 	}
-	
-	Message *message = [self.messages objectAtIndex:indexPath.row];
-	
-    cell.authorType = !message.isMySentMessage;
-	cell.textLabel.font = [UIFont systemFontOfSize:14.0f];
-	cell.textLabel.text = message.message;
-    cell.textLabel.textAlignment = cell.authorType?NSTextAlignmentLeft:NSTextAlignmentRight;
-	cell.imageView.image = message.avatar;
-	
-    // Put your own logic here to determine the author
-    cell.detailTextLabel.text = message.messageDate;
-    cell.detailTextLabel.textAlignment = cell.authorType?NSTextAlignmentLeft:NSTextAlignmentRight;
     
-    cell.bubbleColor = STBubbleTableViewCellBubbleColorGreen;
+    Message *message = [self.messages objectAtIndex:indexPath.row];
+    cell.authorType = !message.isMySentMessage;
+    [[cell viewWithTag:1] removeFromSuperview];
+    cell.textLabel.text = @"";
+    cell.detailTextLabel.text = @"";
+    cell.imageView.image = nil;
+    
+    if (message.attachmentType == kText)
+    {
+        cell.textLabel.font = [UIFont systemFontOfSize:14.0f];
+        cell.textLabel.text = message.message;
+        cell.textLabel.textAlignment = cell.authorType?NSTextAlignmentLeft:NSTextAlignmentRight;
+        cell.imageView.image = message.avatar;
+        
+        // Put your own logic here to determine the author
+        cell.detailTextLabel.text = message.messageDate;
+        cell.detailTextLabel.textAlignment = cell.authorType?NSTextAlignmentLeft:NSTextAlignmentRight;
+        cell.bubbleColor = STBubbleTableViewCellBubbleColorGreen;
+    }
+    else if(message.attachmentType == kImage)
+    {
+        
+        UIButton *cellImageButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        cellImageButton.backgroundColor = [UIColor yellowColor];
+        UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        activityIndicator.hidesWhenStopped = YES;
+        cellImageButton.tag = 1;
+        [cellImageButton setContentMode:UIViewContentModeCenter];
+        if (cell.authorType)
+        {
+            // Other Person
+            cellImageButton.frame = CGRectMake(10, 10, 180, 180);
+            activityIndicator.frame = CGRectMake(80, 80, 40, 40);
+            [self setImageOnButton:cellImageButton WithURL:message.attachmentURL WithProgressIndicator:activityIndicator];
+        }
+        else
+        {
+            cellImageButton.frame = CGRectMake(cell.frame.size.width-190, 10, 180, 180);
+            activityIndicator.frame = CGRectMake(cell.frame.size.width-120, 80, 40, 40);
+            if ([message.attachmentData length])
+            {
+                [cellImageButton setImage:[UIImage imageWithData:message.attachmentData] forState:UIControlStateNormal];
+            }
+            else
+            {
+                [self setImageOnButton:cellImageButton WithURL:message.attachmentURL WithProgressIndicator:activityIndicator];
+            }
+            
+        }
+        [cell addSubview:cellImageButton];
+        [cell addSubview:activityIndicator];
+        cell.bubbleColor = -326;
+    }
+    else if(message.attachmentType == KVideo)
+    {
+        UIButton *cellImageButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [cellImageButton setContentMode:UIViewContentModeCenter];
+        [cellImageButton setBackgroundColor:[UIColor redColor]];
+        [cellImageButton setTitle:@"Video" forState:UIControlStateNormal];
+        cellImageButton.tag = 1;
+        if (cell.authorType)
+        {
+            // Other Person
+            cellImageButton.frame = CGRectMake(10, 10, 180, 180);
+//            activityIndicator.frame = CGRectMake(80, 80, 40, 40);
+//            [self imageFromVideoWithURL:message.attachmentURL];
+        }
+        else
+        {
+            cellImageButton.frame = CGRectMake(cell.frame.size.width-190, 10, 180, 180);
+
+//            [cellImageButton setImage:[UIImage imageWithData:[ChatAttachmentHelperClass sharedInstance].attachmentData] forState:UIControlStateNormal];
+        }
+        [cellImageButton addTarget:self action:@selector(previewVideo:) forControlEvents:UIControlEventTouchUpInside];
+        cellImageButton.accessibilityIdentifier = [NSString stringWithFormat:@"%i",indexPath.row];
+        [cell addSubview:cellImageButton];
+        cell.bubbleColor = -326;
+    }
+    else
+    {
+        UIButton *cellImageButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [cellImageButton setContentMode:UIViewContentModeCenter];
+        [cellImageButton setBackgroundColor:[UIColor purpleColor]];
+        [cellImageButton setTitle:@"Audio" forState:UIControlStateNormal];
+        cellImageButton.tag = 1;
+        if (cell.authorType)
+        {
+            // Other Person
+            cellImageButton.frame = CGRectMake(10, 10, 180, 80);
+            //            activityIndicator.frame = CGRectMake(80, 80, 40, 40);
+            //            [self imageFromVideoWithURL:message.attachmentURL];
+        }
+        else
+        {
+            cellImageButton.frame = CGRectMake(cell.frame.size.width-190, 10, 180, 80);
+            
+            //            [cellImageButton setImage:[UIImage imageWithData:[ChatAttachmentHelperClass sharedInstance].attachmentData] forState:UIControlStateNormal];
+        }
+        [cellImageButton addTarget:self action:@selector(previewAudio:) forControlEvents:UIControlEventTouchUpInside];
+        cellImageButton.accessibilityIdentifier = [NSString stringWithFormat:@"%i",indexPath.row];
+        
+        [cell addSubview:cellImageButton];
+        cell.bubbleColor = -326;
+    }
     
     return cell;
 }
 
+- (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath*)indexPath
+{
+    Message *message = [self.messages objectAtIndex:indexPath.row];
+    
+    if (message.attachmentType == kAudio)
+    {
+        if ([ChatAttachmentHelperClass sharedInstance].audioPlayer.rate)
+        {
+            [[ChatAttachmentHelperClass sharedInstance].audioPlayer pause];
+            [ChatAttachmentHelperClass sharedInstance].audioPlayer = nil;
+        }
+    }
+}
+
+- (NSString *)AttachmentsFolderPath
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *basePath = [paths objectAtIndex:0];
+    
+    basePath = [basePath stringByAppendingPathComponent:@"Attachments"];
+    basePath = [basePath stringByAppendingPathComponent:[FacebookUtility sharedObject].fbID];
+    return basePath;
+}
+
+- (void)previewVideo:(UIButton *)btn
+{
+    Message *message = [self.messages objectAtIndex:[btn.accessibilityIdentifier integerValue]];
+    moviePlayer = [[MPMoviePlayerViewController alloc] init];
+    [moviePlayer.moviePlayer setShouldAutoplay:YES];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(moviePlayerDidFinishedPlaying:) name:MPMoviePlayerPlaybackDidFinishNotification object:moviePlayer.moviePlayer];
+    moviePlayer.moviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
+    [moviePlayer.moviePlayer setContentURL:[NSURL URLWithString:message.attachmentURL]];
+    [self presentMoviePlayerViewControllerAnimated:moviePlayer];
+}
+
+- (void)previewAudio:(UIButton *)btn
+{
+    btn.selected = !btn.selected;
+    if (btn.selected)
+    {
+        // Play Audio
+        Message *message = [self.messages objectAtIndex:[btn.accessibilityIdentifier integerValue]];
+        [[ChatAttachmentHelperClass sharedInstance] playAudioWithURLString:message.attachmentURL];
+    }
+    else
+    {
+        // Stop Audio
+        [[ChatAttachmentHelperClass sharedInstance].audioPlayer pause];
+    }
+}
+
+- (void)moviePlayerDidFinishedPlaying:(NSNotification*)aNotification
+{
+    [self dismissMoviePlayerViewControllerAnimated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self  name:MPMoviePlayerPlaybackDidFinishNotification object:moviePlayer.moviePlayer];
+    moviePlayer = nil;
+    
+//    int value = [[aNotification.userInfo valueForKey:MPMoviePlayerPlaybackDidFinishReasonUserInfoKey] intValue];
+//    if (value == MPMovieFinishReasonUserExited)
+//    {
+//        
+//    }
+}
+
+- (UIImage *)imageFromVideoWithURL:(NSString *)vidURL
+{
+    AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:[NSURL URLWithString:vidURL] options:nil];
+    AVAssetImageGenerator *generate = [[AVAssetImageGenerator alloc] initWithAsset:asset];
+    NSError *err = NULL;
+    CMTime time = CMTimeMake(1, 60);
+    CGImageRef imgRef = [generate copyCGImageAtTime:time actualTime:NULL error:&err];
+    NSLog(@"err==%@, imageRef==%@", err, imgRef);
+    
+    return [[UIImage alloc] initWithCGImage:imgRef];
+}
+
+- (void)setImageOnButton:(UIButton *)btn WithURL:(NSString *)imageURL WithProgressIndicator:(UIActivityIndicatorView *)activityIndicator
+{
+    if (!imageURL || !imageURL.length) {
+        return;
+    }
+    __block NSString *bigImageURLString = imageURL;
+    //    BOOL doesExist = [arrFilePath containsObject:filePath];
+    
+    NSString *dirPath = [self AttachmentsFolderPath];
+    NSString *filePath = [dirPath stringByAppendingPathComponent:[imageURL lastPathComponent]];
+    
+    BOOL doesExist = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
+    
+    if (doesExist)
+    {
+        UIImage *image = [UIImage imageWithContentsOfFile:filePath];
+        if (image)
+        {
+            [btn setImage:[UIImage imageWithData:[NSData dataWithContentsOfFile:filePath]] forState:UIControlStateNormal];
+            
+            [activityIndicator stopAnimating];
+        }
+        else
+        {
+            [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+            [self setImageOnButton:btn WithURL:imageURL WithProgressIndicator:activityIndicator];
+        }
+    }
+    else
+    {
+        dispatch_async(dispatch_queue_create("ProfilePics", nil), ^{
+            
+            
+            __block NSData *imageData = nil;
+            [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:bigImageURLString]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *res, NSData *data, NSError *error)
+             {
+                 if (!error)
+                 {
+                     imageData = data;
+                     UIImage *image = nil;
+                     data = nil;
+                     image = [UIImage imageWithData:imageData];
+                     if (image == nil)
+                     {
+                         image = [UIImage imageNamed:@"Bubble-0"];
+                     }
+                     
+                     [btn setImage:image forState:UIControlStateNormal];
+                     [activityIndicator stopAnimating];
+                     
+                     // Write Image in Document Directory
+                     int64_t delayInSeconds = 0.4;
+                     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+                     
+                     
+                     dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^(void){
+                         if (![[NSFileManager defaultManager] fileExistsAtPath:filePath])
+                         {
+                             if (![[NSFileManager defaultManager] fileExistsAtPath:dirPath])
+                             {
+                                 [[NSFileManager defaultManager] createDirectoryAtPath:dirPath withIntermediateDirectories:YES attributes:nil error:nil];
+                             }
+                             
+                             [[NSFileManager defaultManager] createFileAtPath:filePath contents:imageData attributes:nil];
+                             imageData = nil;
+                         }
+                     });
+                 }
+                 
+             }];
+            
+            bigImageURLString = nil;
+            
+        });
+    }
+}
+
 #pragma mark - UITableViewDelegate methods
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)passEmotionPressed:(UIButton *)btn
 {
-	Message *message = [self.messages objectAtIndex:indexPath.row];
-	
-	CGSize size;
-	
-	if(message.avatar)
+    if (![Utils isInternetAvailable])
     {
-		size = [message.message sizeWithFont:[UIFont systemFontOfSize:14.0f] constrainedToSize:CGSizeMake(tableView.frame.size.width - [self minInsetForCell:nil atIndexPath:indexPath] - STBubbleImageSize - 8.0f - STBubbleWidthOffset, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping];
+        [Utils showOKAlertWithTitle:@"Dating" message:@"No Internet Connection!"];
     }
-	else
+    else
     {
-		size = [message.message sizeWithFont:[UIFont systemFontOfSize:14.0f] constrainedToSize:CGSizeMake(tableView.frame.size.width - [self minInsetForCell:nil atIndexPath:indexPath] - STBubbleWidthOffset, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping];
+        AFNHelper *afnhelper = [AFNHelper new];
+        NSMutableDictionary *requestDic = [NSMutableDictionary dictionaryWithObjects:@[[FacebookUtility sharedObject].fbID,self.recieveFBID,[NSString stringWithFormat:@"%d",self.chatFlag_Mine_State.intValue + 1]] forKeys:@[@"ent_user_fbid",@"ent_invitee_fbid",@"ent_user_action"]];
+        
+        [afnhelper getDataFromPath:@"inviteAction" withParamData:requestDic withBlock:^(id response, NSError *error)
+         {
+             if (!error)
+             {
+                [Utils showOKAlertWithTitle:@"Dating" message:response[@"errMsg"]];
+                 
+             }
+             else
+             {
+                 [Utils showOKAlertWithTitle:@"Dating" message:@"Error Occured, Please Try Again"];
+             }
+             
+         }];
     }
-	
-	// This makes sure the cell is big enough to hold the avatar
-	if(size.height + 15.0f < STBubbleImageSize + 4.0f && message.avatar)
+}
+
+- (void)titleForPassEmotionButton:(UIButton *)btn
+{
+    /*
+     (
+     {
+     fName = Navneet;
+     fbId = 10203175848489479;
+     flag = 5;
+     "flag_initiate" = 1;
+     "flag_state" = 2;
+     ladt = "2014-10-14 17:25:54";
+     pPic = "http://graph.facebook.com/10203175848489479/picture?type=large";
+     }
+     );
+     */
+    NSString *strTitle = @"";
+    
+    if ([self.chatFlag_State intValue] == [self.chatFlag_Mine_State intValue])
     {
-		return STBubbleImageSize + 4.0f;
+        // No Furthur initiation for upcoming emotion
+        // Show the Next Emotion What User can Perform with other partener
+        
+        switch ([self.chatFlag_State intValue])
+        {
+            case 1:
+                strTitle = @"Wave";
+                break;
+                
+            case 2:
+                strTitle = @"Smile";
+                break;
+                
+            case 3:
+                strTitle = @"Wink";
+                break;
+                
+            default:
+                strTitle = @"Not Defined";
+                break;
+        }
     }
-	
-	return size.height + 40.0f;
+    else
+    {
+        // Both Partners State is different means any of them went ahead for next emotion.
+        // Initiation take place, now calculate both behaviours
+        
+        // Considering the case of other Partner at priority
+        
+        [btn setUserInteractionEnabled:YES];
+        
+        int maxNum = MAX([self.chatFlag_State intValue], [self.chatFlag_Mine_State intValue]);
+        
+        switch (maxNum)
+        {
+            case 1:
+            {
+                if (![self.chatFlag_Initiate boolValue])
+                {
+                    strTitle = @"Stare Back";
+                }
+                else
+                {
+                    strTitle = @"Stared";
+                    [btn setUserInteractionEnabled:NO];
+                    [btn setBackgroundColor:[UIColor darkGrayColor]];
+                }
+            }
+                break;
+            case 2:
+            {
+                if (![self.chatFlag_Initiate boolValue])
+                {
+                    strTitle = @"Wave Back";
+                }
+                else
+                {
+                    strTitle = @"Waved";
+                    [btn setUserInteractionEnabled:NO];
+                    [btn setBackgroundColor:[UIColor darkGrayColor]];
+                }
+            }
+                break;
+                
+            case 3:
+            {
+                if (![self.chatFlag_Initiate boolValue])
+                {
+                    strTitle = @"Smile Back";
+                }
+                else
+                {
+                    strTitle = @"Smiled";
+                    [btn setUserInteractionEnabled:NO];
+                    [btn setBackgroundColor:[UIColor darkGrayColor]];
+                }
+            }
+                break;
+                
+            case 4:
+            {
+                if (![self.chatFlag_Initiate boolValue])
+                {
+                    strTitle = @"Wink Back";
+                }
+                else
+                {
+                    strTitle = @"Winked";
+                    [btn setUserInteractionEnabled:NO];
+                    [btn setBackgroundColor:[UIColor darkGrayColor]];
+                }
+            }
+                break;
+                
+            default:
+                break;
+        }
+    }
+    
+    [btn setTitle:strTitle forState:UIControlStateNormal];
 }
 
 #pragma mark - STBubbleTableViewCellDataSource methods
@@ -535,6 +1092,7 @@
 
 -(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
+    self.attachmentType = kText;
     return YES;
 }
 

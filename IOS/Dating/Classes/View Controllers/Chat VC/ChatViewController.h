@@ -10,8 +10,9 @@
 #import "ChatAttachmentHelperClass.h"
 #import "STBubbleTableViewCell.h"
 #import "Message.h"
+#import <MediaPlayer/MediaPlayer.h>
 
-@interface ChatViewController : UIViewController <UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, STBubbleTableViewCellDataSource, STBubbleTableViewCellDelegate>
+@interface ChatViewController : UIViewController <UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, STBubbleTableViewCellDataSource, STBubbleTableViewCellDelegate,AttachmentHelperDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView *viewChatWindow;
 @property (weak, nonatomic) IBOutlet UITableView *tableViewChat;
@@ -22,6 +23,10 @@
 @property (strong, nonatomic) NSString *chatFlag;
 @property (strong, nonatomic) NSString *chatFlag_State;
 @property (strong, nonatomic) NSString *chatFlag_Initiate;
+@property (strong, nonatomic) NSString *chatFlag_Mine;
+@property (strong, nonatomic) NSString *chatFlag_Mine_State;
+
+@property (assign, nonatomic) AttachmentType attachmentType;
 
 + (id)sharedChatInstance;
 

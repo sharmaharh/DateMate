@@ -30,9 +30,21 @@
 	self = [super init];
 	if(self)
 	{
+        self.attachmentType = [messageDict[msg_Media_Section] intValue];
+        _message           = messageDict[msg_text];
+        
+        if (self.attachmentType == 1)
+        {
+            
+        }
+        else
+        {
+            _attachmentData = messageDict[msg_Media];
+            _attachmentURL = messageDict[msg_Media_URL];
+        }
+        
 		_avatar = image;
         
-        _message           = messageDict[msg_text];
         _messageID         = messageDict[msg_ID];
         _messageDate       = messageDict[msg_Date];
         _messageSenderID   = messageDict[msg_Sender_ID];

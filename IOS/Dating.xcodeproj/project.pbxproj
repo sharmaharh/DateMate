@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		3A0883AA1986CC2700BCC79C /* ChatAttachmentHelperClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A9D16081986C01A0049CE09 /* ChatAttachmentHelperClass.m */; };
 		3A0883AD1986D18400BCC79C /* Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A0883AC1986D18400BCC79C /* Utils.m */; };
+		3A1477951A0D2E2800396A62 /* AudioRecordingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A1477941A0D2E2800396A62 /* AudioRecordingView.m */; };
+		3A1477971A0D2E5600396A62 /* AudioRecordingView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3A1477961A0D2E5600396A62 /* AudioRecordingView.xib */; };
 		3A2DE8641983C0FD0035FA1B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A2DE8631983C0FD0035FA1B /* Foundation.framework */; };
 		3A2DE8661983C0FD0035FA1B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A2DE8651983C0FD0035FA1B /* CoreGraphics.framework */; };
 		3A2DE8681983C0FD0035FA1B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A2DE8671983C0FD0035FA1B /* UIKit.framework */; };
@@ -40,6 +42,7 @@
 		3AA4CB32198AAA6F005D82AF /* AFXMLRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AA4CB27198AAA6F005D82AF /* AFXMLRequestOperation.m */; };
 		3AA4CB33198AAA6F005D82AF /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AA4CB29198AAA6F005D82AF /* UIImageView+AFNetworking.m */; };
 		3AA4CB34198AAA6F005D82AF /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AA4CB2A198AAA6F005D82AF /* FacebookSDK.framework */; };
+		3AB5685C1A09496B0096D106 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AB5685B1A09496B0096D106 /* MediaPlayer.framework */; };
 		3ABC28B3198BE09900E598B5 /* FacebookUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ABC28B2198BE09900E598B5 /* FacebookUtility.m */; };
 		3ABC28B9198BE4BE00E598B5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3ABC28B8198BE4BE00E598B5 /* Main.storyboard */; };
 		3ABC28BA198BE4BE00E598B5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3ABC28B8198BE4BE00E598B5 /* Main.storyboard */; };
@@ -104,6 +107,9 @@
 /* Begin PBXFileReference section */
 		3A0883AB1986D18400BCC79C /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
 		3A0883AC1986D18400BCC79C /* Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utils.m; sourceTree = "<group>"; };
+		3A1477931A0D2E2800396A62 /* AudioRecordingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioRecordingView.h; path = "Dating/Classes/Helper Classes/AudioRecordingView.h"; sourceTree = SOURCE_ROOT; };
+		3A1477941A0D2E2800396A62 /* AudioRecordingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AudioRecordingView.m; path = "Dating/Classes/Helper Classes/AudioRecordingView.m"; sourceTree = SOURCE_ROOT; };
+		3A1477961A0D2E5600396A62 /* AudioRecordingView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AudioRecordingView.xib; sourceTree = SOURCE_ROOT; };
 		3A2DE8601983C0FD0035FA1B /* Dating.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dating.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A2DE8631983C0FD0035FA1B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		3A2DE8651983C0FD0035FA1B /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -152,6 +158,7 @@
 		3AA4CB28198AAA6F005D82AF /* UIImageView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+AFNetworking.h"; sourceTree = "<group>"; };
 		3AA4CB29198AAA6F005D82AF /* UIImageView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+AFNetworking.m"; sourceTree = "<group>"; };
 		3AA4CB2A198AAA6F005D82AF /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = Dating/Classes/ThirdParty/FacebookSDK.framework; sourceTree = SOURCE_ROOT; };
+		3AB5685B1A09496B0096D106 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		3ABC28B1198BE09900E598B5 /* FacebookUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookUtility.h; sourceTree = "<group>"; };
 		3ABC28B2198BE09900E598B5 /* FacebookUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookUtility.m; sourceTree = "<group>"; };
 		3ABC28B8198BE4BE00E598B5 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
@@ -223,6 +230,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3AB5685C1A09496B0096D106 /* MediaPlayer.framework in Frameworks */,
 				3A66C2C519C23AD800AA1718 /* QuartzCore.framework in Frameworks */,
 				3ABC28C1198C121A00E598B5 /* SystemConfiguration.framework in Frameworks */,
 				3AA19C921987C94900AA6871 /* MobileCoreServices.framework in Frameworks */,
@@ -271,6 +279,7 @@
 		3A2DE8621983C0FD0035FA1B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3AB5685B1A09496B0096D106 /* MediaPlayer.framework */,
 				3A66C2C419C23AD800AA1718 /* QuartzCore.framework */,
 				3ABC28C0198C121A00E598B5 /* SystemConfiguration.framework */,
 				3AA19C911987C94900AA6871 /* MobileCoreServices.framework */,
@@ -346,6 +355,9 @@
 				3AE209C119BA4ED600C47762 /* SplashView.h */,
 				3AE209C219BA4ED600C47762 /* SplashView.m */,
 				3AE209BF19BA4EA600C47762 /* SplashView.xib */,
+				3A1477931A0D2E2800396A62 /* AudioRecordingView.h */,
+				3A1477941A0D2E2800396A62 /* AudioRecordingView.m */,
+				3A1477961A0D2E5600396A62 /* AudioRecordingView.xib */,
 			);
 			path = "Custom Views";
 			sourceTree = "<group>";
@@ -763,6 +775,7 @@
 				3ABC28B9198BE4BE00E598B5 /* Main.storyboard in Resources */,
 				AA3D7FB919921AFD00C862CF /* Bubble-7.png in Resources */,
 				3AC805B819AFC9BC000C8E5B /* SEGOEUI_0.TTF in Resources */,
+				3A1477971A0D2E5600396A62 /* AudioRecordingView.xib in Resources */,
 				3AC805B619AFC96D000C8E5B /* alert.mp3 in Resources */,
 				3A2DE8701983C0FD0035FA1B /* InfoPlist.strings in Resources */,
 				AA3D7FB619921AFD00C862CF /* Bubble-5@2x.png in Resources */,
@@ -815,6 +828,7 @@
 				3AE4249B19D9C3D60046D144 /* FullImageViewController.m in Sources */,
 				3ADF4FA019CD68D60088BEB7 /* ContactsViewController.m in Sources */,
 				3AA4CB2D198AAA6F005D82AF /* AFImageRequestOperation.m in Sources */,
+				3A1477951A0D2E2800396A62 /* AudioRecordingView.m in Sources */,
 				3AA4CB2F198AAA6F005D82AF /* AFNetworkActivityIndicatorManager.m in Sources */,
 				3AA4CB33198AAA6F005D82AF /* UIImageView+AFNetworking.m in Sources */,
 				3AE13A5019C0C9570090A105 /* KeepingConnectingViewController.m in Sources */,
@@ -907,7 +921,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "37e6d909-4714-4f48-ba42-bcd7d7309678";
+				PROVISIONING_PROFILE = "3fea29af-9dfe-4d75-b8b0-ab09b98bb961";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -941,7 +955,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
-				PROVISIONING_PROFILE = "37e6d909-4714-4f48-ba42-bcd7d7309678";
+				PROVISIONING_PROFILE = "3fea29af-9dfe-4d75-b8b0-ab09b98bb961";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -960,7 +974,7 @@
 				INFOPLIST_FILE = "Dating/Dating-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "37e6d909-4714-4f48-ba42-bcd7d7309678";
+				PROVISIONING_PROFILE = "3fea29af-9dfe-4d75-b8b0-ab09b98bb961";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -978,7 +992,7 @@
 				INFOPLIST_FILE = "Dating/Dating-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "37e6d909-4714-4f48-ba42-bcd7d7309678";
+				PROVISIONING_PROFILE = "3fea29af-9dfe-4d75-b8b0-ab09b98bb961";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

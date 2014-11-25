@@ -36,6 +36,8 @@ typedef void (^RequestCompletionBlock)(id response, NSError *error);
 
 -(void)getDataFromPath:(NSString *)path withParamDataImage:(NSMutableDictionary *)dictParam andImage:(UIImage *)image withBlock:(RequestCompletionBlock)block;
 
+-(void)getDataFromPath:(NSString *)path withMultipartParamDataImage:(NSMutableDictionary *)dictParam  withMimeType:(NSString *)mimeType andData:(NSData *)attachmentData withBlock:(RequestCompletionBlock)block;
+
 -(void)callWebserviceWithMethod:(NSString *)method andBody:(NSString *)body;
 
 @end

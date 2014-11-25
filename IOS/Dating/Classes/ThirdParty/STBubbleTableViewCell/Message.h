@@ -14,6 +14,9 @@
 #define msg_Reciver_ID   @"rfid"
 #define msg_Sender_ID    @"sfid"
 #define msg_Sender_Name  @"sname"
+#define msg_Media @"media_file"
+#define msg_Media_URL @"msgfile"
+#define msg_Media_Section @"msgtype"
 
 #import <Foundation/Foundation.h>
 
@@ -26,6 +29,8 @@
 - (instancetype)initWithDictionary:(NSDictionary *)messageDict image:(UIImage *)image;
 
 @property (nonatomic, copy) NSString *message;
+@property (nonatomic, copy) NSString *attachmentURL;
+@property (strong, nonatomic) NSData *attachmentData;
 @property (nonatomic, strong) UIImage *avatar;
 @property (nonatomic, strong) NSString *messageSenderID;
 @property (nonatomic, strong) NSString *messageReciverID;
@@ -33,4 +38,6 @@
 @property (nonatomic, strong) NSString *messageSenderName;
 @property (nonatomic, strong) NSString *messageDate;
 @property (assign, nonatomic) BOOL isMySentMessage;
+@property (assign, nonatomic) AttachmentType attachmentType;
+
 @end

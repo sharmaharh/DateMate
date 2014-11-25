@@ -104,7 +104,7 @@
         
         
         NSMutableURLRequest *request = [client multipartFormRequestWithMethod:@"POST" path:path parameters:dictParam constructingBodyWithBlock: ^(id <AFMultipartFormData>formData) {
-            [formData appendPartWithFileData: imageToUpload name:@"media_chunk" fileName:@"temp.png" mimeType:@"image/png"];
+            [formData appendPartWithFileData: imageToUpload name:@"ent_media_file" fileName:@"temp.png" mimeType:@"image/png"];
         }];
         
         AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
@@ -136,6 +136,72 @@
         [operation start];
     }
 }
+
+-(void)getDataFromPath:(NSString *)path withMultipartParamDataImage:(NSMutableDictionary *)dictParam withMimeType:(NSString *)mimeType andData:(NSData *)attachmentData withBlock:(RequestCompletionBlock)block
+{
+    if (block) {
+        dataBlock=[block copy];
+    }
+    /*
+     NSData *imageToUpload = UIImageJPEGRepresentation(image, 0.5);
+     
+     NSURL *baseURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@",API_URL]];
+     client = [[AFHTTPClient alloc] initWithBaseURL:baseURL];
+     [client registerHTTPOperationClass:[AFJSONRequestOperation class]];
+     [client setDefaultHeader:@"Accept" value:@"application/json"];
+     
+     NSMutableURLRequest *request = [client multipartFormRequestWithMethod:@"POST" path:@"upload.php" parameters:dictParam constructingBodyWithBlock: ^(id <AFMultipartFormData>formData) {
+     [formData appendPartWithFileData:imageToUpload name:@"avatar" fileName:@"avt.jpg" mimeType:@"image/png"];
+     }];
+     
+     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+     [operation setUploadProgressBlock:^(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) {
+     NSLog(@"Sent %lld of %lld bytes", totalBytesWritten, totalBytesExpectedToWrite);
+     }];
+     [client enqueueHTTPRequestOperation:operation];
+     */
+    
+    NSData *imageToUpload = attachmentData;//(uploadedImgView.image);
+    if (imageToUpload)
+    {
+        NSURL *baseURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@",API_URL]];
+        client= [AFHTTPClient clientWithBaseURL:baseURL];
+        
+        
+        NSMutableURLRequest *request = [client multipartFormRequestWithMethod:@"POST" path:path parameters:dictParam constructingBodyWithBlock: ^(id <AFMultipartFormData>formData) {
+            [formData appendPartWithFileData: imageToUpload name:@"ent_media_file" fileName:[NSString stringWithFormat:@"temp.%@",[[mimeType componentsSeparatedByString:@"/"] lastObject]] mimeType:mimeType];
+        }];
+        
+        AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+        [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject)
+         {
+             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+             
+             NSDictionary *jsons = [NSJSONSerialization JSONObjectWithData:responseObject options:kNilOptions error:nil];
+             NSLog(@"response: %@",jsons);
+             if (dataBlock) {
+                 dataBlock(jsons,nil);
+             }
+             
+         }
+                                         failure:^(AFHTTPRequestOperation *operation, NSError *error)
+         {
+             if (dataBlock) {
+                 dataBlock(nil,error);
+             }
+             if([operation.response statusCode] == 403)
+             {
+                 NSLog(@"Upload Failed");
+                 return;
+             }
+             NSLog(@"error: %@", [operation error]);
+         }];
+        
+        [operation start];
+    }
+}
+
 
 -(void)callWebserviceWithMethod:(NSString *)method andBody:(NSString *)body
 {

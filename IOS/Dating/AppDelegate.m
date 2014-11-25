@@ -28,10 +28,22 @@ AppDelegate* appDelegate = nil;
 {
     self.window=[[UIWindow alloc]initWithFrame:[[UIScreen mainScreen] bounds]];
     appDelegate = self;
-    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
-     (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
     
-    [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
+    //-- Set Notification
+    if ([application respondsToSelector:@selector(isRegisteredForRemoteNotifications)])
+    {
+        // iOS 8 Notifications
+        [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
+        
+        [application registerForRemoteNotifications];
+    }
+    else
+    {
+        // iOS < 8 Notifications
+        [application registerForRemoteNotificationTypes:
+         (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound)];
+    }
+
     
     UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
     
@@ -81,7 +93,7 @@ AppDelegate* appDelegate = nil;
                 
                 
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    NSDictionary *messageDict = @{msg_text: serverNotif[@"aps"][@"alert"], msg_Date: serverNotif[@"aps"][msg_Date], msg_ID: serverNotif[@"aps"][msg_ID], msg_Reciver_ID: [FacebookUtility sharedObject].fbID, msg_Sender_ID: serverNotif[@"aps"][@"sFid"],msg_Sender_Name: serverNotif[@"aps"][msg_Sender_Name]};
+                    NSDictionary *messageDict = @{msg_text: serverNotif[@"aps"][@"alert"], msg_Date: serverNotif[@"aps"][msg_Date], msg_ID: serverNotif[@"aps"][msg_ID], msg_Reciver_ID: [FacebookUtility sharedObject].fbID, msg_Sender_ID: serverNotif[@"aps"][@"sFid"],msg_Sender_Name: serverNotif[@"aps"][msg_Sender_Name],msg_Media_Section: serverNotif[@"aps"][@"mt"]};
                     [[ChatViewController sharedChatInstance] recieveMessage:serverNotif[@"aps"]];
                     [[ChatViewController sharedChatInstance] addMessageToDatabase:[Message messageWithDictionary:messageDict]];
                 });
@@ -282,13 +294,22 @@ AppDelegate* appDelegate = nil;
     
     if ([userInfo[@"aps"][@"nt"] isEqualToString:@"2"])
     {
-         NSDictionary *messageDict = @{msg_text: userInfo[@"aps"][@"alert"], msg_Date: userInfo[@"aps"][msg_Date], msg_ID: userInfo[@"aps"][msg_ID], msg_Reciver_ID: [FacebookUtility sharedObject].fbID, msg_Sender_ID: userInfo[@"aps"][@"sFid"],msg_Sender_Name: userInfo[@"aps"][msg_Sender_Name]};
+        NSString *msgType = nil;
+        if ([userInfo[@"aps"][@"msgtype"] intValue] == 1 || [userInfo[@"aps"][@"msgtype"] intValue] == 2)
+        {
+            msgType = @"1";
+        }
+        else
+        {
+            msgType = [NSString stringWithFormat:@"%i",[userInfo[@"aps"][@"msgtype"] intValue]-1];
+        }
+        NSDictionary *messageDict = @{msg_text: userInfo[@"aps"][@"alert"], msg_Date: userInfo[@"aps"][msg_Date], msg_ID: userInfo[@"aps"][msg_ID], msg_Reciver_ID: [FacebookUtility sharedObject].fbID, msg_Sender_ID: userInfo[@"aps"][@"sFid"],msg_Sender_Name: userInfo[@"aps"][msg_Sender_Name],msg_Media_Section:msgType};
         if ([frontNavigationController.topViewController isKindOfClass:[ChatViewController class]])
         {
             ChatViewController *chatViewController = (ChatViewController *)frontNavigationController.topViewController;
             if ([chatViewController.recieveFBID isEqualToString:userInfo[@"aps"][@"sFid"]])
             {
-                [chatViewController recieveMessage:userInfo[@"aps"]];
+                [chatViewController recieveMessage:messageDict];
             }
            
             [chatViewController addMessageToDatabase:[Message messageWithDictionary:messageDict]];
@@ -336,15 +357,10 @@ AppDelegate* appDelegate = nil;
                 RecentChatsViewController *recentChatViewController = (RecentChatsViewController *)frontNavigationController.topViewController;
                 
                 [recentChatViewController getRecentChatUsers];
-            }
-            
-            
+            }            
         }
     }
-    else if ([userInfo[@"aps"][@"nt"] isEqualToString:@"2"])
-    {
-        
-    }
+    
     else
     {
         
@@ -372,11 +388,11 @@ AppDelegate* appDelegate = nil;
     
 }
 
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler
-{
-    NSLog(@"Server Notification When Disabled = %@",userInfo);
-    
-}
+//- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler
+//{
+//    NSLog(@"Server Notification When Disabled = %@",userInfo);
+//    
+//}
 
 - (NSInteger)indexOfObjectWithSenderID:(NSString *)sFid InArray:(NSMutableArray *)nameArray
 {

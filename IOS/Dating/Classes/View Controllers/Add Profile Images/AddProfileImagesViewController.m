@@ -160,7 +160,7 @@
                  {
                      NSInteger btnIndex = [self.profileImagesArray indexOfObject:[response.URL absoluteString]]+1;
                      filePath = [dirPath stringByAppendingPathComponent:[[response.URL absoluteString] lastPathComponent]];
-                     [self.profileImagesArray replaceObjectAtIndex:btnIndex-1 withObject:image];
+//                     [self.profileImagesArray replaceObjectAtIndex:btnIndex-1 withObject:image];
                      UIButton *btn = (UIButton *)[self.view viewWithTag:btnIndex];
                      [btn setImage:image forState:UIControlStateNormal];
                      [btn.imageView setContentMode:UIViewContentModeScaleAspectFit];

@@ -2,7 +2,7 @@
 //  ChatHistory.h
 //  Dating
 //
-//  Created by Harsh Sharma on 18/09/14.
+//  Created by Harsh Sharma on 10/28/14.
 //  Copyright (c) 2014 IncredTechnologies. All rights reserved.
 //
 
@@ -18,5 +18,6 @@
 @property (nonatomic, retain) NSString * rfid;
 @property (nonatomic, retain) NSString * sfid;
 @property (nonatomic, retain) NSString * sname;
+@property (nonatomic, retain) NSNumber * attachmentType;
 
 @end

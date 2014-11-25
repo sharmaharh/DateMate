@@ -91,7 +91,11 @@
     ChatViewController *chatViewController = [segue destinationViewController];
     chatViewController.userName = contactsArray[selectedIndex][@"fName"];
     chatViewController.recieveFBID = contactsArray[selectedIndex][@"fbId"];
-    chatViewController.chatStatus = contactsArray[selectedIndex][@"flag"];
+    chatViewController.chatFlag = contactsArray[selectedIndex][@"flag"];
+    chatViewController.chatFlag_State = contactsArray[selectedIndex][@"flag_state"];
+    chatViewController.chatFlag_Initiate = contactsArray[selectedIndex][@"flag_initiate"];
+    chatViewController.chatFlag_Mine = contactsArray[selectedIndex][@"flag_mine"];
+    chatViewController.chatFlag_Mine_State = contactsArray[selectedIndex][@"flag_mine_state"];
 }
 
 
