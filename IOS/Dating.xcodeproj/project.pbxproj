@@ -65,7 +65,10 @@
 		3AE4248919D713C40046D144 /* AddProfileImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE4248819D713C40046D144 /* AddProfileImagesViewController.m */; };
 		3AE4248D19D7416B0046D144 /* UserProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE4248C19D7416B0046D144 /* UserProfileViewController.m */; };
 		3AE4249B19D9C3D60046D144 /* FullImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE4249A19D9C3D60046D144 /* FullImageViewController.m */; };
-		AA3D7F831991FBF400C862CF /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3D7F821991FBF400C862CF /* SWRevealViewController.m */; };
+		AA04BCA21A26F5FD0090EFD2 /* RECommonFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = AA04BC9D1A26F5FD0090EFD2 /* RECommonFunctions.m */; };
+		AA04BCA31A26F5FD0090EFD2 /* RESideMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = AA04BC9F1A26F5FD0090EFD2 /* RESideMenu.m */; };
+		AA04BCA41A26F5FD0090EFD2 /* UIViewController+RESideMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = AA04BCA11A26F5FD0090EFD2 /* UIViewController+RESideMenu.m */; };
+		AA04BCA81A26F6B80090EFD2 /* ResideMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA04BCA71A26F6B80090EFD2 /* ResideMenuViewController.m */; };
 		AA3D7F87199200C100C862CF /* RearMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3D7F86199200C100C862CF /* RearMenuViewController.m */; };
 		AA3D7F8B1992045100C862CF /* FindMatchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3D7F8A1992045100C862CF /* FindMatchViewController.m */; };
 		AA3D7F951992066300C862CF /* reveal-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = AA3D7F941992066300C862CF /* reveal-icon@2x.png */; };
@@ -190,8 +193,14 @@
 		3AE4248C19D7416B0046D144 /* UserProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserProfileViewController.m; sourceTree = "<group>"; };
 		3AE4249919D9C3D60046D144 /* FullImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FullImageViewController.h; sourceTree = "<group>"; };
 		3AE4249A19D9C3D60046D144 /* FullImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FullImageViewController.m; sourceTree = "<group>"; };
-		AA3D7F811991FBF400C862CF /* SWRevealViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWRevealViewController.h; sourceTree = "<group>"; };
-		AA3D7F821991FBF400C862CF /* SWRevealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWRevealViewController.m; sourceTree = "<group>"; };
+		AA04BC9C1A26F5FD0090EFD2 /* RECommonFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RECommonFunctions.h; sourceTree = "<group>"; };
+		AA04BC9D1A26F5FD0090EFD2 /* RECommonFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RECommonFunctions.m; sourceTree = "<group>"; };
+		AA04BC9E1A26F5FD0090EFD2 /* RESideMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RESideMenu.h; sourceTree = "<group>"; };
+		AA04BC9F1A26F5FD0090EFD2 /* RESideMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RESideMenu.m; sourceTree = "<group>"; };
+		AA04BCA01A26F5FD0090EFD2 /* UIViewController+RESideMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+RESideMenu.h"; sourceTree = "<group>"; };
+		AA04BCA11A26F5FD0090EFD2 /* UIViewController+RESideMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+RESideMenu.m"; sourceTree = "<group>"; };
+		AA04BCA61A26F6B80090EFD2 /* ResideMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResideMenuViewController.h; sourceTree = "<group>"; };
+		AA04BCA71A26F6B80090EFD2 /* ResideMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResideMenuViewController.m; sourceTree = "<group>"; };
 		AA3D7F85199200C100C862CF /* RearMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RearMenuViewController.h; sourceTree = "<group>"; };
 		AA3D7F86199200C100C862CF /* RearMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RearMenuViewController.m; sourceTree = "<group>"; };
 		AA3D7F891992045100C862CF /* FindMatchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FindMatchViewController.h; sourceTree = "<group>"; };
@@ -365,9 +374,9 @@
 		3A2DE89A1983C4870035FA1B /* ThirdParty */ = {
 			isa = PBXGroup;
 			children = (
+				AA04BC9B1A26F5FD0090EFD2 /* RESideMenu */,
 				3AC805AF19AFA08A000C8E5B /* Reachability */,
 				AA3D7FBF19921B5B00C862CF /* STBubbleTableViewCell */,
-				AA3D7F801991FBF400C862CF /* SWRevealViewController */,
 				3ABC28BB198BEA7400E598B5 /* WebserviceHelper */,
 				3AA4CB16198AAA6F005D82AF /* AFNetworking */,
 				3AA4CB2A198AAA6F005D82AF /* FacebookSDK.framework */,
@@ -379,6 +388,7 @@
 		3A2DE89B1983C4870035FA1B /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				AA04BCA51A26F6720090EFD2 /* ReSideViewController */,
 				3AE4249819D9C3720046D144 /* Full Image VC */,
 				3AE4248A19D741570046D144 /* Profile VC */,
 				3AE4248619D713C40046D144 /* Add Profile Images */,
@@ -586,15 +596,28 @@
 			path = "Full Image VC";
 			sourceTree = "<group>";
 		};
-		AA3D7F801991FBF400C862CF /* SWRevealViewController */ = {
+		AA04BC9B1A26F5FD0090EFD2 /* RESideMenu */ = {
 			isa = PBXGroup;
 			children = (
-				AA3D7F811991FBF400C862CF /* SWRevealViewController.h */,
-				AA3D7F821991FBF400C862CF /* SWRevealViewController.m */,
+				AA04BC9C1A26F5FD0090EFD2 /* RECommonFunctions.h */,
+				AA04BC9D1A26F5FD0090EFD2 /* RECommonFunctions.m */,
+				AA04BC9E1A26F5FD0090EFD2 /* RESideMenu.h */,
+				AA04BC9F1A26F5FD0090EFD2 /* RESideMenu.m */,
+				AA04BCA01A26F5FD0090EFD2 /* UIViewController+RESideMenu.h */,
+				AA04BCA11A26F5FD0090EFD2 /* UIViewController+RESideMenu.m */,
 			);
-			name = SWRevealViewController;
-			path = Dating/Classes/ThirdParty/SWRevealViewController;
+			name = RESideMenu;
+			path = Dating/Classes/ThirdParty/RESideMenu;
 			sourceTree = SOURCE_ROOT;
+		};
+		AA04BCA51A26F6720090EFD2 /* ReSideViewController */ = {
+			isa = PBXGroup;
+			children = (
+				AA04BCA61A26F6B80090EFD2 /* ResideMenuViewController.h */,
+				AA04BCA71A26F6B80090EFD2 /* ResideMenuViewController.m */,
+			);
+			path = ReSideViewController;
+			sourceTree = "<group>";
 		};
 		AA3D7F84199200AF00C862CF /* RearMenuVC */ = {
 			isa = PBXGroup;
@@ -808,6 +831,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3AA4CB31198AAA6F005D82AF /* AFURLConnectionOperation.m in Sources */,
+				AA04BCA81A26F6B80090EFD2 /* ResideMenuViewController.m in Sources */,
 				3AE4248D19D7416B0046D144 /* UserProfileViewController.m in Sources */,
 				AA3D7FC519921BE200C862CF /* Message.m in Sources */,
 				3ABC28BE198BEA7400E598B5 /* AFNHelper.m in Sources */,
@@ -817,8 +841,8 @@
 				3AA4CB2C198AAA6F005D82AF /* AFHTTPRequestOperation.m in Sources */,
 				3A2DE8AB1983C7240035FA1B /* LogInViewController.m in Sources */,
 				3ABC28B3198BE09900E598B5 /* FacebookUtility.m in Sources */,
-				AA3D7F831991FBF400C862CF /* SWRevealViewController.m in Sources */,
 				3A2DE8761983C0FD0035FA1B /* AppDelegate.m in Sources */,
+				AA04BCA31A26F5FD0090EFD2 /* RESideMenu.m in Sources */,
 				3A9D16051986A2E40049CE09 /* ChatViewController.m in Sources */,
 				AA3D7FC219921B5B00C862CF /* STBubbleTableViewCell.m in Sources */,
 				3A2DE8791983C0FD0035FA1B /* Dating.xcdatamodeld in Sources */,
@@ -842,7 +866,9 @@
 				3AE209C319BA4ED600C47762 /* SplashView.m in Sources */,
 				3AA4CB30198AAA6F005D82AF /* AFPropertyListRequestOperation.m in Sources */,
 				AA3D7F8B1992045100C862CF /* FindMatchViewController.m in Sources */,
+				AA04BCA21A26F5FD0090EFD2 /* RECommonFunctions.m in Sources */,
 				3ADFBB4019CB3247008F48C5 /* ChatPartners.m in Sources */,
+				AA04BCA41A26F5FD0090EFD2 /* UIViewController+RESideMenu.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

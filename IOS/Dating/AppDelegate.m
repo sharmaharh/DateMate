@@ -10,7 +10,6 @@
 //#import "SplashView.h"
 #import "ChatViewController.h"
 #import "FindMatchViewController.h"
-#import "SWRevealViewController.h"
 #import "RearMenuViewController.h"
 #import "RecentChatsViewController.h"
 #import "KeepingConnectingViewController.h"
@@ -33,9 +32,9 @@ AppDelegate* appDelegate = nil;
     if ([application respondsToSelector:@selector(isRegisteredForRemoteNotifications)])
     {
         // iOS 8 Notifications
-        [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
-        
-        [application registerForRemoteNotifications];
+//        [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
+//        
+//        [application registerForRemoteNotifications];
     }
     else
     {
@@ -72,7 +71,7 @@ AppDelegate* appDelegate = nil;
                 [FacebookUtility sharedObject].fbFullName = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbFullName"];
                 
                 RearMenuViewController *rearMenuViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RearMenuViewController"];
-                self.revealController = [[SWRevealViewController alloc] initWithRearViewController:rearMenuViewController frontViewController:self.frontNavigationController];
+                self.revealController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"ResideMenuViewController"];
                 
                 [self.window setRootViewController:self.revealController];
 
@@ -87,7 +86,7 @@ AppDelegate* appDelegate = nil;
                 [FacebookUtility sharedObject].fbID = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbID"];
                 [FacebookUtility sharedObject].fbFullName = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbFullName"];
                 
-                self.revealController = [[SWRevealViewController alloc] initWithRearViewController:rearMenuViewController frontViewController:self.frontNavigationController];
+                self.revealController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"ResideMenuViewController"];
                 
                 [self.window setRootViewController:self.revealController];
                 
@@ -115,7 +114,7 @@ AppDelegate* appDelegate = nil;
             [FacebookUtility sharedObject].fbFullName = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbFullName"];
             
             RearMenuViewController *rearMenuViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RearMenuViewController"];
-            self.revealController = [[SWRevealViewController alloc] initWithRearViewController:rearMenuViewController frontViewController:appDelegate.frontNavigationController];
+            self.revealController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"ResideMenuViewController"];
             
             [self.window setRootViewController:self.revealController];
             

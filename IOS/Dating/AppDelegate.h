@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "ChatViewController.h"
+#import "ResideMenuViewController.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
@@ -18,7 +19,7 @@ extern AppDelegate *appDelegate;
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
-@property (strong, nonatomic) SWRevealViewController *revealController;
+@property (strong, nonatomic) ResideMenuViewController *revealController;
 @property (strong, nonatomic) UINavigationController *frontNavigationController;
 @property (assign, nonatomic) BOOL isAppinBackground;
 
