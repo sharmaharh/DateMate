@@ -393,7 +393,7 @@
 
 - (IBAction)btnRevealPressed:(id)sender
 {
-    [self.revealViewController revealToggle:self];
+    
 }
 
 - (IBAction)btnSaveProfilePressed:(id)sender

@@ -161,7 +161,6 @@
 
 - (IBAction)btnRevealPressed:(id)sender
 {
-    [self.revealViewController revealToggle:self];
 }
 
 @end

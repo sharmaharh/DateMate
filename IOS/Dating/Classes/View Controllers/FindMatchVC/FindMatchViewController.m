@@ -347,7 +347,7 @@
                              RecentChatsViewController *recentChatViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecentChatsViewController"];
                              appDelegate.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:recentChatViewController];
                              recentChatViewController.isFromPush = NO;
-                             [appDelegate.revealController pushFrontViewController:appDelegate.frontNavigationController animated:NO];
+                             [appDelegate.revealController setContentViewController:appDelegate.frontNavigationController animated:NO];
                              ChatViewController *chatViewConrtroller = [ChatViewController sharedChatInstance];
                              chatViewConrtroller.recieveFBID = response[@"uFbId"];
                              chatViewConrtroller.userName = response[@"uName"];
@@ -375,7 +375,6 @@
 }
 - (IBAction)btnRevealPressed:(id)sender
 {
-    [self.revealViewController revealToggle:self];
 }
 
 #pragma mark UIScrollViewDelegate

@@ -319,7 +319,6 @@
 
 - (IBAction)btnRevealPressed:(id)sender
 {
-    [self.revealViewController revealToggle:self];
 }
 - (IBAction)btnAllContactsPressed:(id)sender {
 }

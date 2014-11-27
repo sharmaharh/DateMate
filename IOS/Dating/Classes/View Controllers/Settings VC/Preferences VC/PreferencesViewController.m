@@ -88,7 +88,7 @@
             [self.activityIndicator stopAnimating];
             FindMatchViewController *findMatchViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FindMatchViewController"];
             UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:findMatchViewController];
-            [appDelegate.revealController pushFrontViewController:navigationController animated:YES];
+            [appDelegate.revealController setContentViewController:navigationController animated:YES];
             
             NSLog(@"%@",response);
         }];

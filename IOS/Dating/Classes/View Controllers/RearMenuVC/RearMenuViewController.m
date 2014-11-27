@@ -14,6 +14,7 @@
 @interface RearMenuViewController ()
 {
     NSArray *arrOptions;
+    NSArray *arrImages;
 }
 @end
 
@@ -32,6 +33,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    arrImages = @[@"message_icon",@"preference_icon",@"pendingrequest_icon",@"setting_icon",@"profile_icon"];
     arrOptions = @[@"Profile", @"Keep Connecting", @"Pending Emotions", @"Chats", @"Settings"];
 }
 
@@ -45,7 +47,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    tableView.rowHeight = 70;
+    tableView.rowHeight = 48;
     return [arrOptions count];
 }
 
@@ -62,17 +64,18 @@
     {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
     }
-    
+    cell.backgroundColor = [UIColor clearColor];
+    cell.imageView.image = [UIImage imageNamed:arrImages[indexPath.row]];
+    cell.textLabel.textColor = [UIColor whiteColor];
     cell.textLabel.text = arrOptions[indexPath.row];
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    SWRevealViewController *revealController = self.revealViewController;
     
     // We know the frontViewController is a NavigationController
-    UINavigationController *frontNavigationController = (id)revealController.frontViewController;  // <-- we know it is a NavigationController
+    UINavigationController *frontNavigationController = (id)appDelegate.revealController.contentViewController;  // <-- we know it is a NavigationController
     NSInteger row = indexPath.row;
     
 	// Here you'd implement some of your own logic... I simply take for granted that the first row (=0) corresponds to the "FrontViewController".
@@ -85,13 +88,12 @@
                 
                 UserProfileViewController *userProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"UserProfileViewController"];
                 UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:userProfileViewController];
-                [revealController pushFrontViewController:navigationController animated:YES];
+                [appDelegate.revealController setContentViewController:navigationController animated:YES];
             }
             // Seems the user attempts to 'switch' to exactly the same controller he came from!
-            else
-            {
-                [revealController revealToggle:self];
-            }
+            
+            [appDelegate.revealController hideMenuViewController];
+
             break;
             
         case 1:
@@ -102,13 +104,12 @@
                 
                 FindMatchViewController *findMatchViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FindMatchViewController"];
                 UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:findMatchViewController];
-                [revealController pushFrontViewController:navigationController animated:YES];
+                [appDelegate.revealController setContentViewController:navigationController animated:YES];
             }
             // Seems the user attempts to 'switch' to exactly the same controller he came from!
-            else
-            {
-                [revealController revealToggle:self];
-            }
+
+            [appDelegate.revealController hideMenuViewController];
+
         }
             break;
             
@@ -118,13 +119,12 @@
             {
                 KeepingConnectingViewController *keepConnectingViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"KeepingConnectingViewController"];
                 UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:keepConnectingViewController];
-                [revealController pushFrontViewController:navigationController animated:YES];
+                [appDelegate.revealController setContentViewController:navigationController animated:YES];
             }
+
             // Seems the user attempts to 'switch' to exactly the same controller he came from!
-            else
-            {
-                [revealController revealToggle:self];
-            }
+            [appDelegate.revealController hideMenuViewController];
+
             break;
             
         case 3:
@@ -133,13 +133,11 @@
             {
                 RecentChatsViewController *chatViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"RecentChatsViewController"];
                 UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:chatViewController];
-                [revealController pushFrontViewController:navigationController animated:YES];
+                [appDelegate.revealController setContentViewController:navigationController animated:YES];
             }
+            
             // Seems the user attempts to 'switch' to exactly the same controller he came from!
-            else
-            {
-                [revealController revealToggle:self];
-            }
+            [appDelegate.revealController hideMenuViewController];
             break;
             
         case 4:
@@ -148,13 +146,11 @@
             {
                 SettingsViewController *settingsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"SettingsViewController"];
                 UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:settingsViewController];
-                [revealController pushFrontViewController:navigationController animated:YES];
+                [appDelegate.revealController setContentViewController:navigationController animated:YES];
             }
+
             // Seems the user attempts to 'switch' to exactly the same controller he came from!
-            else
-            {
-                [revealController revealToggle:self];
-            }
+            [appDelegate.revealController hideMenuViewController];
             break;
             
         default:

@@ -655,7 +655,7 @@
         // Put your own logic here to determine the author
         cell.detailTextLabel.text = message.messageDate;
         cell.detailTextLabel.textAlignment = cell.authorType?NSTextAlignmentLeft:NSTextAlignmentRight;
-        cell.bubbleColor = STBubbleTableViewCellBubbleColorGreen;
+        cell.bubbleColor = STBubbleTableViewCellBubbleColorBlue;
     }
     else if(message.attachmentType == kImage)
     {
@@ -866,7 +866,7 @@
                      image = [UIImage imageWithData:imageData];
                      if (image == nil)
                      {
-                         image = [UIImage imageNamed:@"Bubble-0"];
+                         image = [UIImage imageNamed:@"Bubble-10"];
                      }
                      
                      [btn setImage:image forState:UIControlStateNormal];

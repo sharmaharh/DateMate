@@ -9,7 +9,7 @@
 #ifndef Dating_Defines_h
 #define Dating_Defines_h
 
-#import "SWRevealViewController.h"
+#import "ResideMenuViewController.h"
 #import "AppDelegate.h"
 #import "AFNHelper.h"
 #import "Utils.h"

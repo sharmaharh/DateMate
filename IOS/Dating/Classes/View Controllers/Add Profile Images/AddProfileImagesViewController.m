@@ -217,7 +217,7 @@
     appDelegate.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:userProfileViewController];
     
     RearMenuViewController *rearMenuViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"RearMenuViewController"];
-    appDelegate.revealController = [[SWRevealViewController alloc] initWithRearViewController:rearMenuViewController frontViewController:appDelegate.frontNavigationController];
+    appDelegate.revealController = [[ResideMenuViewController alloc] initWithContentViewController:appDelegate.frontNavigationController leftMenuViewController:rearMenuViewController rightMenuViewController:nil];
     
     [appDelegate.window setRootViewController:appDelegate.revealController];
     
@@ -230,7 +230,7 @@
      appDelegate.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:findMatchViewController];
    
      RearMenuViewController *rearMenuViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"RearMenuViewController"];
-     appDelegate.revealController = [[SWRevealViewController alloc] initWithRearViewController:rearMenuViewController frontViewController:appDelegate.frontNavigationController];
+     appDelegate.revealController = [[ResideMenuViewController alloc] initWithContentViewController:appDelegate.frontNavigationController leftMenuViewController:rearMenuViewController rightMenuViewController:nil];
    
      [appDelegate.window setRootViewController:appDelegate.revealController];
    

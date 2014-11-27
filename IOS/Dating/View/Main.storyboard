@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6250" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
     </dependencies>
     <scenes>
-        <!--Recent Chats View Controller - Chats-->
+        <!--Chats-->
         <scene sceneID="ccM-TY-wxT">
             <objects>
                 <viewController storyboardIdentifier="RecentChatsViewController" title="Chats" id="5eH-HO-H9Z" customClass="RecentChatsViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="wf3-lS-7aq">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="dGS-P9-ThB">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
@@ -27,7 +27,7 @@
                     <navigationItem key="navigationItem" title="Chats" id="dG7-C8-6Kn" userLabel="Navigation Item - Chats">
                         <barButtonItem key="leftBarButtonItem" image="reveal-icon.png" id="5FY-Jn-3Ac">
                             <connections>
-                                <action selector="btnRevealPressed:" destination="5eH-HO-H9Z" id="gCm-DU-QAA"/>
+                                <action selector="presentLeftMenuViewController:" destination="5eH-HO-H9Z" id="vO5-kb-EU6"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Item" id="Qc4-ZX-WGH" userLabel="Bar Button Item - All">
@@ -46,16 +46,16 @@
             </objects>
             <point key="canvasLocation" x="867" y="-651"/>
         </scene>
-        <!--Settings View Controller - Settings-->
+        <!--Settings-->
         <scene sceneID="r17-iL-aar">
             <objects>
                 <viewController storyboardIdentifier="SettingsViewController" id="vSK-pR-qM0" customClass="SettingsViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="k4e-60-IgY">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="A1s-f2-hs7">
-                                <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                                <rect key="frame" x="0.0" y="64" width="320" height="416"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
@@ -69,7 +69,7 @@
                     <navigationItem key="navigationItem" title="Settings" id="cjD-mY-Mno">
                         <barButtonItem key="leftBarButtonItem" image="reveal-icon.png" id="Ydy-au-vWv">
                             <connections>
-                                <action selector="btnRevealPressed:" destination="vSK-pR-qM0" id="a9w-4P-wCc"/>
+                                <action selector="presentLeftMenuViewController:" destination="vSK-pR-qM0" id="9QK-Qf-maO"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -86,11 +86,11 @@
             <objects>
                 <viewController storyboardIdentifier="LogInViewController" id="6Rl-ik-mJ0" customClass="LogInViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="JBl-oS-v1s">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="50f-o0-kvr">
-                                <rect key="frame" x="60" y="264" width="200" height="40"/>
+                                <rect key="frame" x="60" y="220" width="200" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.23137254900000001" green="0.34901960780000002" blue="0.59607843140000005" alpha="1" colorSpace="deviceRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -121,12 +121,12 @@
             </objects>
             <point key="canvasLocation" x="687" y="37"/>
         </scene>
-        <!--Find Match View Controller - Keep Connecting-->
+        <!--Keep Connecting-->
         <scene sceneID="Rnw-1F-Pug">
             <objects>
                 <viewController storyboardIdentifier="FindMatchViewController" id="t1c-um-8J4" customClass="FindMatchViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="xvu-mU-LN4">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="100" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No More Match Found" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="PqZ-j4-aV1">
@@ -136,7 +136,7 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="qoJ-a9-yX9">
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="qoJ-a9-yX9">
                                 <rect key="frame" x="187" y="398" width="73" height="36"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Pass">
@@ -159,7 +159,7 @@
                                 <color key="pageIndicatorTintColor" red="0.74509803919999995" green="0.74509803919999995" blue="0.76078431369999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="currentPageIndicatorTintColor" red="1" green="0.80392163989999998" blue="0.02745098248" alpha="1" colorSpace="deviceRGB"/>
                             </pageControl>
-                            <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="3j2-4Y-yoA">
+                            <button hidden="YES" opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="3j2-4Y-yoA">
                                 <rect key="frame" x="60" y="398" width="73" height="36"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Stare">
@@ -183,11 +183,12 @@
                     <navigationItem key="navigationItem" title="Keep Connecting" id="rd7-ZF-5Cq" userLabel="Navigation Item - Keep Connecting">
                         <barButtonItem key="leftBarButtonItem" image="reveal-icon.png" id="gWu-b4-Pus">
                             <connections>
-                                <action selector="btnRevealPressed:" destination="t1c-um-8J4" id="rsp-N8-vvF"/>
+                                <action selector="presentLeftMenuViewController:" destination="t1c-um-8J4" id="uzI-Wd-795"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="btnPassProfile" destination="qoJ-a9-yX9" id="hAI-xU-aIC"/>
                         <outlet property="pageControl" destination="zsO-Z8-m2H" id="JY6-eV-CSq"/>
                         <outlet property="profileNameLabel" destination="DN5-Da-88L" id="wpE-Gx-CJ7"/>
                         <outlet property="scrollViewImages" destination="BWc-CU-F4P" id="Afj-Cm-EUK"/>
@@ -197,20 +198,20 @@
             </objects>
             <point key="canvasLocation" x="1988" y="157"/>
         </scene>
-        <!--User Profile View Controller - Profile-->
+        <!--Profile-->
         <scene sceneID="Y05-GK-Tak">
             <objects>
                 <viewController storyboardIdentifier="UserProfileViewController" id="fws-VM-8GU" customClass="UserProfileViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="t5s-ur-duu">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" id="OYs-6C-rMT" userLabel="View - Main Image view">
-                                <rect key="frame" x="20" y="80" width="280" height="284"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <rect key="frame" x="20" y="80" width="280" height="233"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="UmC-nK-dtK" userLabel="Button - Profile image">
-                                        <rect key="frame" x="0.0" y="2" width="280" height="280"/>
+                                        <rect key="frame" x="0.0" y="2" width="280" height="229"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <color key="backgroundColor" red="0.74509803919999995" green="0.74509803919999995" blue="0.76078431369999999" alpha="1" colorSpace="calibratedRGB"/>
                                         <state key="normal">
@@ -234,51 +235,56 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                             </view>
                             <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="A9v-E9-gY0" userLabel="Button - Profile Pic 1">
-                                <rect key="frame" x="20" y="387" width="80" height="80"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <rect key="frame" x="20" y="330" width="80" height="80"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.74509803919999995" green="0.74509803919999995" blue="0.76078431369999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <state key="normal">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                             </button>
                             <activityIndicatorView hidden="YES" opaque="NO" tag="12" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" id="xUv-ch-mdx" userLabel="Gray Activity Indicator 1">
-                                <rect key="frame" x="50" y="417" width="20" height="20"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <rect key="frame" x="50" y="363" width="20" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                 <color key="color" red="1" green="0.80392163989999998" blue="0.02745098248" alpha="1" colorSpace="deviceRGB"/>
                             </activityIndicatorView>
                             <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="ZaO-Ld-JUX" userLabel="Button - Profile Pic 2">
-                                <rect key="frame" x="120" y="387" width="80" height="80"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <rect key="frame" x="120" y="330" width="80" height="80"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.74509803919999995" green="0.74509803919999995" blue="0.76078431369999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <state key="normal">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                             </button>
                             <activityIndicatorView hidden="YES" opaque="NO" tag="13" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" id="6Nt-cJ-CUF" userLabel="Gray Activity Indicator 2">
-                                <rect key="frame" x="150" y="417" width="20" height="20"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <rect key="frame" x="150" y="363" width="20" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                 <color key="color" red="1" green="0.80392163989999998" blue="0.02745098248" alpha="1" colorSpace="deviceRGB"/>
                             </activityIndicatorView>
                             <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="DbT-ob-oV6" userLabel="Button - Profile Pic 3">
-                                <rect key="frame" x="220" y="387" width="80" height="80"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <rect key="frame" x="220" y="330" width="80" height="80"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.74509803919999995" green="0.74509803919999995" blue="0.76078431369999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <state key="normal">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                             </button>
                             <activityIndicatorView hidden="YES" opaque="NO" tag="14" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" id="Qep-ax-5d9" userLabel="Gray Activity Indicator 3">
-                                <rect key="frame" x="250" y="417" width="20" height="20"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <rect key="frame" x="250" y="363" width="20" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                 <color key="color" red="1" green="0.80392163989999998" blue="0.02745098248" alpha="1" colorSpace="deviceRGB"/>
                             </activityIndicatorView>
+                            <view contentMode="scaleToFill" id="gyA-N9-jAS" userLabel="View -Delete">
+                                <rect key="frame" x="0.0" y="480" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                                <color key="backgroundColor" red="0.8980392157" green="0.34901960780000002" blue="0.14901960780000001" alpha="1" colorSpace="calibratedRGB"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" title="Profile" id="Cbb-0a-hBl" userLabel="Navigation Item - User Profile">
                         <barButtonItem key="leftBarButtonItem" image="reveal-icon.png" id="Xtf-uf-0OU">
                             <connections>
-                                <action selector="btnRevealPressed:" destination="fws-VM-8GU" id="Pjp-yh-Zx1"/>
+                                <action selector="presentLeftMenuViewController:" destination="fws-VM-8GU" id="vCE-HC-5QY"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="SAVE" id="oIO-Gh-mY0" userLabel="Bar Button Item - SAVE">
@@ -289,18 +295,19 @@
                     </navigationItem>
                     <connections>
                         <outlet property="lblUserName" destination="Q56-Od-QEO" id="mkh-ng-esY"/>
+                        <outlet property="viewDelete" destination="gyA-N9-jAS" id="QzV-71-D24"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3Uw-fh-Y1E" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2461" y="168"/>
         </scene>
-        <!--Preferences View Controller - Preferences-->
+        <!--Preferences-->
         <scene sceneID="DMz-go-rd6">
             <objects>
                 <viewController storyboardIdentifier="PreferencesViewController" id="xbX-la-BbJ" customClass="PreferencesViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="sQm-Zd-2sH">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="tun-8e-a60">
@@ -401,11 +408,11 @@
             <objects>
                 <viewController storyboardIdentifier="ChatViewController" id="Cfi-ac-sVn" customClass="ChatViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="J0v-Xf-7ab">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="Dd1-QP-ZzI">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="524"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="436"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
@@ -414,7 +421,7 @@
                                 </connections>
                             </tableView>
                             <view contentMode="scaleToFill" id="0sz-6h-G5y">
-                                <rect key="frame" x="0.0" y="524" width="320" height="44"/>
+                                <rect key="frame" x="0.0" y="436" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                 <subviews>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" minimumFontSize="17" id="bQh-Xb-Pu8">
@@ -467,11 +474,11 @@
             <objects>
                 <viewController id="0yz-jd-wW1" customClass="ContactsViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="sr1-7F-awu">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="0pg-eG-HRS">
-                                <rect key="frame" x="0.0" y="44" width="320" height="524"/>
+                                <rect key="frame" x="0.0" y="44" width="320" height="436"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" red="1" green="0.80392163989999998" blue="0.02745098248" alpha="1" colorSpace="deviceRGB"/>
                                 <connections>
@@ -506,11 +513,11 @@
             <objects>
                 <viewController storyboardIdentifier="FullImageViewController" id="7Xa-lH-VgW" customClass="FullImageViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="rjO-k6-tj3">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <collectionView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" pagingEnabled="YES" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" id="fVH-j4-Ro6">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="Ijk-RO-xJu">
                                     <size key="itemSize" width="319" height="567"/>
@@ -570,12 +577,12 @@
             </objects>
             <point key="canvasLocation" x="2846" y="1560"/>
         </scene>
-        <!--Add Profile Images View Controller - Profile Photos-->
+        <!--Profile Photos-->
         <scene sceneID="hvU-mD-tcY">
             <objects>
                 <viewController id="J8n-7V-Q3F" customClass="AddProfileImagesViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="RRW-kx-rkZ">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="wea-Y0-QFh">
@@ -665,16 +672,16 @@
             </objects>
             <point key="canvasLocation" x="1099" y="774"/>
         </scene>
-        <!--Keeping Connecting View Controller - Pending Emotions-->
+        <!--Pending Emotions-->
         <scene sceneID="30e-a4-A75">
             <objects>
                 <viewController storyboardIdentifier="KeepingConnectingViewController" id="vpb-9p-bQ5" customClass="KeepingConnectingViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="MiY-2E-Icf">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="IUt-pv-DbI">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
@@ -688,7 +695,7 @@
                     <navigationItem key="navigationItem" title="Pending Emotions" id="19L-KS-s6q" userLabel="Navigation Item - Keep Connecting">
                         <barButtonItem key="leftBarButtonItem" image="reveal-icon.png" id="i0t-fL-VKW">
                             <connections>
-                                <action selector="btnRevealPressed:" destination="vpb-9p-bQ5" id="GjL-OM-UGs"/>
+                                <action selector="presentLeftMenuViewController:" destination="vpb-9p-bQ5" id="4QL-Fh-f1E"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -700,12 +707,12 @@
             </objects>
             <point key="canvasLocation" x="3096" y="750"/>
         </scene>
-        <!--Reveal View Controller-->
+        <!--Reside Menu View Controller-->
         <scene sceneID="kxC-ro-Hzd">
             <objects>
-                <viewController storyboardIdentifier="SWRevealViewController" id="cNd-T5-B3Y" customClass="SWRevealViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ResideMenuViewController" id="cNd-T5-B3Y" customClass="ResideMenuViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="r6q-bl-R5J">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -739,21 +746,26 @@
             <objects>
                 <viewController storyboardIdentifier="RearMenuViewController" id="kfG-5f-UFC" customClass="RearMenuViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ENe-bO-FjQ">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="53H-GE-pnG">
-                                <rect key="frame" x="0.0" y="64" width="260" height="504"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="none" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="53H-GE-pnG">
+                                <rect key="frame" x="15" y="64" width="260" height="416"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <sections/>
                                 <connections>
                                     <outlet property="dataSource" destination="kfG-5f-UFC" id="lzp-ev-wsV"/>
                                     <outlet property="delegate" destination="kfG-5f-UFC" id="WOm-oe-iqa"/>
                                 </connections>
                             </tableView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="menuline_icon" id="pHL-te-ybT">
+                                <rect key="frame" x="15" y="64" width="2" height="288"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LoN-VY-WqL" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -780,12 +792,13 @@
         </scene>
     </scenes>
     <resources>
+        <image name="menuline_icon" width="22" height="17"/>
         <image name="reveal-icon.png" width="22" height="17"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
-        <simulatedScreenMetrics key="destination" type="retina4"/>
+        <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="sdC-pf-knq"/>

@@ -32,9 +32,9 @@ AppDelegate* appDelegate = nil;
     if ([application respondsToSelector:@selector(isRegisteredForRemoteNotifications)])
     {
         // iOS 8 Notifications
-//        [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
-//        
-//        [application registerForRemoteNotifications];
+        [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
+        
+        [application registerForRemoteNotifications];
     }
     else
     {
@@ -70,9 +70,8 @@ AppDelegate* appDelegate = nil;
                 [FacebookUtility sharedObject].fbID = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbID"];
                 [FacebookUtility sharedObject].fbFullName = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbFullName"];
                 
-                RearMenuViewController *rearMenuViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RearMenuViewController"];
                 self.revealController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"ResideMenuViewController"];
-                
+                self.revealController.contentViewController = self.frontNavigationController;
                 [self.window setRootViewController:self.revealController];
 
             }
@@ -82,12 +81,11 @@ AppDelegate* appDelegate = nil;
                 recentChatViewController.isFromPush = YES;
                 self.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:recentChatViewController];
                 
-                RearMenuViewController *rearMenuViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RearMenuViewController"];
                 [FacebookUtility sharedObject].fbID = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbID"];
                 [FacebookUtility sharedObject].fbFullName = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbFullName"];
                 
                 self.revealController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"ResideMenuViewController"];
-                
+                self.revealController.contentViewController = self.frontNavigationController;
                 [self.window setRootViewController:self.revealController];
                 
                 
@@ -113,9 +111,8 @@ AppDelegate* appDelegate = nil;
             [FacebookUtility sharedObject].fbID = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbID"];
             [FacebookUtility sharedObject].fbFullName = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbFullName"];
             
-            RearMenuViewController *rearMenuViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RearMenuViewController"];
             self.revealController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"ResideMenuViewController"];
-            
+            self.revealController.contentViewController = self.frontNavigationController;
             [self.window setRootViewController:self.revealController];
             
         }
@@ -192,7 +189,7 @@ AppDelegate* appDelegate = nil;
                         if (image)
                         {
                             
-                            NSString *filePath = [basePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%u.png",[imageURLArray indexOfObject:dict]+1]];
+                            NSString *filePath = [basePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%li.png",[imageURLArray indexOfObject:dict]+1]];
                             
                             [[NSFileManager defaultManager] createFileAtPath:filePath contents:data attributes:nil];
                             
@@ -288,7 +285,7 @@ AppDelegate* appDelegate = nil;
 {
     NSLog(@"Server Notification = %@",userInfo);
     
-    UINavigationController *frontNavigationController = (id)self.revealController.frontViewController;
+    UINavigationController *frontNavigationController = (id)self.revealController.contentViewController;
     [UIApplication sharedApplication].applicationIconBadgeNumber -= 1;
     
     if ([userInfo[@"aps"][@"nt"] isEqualToString:@"2"])
@@ -319,10 +316,7 @@ AppDelegate* appDelegate = nil;
             if ([frontNavigationController.topViewController isKindOfClass:[RecentChatsViewController class]])
             {
                 [frontNavigationController pushViewController:[ChatViewController sharedChatInstance] animated:YES];
-                if (self.revealController.frontViewPosition != 3)
-                {
-                    [self.revealController revealToggle:self];
-                }
+                
                 
             }
             else
@@ -331,7 +325,9 @@ AppDelegate* appDelegate = nil;
                 RecentChatsViewController *recentChatViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecentChatsViewController"];
                 frontNavigationController = [[UINavigationController alloc] initWithRootViewController:recentChatViewController];
                 recentChatViewController.isFromPush = YES;
-                [self.revealController pushFrontViewController:frontNavigationController animated:YES];
+                
+                [appDelegate.revealController setContentViewController:frontNavigationController animated:YES];
+                
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     
                     [[ChatViewController sharedChatInstance] recieveMessage:userInfo[@"aps"]];
@@ -365,14 +361,7 @@ AppDelegate* appDelegate = nil;
         
         if ([frontNavigationController.topViewController isKindOfClass:[KeepingConnectingViewController class]])
         {
-            if (self.revealController.frontViewPosition != 3)
-            {
-                [self.revealController revealToggle:self];
-            }
-            else
-            {
-                [Utils showOKAlertWithTitle:@"Dating" message:userInfo[@"aps"][@"alert"]];
-            }
+            [Utils showOKAlertWithTitle:@"Dating" message:userInfo[@"aps"][@"alert"]];
             
         }
         else
@@ -380,7 +369,8 @@ AppDelegate* appDelegate = nil;
             UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
             KeepingConnectingViewController *keepConnectingViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"KeepingConnectingViewController"];
             UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:keepConnectingViewController];
-            [self.revealController pushFrontViewController:navigationController animated:YES];
+            [appDelegate.revealController setContentViewController:navigationController animated:YES];
+            
         }
 
     }

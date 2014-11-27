@@ -28,7 +28,8 @@ typedef NS_ENUM(NSUInteger, BubbleColor) {
 	STBubbleTableViewCellBubbleColorPink = 6,
 	STBubbleTableViewCellBubbleColorPurple = 7,
     STBubbleTableViewCellBubbleColorRed = 8,
-	STBubbleTableViewCellBubbleColorYellow = 9
+	STBubbleTableViewCellBubbleColorYellow = 9,
+    STBubbleTableViewCellBubbleColorBlue = 10
 };
 
 @interface STBubbleTableViewCell : UITableViewCell

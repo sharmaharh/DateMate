@@ -23,7 +23,9 @@
     self.contentViewShadowRadius = 12;
     self.contentViewShadowEnabled = YES;
     
-    self.contentViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"contentViewController"];
+    [FacebookUtility sharedObject].fbID = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbID"];
+    [FacebookUtility sharedObject].fbFullName = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbFullName"];
+    
     self.leftMenuViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"RearMenuViewController"];
     self.delegate = self;
 }
