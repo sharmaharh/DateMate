@@ -76,6 +76,7 @@
     
     NSString *bigImageURLString = [self.arrPhotoGallery[indexPath.row] objectForKey:@"pImg"];
     
+    
     [self setImageOnImageView:imageView WithActivityIndicator:activityIndicator WithImageURL:bigImageURLString];
     
     UILabel *photoIndexLabel = (UILabel *)[cell.contentView viewWithTag:4];
@@ -93,7 +94,17 @@
     __block NSString *bigImageURLString = ImageURL;
     //    BOOL doesExist = [arrFilePath containsObject:filePath];
     
-    NSString *dirPath = [self ProfileImageFolderPathWithFBID:self.fbID];
+    NSString *dirPath = nil;
+    
+    if ([self.fbID length])
+    {
+        dirPath = [self ProfileImageFolderPathWithFBID:self.fbID];
+    }
+    else
+    {
+        dirPath = [self AttachmentsFolderPath];
+    }
+    
     NSString *filePath = [dirPath stringByAppendingPathComponent:[ImageURL lastPathComponent]];
     
     BOOL doesExist = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
@@ -242,6 +253,16 @@
     
     basePath = [basePath stringByAppendingPathComponent:@"Profile_Images"];
     basePath = [basePath stringByAppendingPathComponent:fbID];
+    return basePath;
+}
+
+- (NSString *)AttachmentsFolderPath
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *basePath = [paths objectAtIndex:0];
+    
+    basePath = [basePath stringByAppendingPathComponent:@"Attachments"];
+    basePath = [basePath stringByAppendingPathComponent:[FacebookUtility sharedObject].fbID];
     return basePath;
 }
 

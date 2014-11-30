@@ -14,4 +14,5 @@
 
 @interface RearMenuViewController : UIViewController
 
+@property (strong, nonatomic) IBOutlet UIImageView *proflePicImageView;
 @end

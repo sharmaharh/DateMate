@@ -10,6 +10,7 @@
 #import "ChatHistory.h"
 #import "ChatPartners.h"
 #import "AudioRecordingView.h"
+#import "FullImageViewController.h"
 
 @interface ChatViewController ()
 {
@@ -666,6 +667,9 @@
         activityIndicator.hidesWhenStopped = YES;
         cellImageButton.tag = 1;
         [cellImageButton setContentMode:UIViewContentModeCenter];
+        cellImageButton.accessibilityIdentifier = [NSString stringWithFormat:@"%li",(long)indexPath.row];
+        [cellImageButton addTarget:self action:@selector(previewImageInFullScreenMode:) forControlEvents:UIControlEventTouchUpInside];
+        
         if (cell.authorType)
         {
             // Other Person
@@ -698,21 +702,40 @@
         [cellImageButton setBackgroundColor:[UIColor redColor]];
         [cellImageButton setTitle:@"Video" forState:UIControlStateNormal];
         cellImageButton.tag = 1;
+        
+        BOOL isFileURL = ([message.attachmentURL rangeOfString:[self AttachmentsFolderPath]].location != NSNotFound);
+        
         if (cell.authorType)
         {
             // Other Person
             cellImageButton.frame = CGRectMake(10, 10, 180, 180);
 //            activityIndicator.frame = CGRectMake(80, 80, 40, 40);
-//            [self imageFromVideoWithURL:message.attachmentURL];
+            
+
         }
         else
         {
             cellImageButton.frame = CGRectMake(cell.frame.size.width-190, 10, 180, 180);
-
+            
 //            [cellImageButton setImage:[UIImage imageWithData:[ChatAttachmentHelperClass sharedInstance].attachmentData] forState:UIControlStateNormal];
         }
+        
+        if (!isFileURL)
+        {
+            NSString *imagePath = [[self AttachmentsFolderPath] stringByAppendingPathComponent:[[[message.attachmentURL lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"png"]];
+            if ([[NSFileManager defaultManager] fileExistsAtPath:imagePath])
+            {
+                [cellImageButton setImage:[UIImage imageWithContentsOfFile:imagePath] forState:UIControlStateNormal];
+            }
+        }
+        else
+        {
+            
+        }
+        
         [cellImageButton addTarget:self action:@selector(previewVideo:) forControlEvents:UIControlEventTouchUpInside];
-        cellImageButton.accessibilityIdentifier = [NSString stringWithFormat:@"%i",indexPath.row];
+        cellImageButton.accessibilityIdentifier = [NSString stringWithFormat:@"%li",(long)indexPath.row];
+        
         [cell addSubview:cellImageButton];
         cell.bubbleColor = -326;
     }
@@ -737,7 +760,7 @@
             //            [cellImageButton setImage:[UIImage imageWithData:[ChatAttachmentHelperClass sharedInstance].attachmentData] forState:UIControlStateNormal];
         }
         [cellImageButton addTarget:self action:@selector(previewAudio:) forControlEvents:UIControlEventTouchUpInside];
-        cellImageButton.accessibilityIdentifier = [NSString stringWithFormat:@"%i",indexPath.row];
+        cellImageButton.accessibilityIdentifier = [NSString stringWithFormat:@"%li",(long)indexPath.row];
         
         [cell addSubview:cellImageButton];
         cell.bubbleColor = -326;
@@ -760,6 +783,16 @@
     }
 }
 
+- (void)previewImageInFullScreenMode:(UIButton *)imageBtn
+{
+    Message *message = [self.messages objectAtIndex:[imageBtn.accessibilityIdentifier integerValue]];
+    FullImageViewController *fullImageViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FullImageViewController"];
+    fullImageViewController.currentPhotoIndex = 0;
+    fullImageViewController.arrPhotoGallery = @[@{@"pImg":message.attachmentURL}];
+    fullImageViewController.fbID = @"";
+    [self presentViewController:fullImageViewController animated:YES completion:nil];
+}
+
 - (NSString *)AttachmentsFolderPath
 {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
@@ -767,18 +800,59 @@
     
     basePath = [basePath stringByAppendingPathComponent:@"Attachments"];
     basePath = [basePath stringByAppendingPathComponent:[FacebookUtility sharedObject].fbID];
+    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:basePath])
+    {
+        [[NSFileManager defaultManager] createDirectoryAtPath:basePath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    
     return basePath;
 }
 
 - (void)previewVideo:(UIButton *)btn
 {
     Message *message = [self.messages objectAtIndex:[btn.accessibilityIdentifier integerValue]];
-    moviePlayer = [[MPMoviePlayerViewController alloc] init];
-    [moviePlayer.moviePlayer setShouldAutoplay:YES];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(moviePlayerDidFinishedPlaying:) name:MPMoviePlayerPlaybackDidFinishNotification object:moviePlayer.moviePlayer];
-    moviePlayer.moviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
-    [moviePlayer.moviePlayer setContentURL:[NSURL URLWithString:message.attachmentURL]];
-    [self presentMoviePlayerViewControllerAnimated:moviePlayer];
+
+    if (!btn.currentImage)
+    {
+        // Download
+         AFURLConnectionOperation *downloadOperation = [[AFURLConnectionOperation alloc] initWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:message.attachmentURL]]];
+        __weak AFURLConnectionOperation *downloadOperationRequest = downloadOperation;
+        [downloadOperationRequest setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
+            NSLog(@"totalBytesRead = %lli",totalBytesRead);
+            NSLog(@"bytesRead = %lu",(unsigned long)bytesRead);
+            NSLog(@"totalBytesExpectedToRead = %lli",totalBytesExpectedToRead);
+            [btn setTitle:[NSString stringWithFormat:@"%.0f%%",(((float)totalBytesRead/(float)totalBytesExpectedToRead))*100] forState:UIControlStateNormal];
+            
+            
+            
+        }];
+        [downloadOperationRequest setCompletionBlock:^{
+            NSString *filePath = [[self AttachmentsFolderPath] stringByAppendingPathComponent:[message.attachmentURL lastPathComponent]];
+            if ([[NSFileManager defaultManager] fileExistsAtPath:filePath])
+            {
+                [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+            }
+            
+            [[NSFileManager defaultManager] createFileAtPath:filePath contents:downloadOperationRequest.responseData attributes:nil];
+            
+            // Create image on Button
+            [btn setImage:[self imageFromVideoWithURL:message.attachmentURL] forState:UIControlStateNormal];
+            
+        }];
+        [downloadOperationRequest start];
+    }
+    else
+    {
+        // Play
+        moviePlayer = [[MPMoviePlayerViewController alloc] init];
+        [moviePlayer.moviePlayer setShouldAutoplay:YES];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(moviePlayerDidFinishedPlaying:) name:MPMoviePlayerPlaybackDidFinishNotification object:moviePlayer.moviePlayer];
+        moviePlayer.moviePlayer.movieSourceType = MPMovieSourceTypeFile;
+        [moviePlayer.moviePlayer setContentURL:[NSURL URLWithString:message.attachmentURL]];
+        [self presentMoviePlayerViewControllerAnimated:moviePlayer];
+    }
+    
 }
 
 - (void)previewAudio:(UIButton *)btn
@@ -812,14 +886,28 @@
 
 - (UIImage *)imageFromVideoWithURL:(NSString *)vidURL
 {
-    AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:[NSURL URLWithString:vidURL] options:nil];
+    NSString *videoPath = [[self AttachmentsFolderPath] stringByAppendingPathComponent:[vidURL lastPathComponent]];
+    AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:[NSURL fileURLWithPath:videoPath] options:nil];
     AVAssetImageGenerator *generate = [[AVAssetImageGenerator alloc] initWithAsset:asset];
     NSError *err = NULL;
     CMTime time = CMTimeMake(1, 60);
     CGImageRef imgRef = [generate copyCGImageAtTime:time actualTime:NULL error:&err];
     NSLog(@"err==%@, imageRef==%@", err, imgRef);
+    UIImage *previewImage = [[UIImage alloc] initWithCGImage:imgRef];
     
-    return [[UIImage alloc] initWithCGImage:imgRef];
+    // Write to Path
+    NSString *fileName = [[[vidURL lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"png"];
+    
+    NSString *filePath = [[self AttachmentsFolderPath] stringByAppendingPathComponent:fileName];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:filePath])
+    {
+        [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+    }
+    
+    [[NSFileManager defaultManager] createFileAtPath:filePath contents:UIImagePNGRepresentation(previewImage) attributes:nil];
+    
+    return previewImage;
 }
 
 - (void)setImageOnButton:(UIButton *)btn WithURL:(NSString *)imageURL WithProgressIndicator:(UIActivityIndicatorView *)activityIndicator
