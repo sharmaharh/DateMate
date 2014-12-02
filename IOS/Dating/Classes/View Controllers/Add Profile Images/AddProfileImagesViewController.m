@@ -226,6 +226,9 @@
 
 - (IBAction)btnKeepConnectingPressed:(id)sender
 {
+    [self performSegueWithIdentifier:@"ProfilePhotosToSelectGenderIdentifier" sender:nil];
+    return;
+    
      FindMatchViewController *findMatchViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FindMatchViewController"];
      appDelegate.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:findMatchViewController];
    

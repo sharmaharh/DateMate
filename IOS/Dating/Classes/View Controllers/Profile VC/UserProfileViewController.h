@@ -15,7 +15,5 @@
 @property (strong, nonatomic) NSString *fbId;
 @property (strong, nonatomic) IBOutlet UIView *viewDelete;
 
-- (IBAction)btnRevealPressed:(id)sender;
-
 - (IBAction)btnSaveProfilePressed:(id)sender;
 @end

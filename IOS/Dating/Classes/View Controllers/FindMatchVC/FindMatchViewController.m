@@ -32,6 +32,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+
     [self findMatchesList];
 }
 
@@ -50,51 +51,12 @@
 {
     NSDictionary *profileDict = matchedProfilesArray[currentProfileIndex];
     
-    UIButton *button = (UIButton *)[self.view viewWithTag:1];
-    button.selected = NO;
-    
     self.profileNameLabel.text = [NSString stringWithFormat:@"%@,%@",profileDict[@"firstName"],profileDict[@"age"]];
     
-    [self setImagesOnScrollView];
-    
-}
-
-- (void)setImagesOnScrollView
-{
     NSArray *userProfileImagesArray = matchedProfilesArray[currentProfileIndex][@"pPic"];
-    [self removeAllSubViewsFromScrollView];
-    [self.pageControl setHidden:NO];
-    self.pageControl.currentPage = 0;
-    self.pageControl.numberOfPages = userProfileImagesArray.count;
-    CGFloat x = 3;
-    for (int i = 0; i < [userProfileImagesArray count]; i++)
-    {
-        
-        UIButton *btnImage = [UIButton buttonWithType:UIButtonTypeCustom];
-        [btnImage setFrame:CGRectMake(x, 0, self.scrollViewImages.frame.size.width-6, self.scrollViewImages.frame.size.height)];
-        btnImage.tag = i+1;
-        [btnImage.imageView setContentMode:UIViewContentModeScaleAspectFill];
-        [btnImage addTarget:self action:@selector(showFullPicture:) forControlEvents:UIControlEventTouchUpInside];
-        
-        UIActivityIndicatorView *indicatorView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake((self.scrollViewImages.frame.size.width-37)/2, (self.scrollViewImages.frame.size.height-37)/2, 37, 37)];
-        [indicatorView setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleWhiteLarge];
-        [indicatorView setTintColor:[UIColor colorWithRed:255.0f/255.0f green:205.0f/255.0f blue:7.0f/255.0f alpha:1]];
-        [indicatorView setHidesWhenStopped:YES];
-        [self.scrollViewImages addSubview:btnImage];
-        [self.scrollViewImages addSubview:indicatorView];
-        [self setImageOnButton:btnImage WithActivityIndicator:indicatorView WithImageURL:userProfileImagesArray[i][@"pImg"]];
-        x += 300;
-    }
-    self.scrollViewImages.contentSize = CGSizeMake([userProfileImagesArray count]*self.scrollViewImages.frame.size.width, 0);
     
-}
-
-- (void)removeAllSubViewsFromScrollView
-{
-    for (id View in self.scrollViewImages.subviews)
-    {
-        [View removeFromSuperview];
-    }
+    [self setImageOnButton:self.btnProfileImage WithActivityIndicator:self.activityIndicator WithImageURL:[userProfileImagesArray firstObject][@"pImg"]];
+    [self setUpcomingProfilesInFindMatchesList];
 }
 
 - (void)setImageOnButton:(UIButton *)btn WithActivityIndicator:(UIActivityIndicatorView *)activityIndicator WithImageURL:(NSString *)ImageURL
@@ -221,6 +183,7 @@
                      if ([matchedProfilesArray count])
                      {
                          [self setProfileOnLayout];
+                         
                          for (UIView *view in self.view.subviews)
                          {
                              [view setHidden:NO];
@@ -283,7 +246,7 @@
     if (currentProfileIndex < matchedProfilesArray.count)
     {
         [self setProfileOnLayout];
-        [self downloadNextProfileImagesToProcessFastly];
+        [self setUpcomingProfilesInFindMatchesList];
     }
     else
     {
@@ -306,17 +269,7 @@
     {
         [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
     }
-    [self.scrollViewImages setContentOffset:CGPointZero];
     
-}
-
-- (void)downloadNextProfileImagesToProcessFastly
-{
-//    NSString *filePath = [self ProfileImageFolderPathWithFBID:matchedProfilesArray[currentProfileIndex + 1][@"fbId"]];
-}
-
-- (void)passProfile
-{
 }
 
 - (IBAction)passEmotionsButtonPressed:(id)sender
@@ -373,32 +326,37 @@
     }
     
 }
-- (IBAction)btnRevealPressed:(id)sender
+
+- (IBAction)btnProfileDetailPressed:(id)sender
 {
+    [self performSegueWithIdentifier:@"matchedProfileToProfileDetailIdentifier" sender:nil];
 }
 
-#pragma mark UIScrollViewDelegate
-
-- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView
+- (void)setUpcomingProfilesInFindMatchesList
 {
-    NSInteger currentPageIndex = scrollView.contentOffset.x/scrollView.frame.size.width;
+    for (UIImageView *imageView in self.upcomingProfilesView.subviews)
+    {
+        [imageView setHidden:YES];
+    }
     
-    self.pageControl.currentPage = currentPageIndex;
-    
-}
-
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-{
-    NSInteger currentPageIndex = scrollView.contentOffset.x/scrollView.frame.size.width;
-    
-    self.pageControl.currentPage = currentPageIndex;
-}
-
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-{
-    NSInteger currentPageIndex = scrollView.contentOffset.x/scrollView.frame.size.width;
-    
-    self.pageControl.currentPage = currentPageIndex;
+    for (int i = currentProfileIndex; i < MIN(matchedProfilesArray.count, currentProfileIndex+3); i++)
+    {
+        UIImageView *imageView = (UIImageView *)[self.upcomingProfilesView viewWithTag:i+100+1-currentProfileIndex];
+        
+        [imageView setImageWithURL:[NSURL URLWithString:matchedProfilesArray[i][@"pPic"][0][@"pImg"]]];
+        
+        [imageView setHidden:NO];
+        
+        if (i == currentProfileIndex)
+        {
+            [Utils configureLayerForHexagonWithView:imageView withBorderColor:[UIColor blueColor]];
+        }
+        else
+        {
+            [Utils configureLayerForHexagonWithView:imageView withBorderColor:[UIColor lightGrayColor]];
+        }
+        
+    }
 }
 
 @end

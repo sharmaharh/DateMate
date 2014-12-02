@@ -133,4 +133,8 @@
 
 -(void)openActionSheetWithTitle:(NSString *)title buttons:(NSArray *)buttons completion:(void(^)(UIActionSheet *actionSheet,NSInteger buttonIndex))actionSheetBlock;
 
+
+
++ (void)configureLayerForHexagonWithView:(UIView *)view withBorderColor:(UIColor *)color;
+
 @end

@@ -391,11 +391,6 @@
     }];
 }
 
-- (IBAction)btnRevealPressed:(id)sender
-{
-    
-}
-
 - (IBAction)btnSaveProfilePressed:(id)sender
 {
     NSDictionary *reqDict = @{@"ent_user_fbid": [FacebookUtility sharedObject].fbID, @"ent_delete_flag" : [deletedImageUrlArray count]?@"1":@"0",@"ent_image_flag":@"2",@"ent_img_file":editedArray};

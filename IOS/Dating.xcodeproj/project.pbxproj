@@ -34,6 +34,12 @@
 		3A6615991A264ECC00B82D7D /* profile_icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A6615961A264ECC00B82D7D /* profile_icon@3x.png */; };
 		3A66159A1A264ECC00B82D7D /* setting_icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A6615971A264ECC00B82D7D /* setting_icon@3x.png */; };
 		3A66C2C519C23AD800AA1718 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A66C2C419C23AD800AA1718 /* QuartzCore.framework */; };
+		3A6CFA891A2E1F8200842C48 /* SelectGenderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A6CFA881A2E1F8200842C48 /* SelectGenderViewController.m */; };
+		3A6CFA8C1A2E233300842C48 /* SelectTastesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A6CFA8B1A2E233300842C48 /* SelectTastesViewController.m */; };
+		3A6CFA8F1A2E29D200842C48 /* UserProfileDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A6CFA8E1A2E29D200842C48 /* UserProfileDetailViewController.m */; };
+		3A6CFA921A2E2F3000842C48 /* female_icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A6CFA901A2E2F3000842C48 /* female_icon@3x.png */; };
+		3A6CFA931A2E2F3000842C48 /* male_icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A6CFA911A2E2F3000842C48 /* male_icon@3x.png */; };
+		3A6CFA991A2E334800842C48 /* PBJHexagonFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A6CFA981A2E334800842C48 /* PBJHexagonFlowLayout.m */; };
 		3A9D16051986A2E40049CE09 /* ChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A9D16041986A2E40049CE09 /* ChatViewController.m */; };
 		3A9D16091986C01A0049CE09 /* ChatAttachmentHelperClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A9D16081986C01A0049CE09 /* ChatAttachmentHelperClass.m */; };
 		3A9D160B1986C2010049CE09 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A9D160A1986C2010049CE09 /* AVFoundation.framework */; };
@@ -147,6 +153,16 @@
 		3A6615961A264ECC00B82D7D /* profile_icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "profile_icon@3x.png"; sourceTree = "<group>"; };
 		3A6615971A264ECC00B82D7D /* setting_icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "setting_icon@3x.png"; sourceTree = "<group>"; };
 		3A66C2C419C23AD800AA1718 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		3A6CFA871A2E1F8200842C48 /* SelectGenderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectGenderViewController.h; sourceTree = "<group>"; };
+		3A6CFA881A2E1F8200842C48 /* SelectGenderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectGenderViewController.m; sourceTree = "<group>"; };
+		3A6CFA8A1A2E233300842C48 /* SelectTastesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectTastesViewController.h; sourceTree = "<group>"; };
+		3A6CFA8B1A2E233300842C48 /* SelectTastesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectTastesViewController.m; sourceTree = "<group>"; };
+		3A6CFA8D1A2E29D200842C48 /* UserProfileDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserProfileDetailViewController.h; sourceTree = "<group>"; };
+		3A6CFA8E1A2E29D200842C48 /* UserProfileDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserProfileDetailViewController.m; sourceTree = "<group>"; };
+		3A6CFA901A2E2F3000842C48 /* female_icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "female_icon@3x.png"; sourceTree = "<group>"; };
+		3A6CFA911A2E2F3000842C48 /* male_icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "male_icon@3x.png"; sourceTree = "<group>"; };
+		3A6CFA971A2E334800842C48 /* PBJHexagonFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PBJHexagonFlowLayout.h; path = "Dating/Classes/Helper Classes/PBJHexagonFlowLayout.h"; sourceTree = SOURCE_ROOT; };
+		3A6CFA981A2E334800842C48 /* PBJHexagonFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PBJHexagonFlowLayout.m; path = "Dating/Classes/Helper Classes/PBJHexagonFlowLayout.m"; sourceTree = SOURCE_ROOT; };
 		3A9D16031986A2E40049CE09 /* ChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatViewController.h; sourceTree = "<group>"; };
 		3A9D16041986A2E40049CE09 /* ChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatViewController.m; sourceTree = "<group>"; };
 		3A9D16071986C01A0049CE09 /* ChatAttachmentHelperClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatAttachmentHelperClass.h; sourceTree = "<group>"; };
@@ -381,6 +397,8 @@
 				3A1477931A0D2E2800396A62 /* AudioRecordingView.h */,
 				3A1477941A0D2E2800396A62 /* AudioRecordingView.m */,
 				3A1477961A0D2E5600396A62 /* AudioRecordingView.xib */,
+				3A6CFA971A2E334800842C48 /* PBJHexagonFlowLayout.h */,
+				3A6CFA981A2E334800842C48 /* PBJHexagonFlowLayout.m */,
 			);
 			path = "Custom Views";
 			sourceTree = "<group>";
@@ -402,6 +420,7 @@
 		3A2DE89B1983C4870035FA1B /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				3A6CFA861A2E1F4F00842C48 /* Preferences */,
 				AA04BCA51A26F6720090EFD2 /* ReSideViewController */,
 				3AE4249819D9C3720046D144 /* Full Image VC */,
 				3AE4248A19D741570046D144 /* Profile VC */,
@@ -462,6 +481,17 @@
 				3A2DE8AA1983C7240035FA1B /* LogInViewController.m */,
 			);
 			path = "Login VC";
+			sourceTree = "<group>";
+		};
+		3A6CFA861A2E1F4F00842C48 /* Preferences */ = {
+			isa = PBXGroup;
+			children = (
+				3A6CFA871A2E1F8200842C48 /* SelectGenderViewController.h */,
+				3A6CFA881A2E1F8200842C48 /* SelectGenderViewController.m */,
+				3A6CFA8A1A2E233300842C48 /* SelectTastesViewController.h */,
+				3A6CFA8B1A2E233300842C48 /* SelectTastesViewController.m */,
+			);
+			path = Preferences;
 			sourceTree = "<group>";
 		};
 		3A9D16061986BFE90049CE09 /* Helper Classes */ = {
@@ -597,6 +627,8 @@
 			children = (
 				3AE4248B19D7416B0046D144 /* UserProfileViewController.h */,
 				3AE4248C19D7416B0046D144 /* UserProfileViewController.m */,
+				3A6CFA8D1A2E29D200842C48 /* UserProfileDetailViewController.h */,
+				3A6CFA8E1A2E29D200842C48 /* UserProfileDetailViewController.m */,
 			);
 			path = "Profile VC";
 			sourceTree = "<group>";
@@ -669,6 +701,8 @@
 				3A6615971A264ECC00B82D7D /* setting_icon@3x.png */,
 				3A6615931A264A7100B82D7D /* menuline_icon@3x.png */,
 				3A66158F1A2647D700B82D7D /* message_icon@3x.png */,
+				3A6CFA901A2E2F3000842C48 /* female_icon@3x.png */,
+				3A6CFA911A2E2F3000842C48 /* male_icon@3x.png */,
 				3A6615901A2647D700B82D7D /* preference_icon@3x.png */,
 				AA3D7F941992066300C862CF /* reveal-icon@2x.png */,
 				AA3D7F9619921AFD00C862CF /* Bubble Images */,
@@ -774,6 +808,9 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = IncredTechnologies;
 				TargetAttributes = {
+					3A2DE85F1983C0FD0035FA1B = {
+						DevelopmentTeam = PC6U39U8K6;
+					};
 					3A2DE87F1983C0FD0035FA1B = {
 						TestTargetID = 3A2DE85F1983C0FD0035FA1B;
 					};
@@ -835,7 +872,9 @@
 				3A6615941A264A7100B82D7D /* menuline_icon@3x.png in Resources */,
 				AA3D7FBA19921AFD00C862CF /* Bubble-7@2x.png in Resources */,
 				AA3D7FB419921AFD00C862CF /* Bubble-4@2x.png in Resources */,
+				3A6CFA931A2E2F3000842C48 /* male_icon@3x.png in Resources */,
 				AA3D7FAE19921AFD00C862CF /* Bubble-1@2x.png in Resources */,
+				3A6CFA921A2E2F3000842C48 /* female_icon@3x.png in Resources */,
 				3A2DE87B1983C0FD0035FA1B /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -865,6 +904,7 @@
 				3ABC28BE198BEA7400E598B5 /* AFNHelper.m in Sources */,
 				3AA4CB32198AAA6F005D82AF /* AFXMLRequestOperation.m in Sources */,
 				3AA4CB2E198AAA6F005D82AF /* AFJSONRequestOperation.m in Sources */,
+				3A6CFA991A2E334800842C48 /* PBJHexagonFlowLayout.m in Sources */,
 				3AC805B219AFA0D4000C8E5B /* ReachabilityNew.m in Sources */,
 				3AA4CB2C198AAA6F005D82AF /* AFHTTPRequestOperation.m in Sources */,
 				3A2DE8AB1983C7240035FA1B /* LogInViewController.m in Sources */,
@@ -882,9 +922,12 @@
 				3AA4CB2D198AAA6F005D82AF /* AFImageRequestOperation.m in Sources */,
 				3A1477951A0D2E2800396A62 /* AudioRecordingView.m in Sources */,
 				3AA4CB2F198AAA6F005D82AF /* AFNetworkActivityIndicatorManager.m in Sources */,
+				3A6CFA8F1A2E29D200842C48 /* UserProfileDetailViewController.m in Sources */,
 				3AA4CB33198AAA6F005D82AF /* UIImageView+AFNetworking.m in Sources */,
+				3A6CFA8C1A2E233300842C48 /* SelectTastesViewController.m in Sources */,
 				3AE13A5019C0C9570090A105 /* KeepingConnectingViewController.m in Sources */,
 				3AC805A919AF91F5000C8E5B /* RecentChatsViewController.m in Sources */,
+				3A6CFA891A2E1F8200842C48 /* SelectGenderViewController.m in Sources */,
 				AACE994A19CABE8A00DEC9D6 /* ChatHistory.m in Sources */,
 				3AE4248919D713C40046D144 /* AddProfileImagesViewController.m in Sources */,
 				3A0883AD1986D18400BCC79C /* Utils.m in Sources */,
@@ -1021,14 +1064,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Basant Sharma (W7SJ3JQT5N)";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/Dating/Classes/ThirdParty";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Dating/Dating-Prefix.pch";
 				INFOPLIST_FILE = "Dating/Dating-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "3fea29af-9dfe-4d75-b8b0-ab09b98bb961";
+				PROVISIONING_PROFILE = "6b1cb2e6-7b9c-4993-8606-5cb44ed0ebbb";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1038,15 +1082,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Basant Sharma (W7SJ3JQT5N)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Basant Sharma (W7SJ3JQT5N)";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/Dating/Classes/ThirdParty";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Dating/Dating-Prefix.pch";
 				INFOPLIST_FILE = "Dating/Dating-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "3fea29af-9dfe-4d75-b8b0-ab09b98bb961";
+				PROVISIONING_PROFILE = "6b1cb2e6-7b9c-4993-8606-5cb44ed0ebbb";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
