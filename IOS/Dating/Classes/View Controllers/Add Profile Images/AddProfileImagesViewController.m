@@ -30,8 +30,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [[NSUserDefaults standardUserDefaults] setObject:self.profileImagesArray forKey:@"ProfileImages"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    
     [self setProfileImagesOnButtons];
     [self.navigationItem setHidesBackButton:YES];
 }
@@ -228,15 +227,5 @@
 {
     [self performSegueWithIdentifier:@"ProfilePhotosToSelectGenderIdentifier" sender:nil];
     return;
-    
-     FindMatchViewController *findMatchViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FindMatchViewController"];
-     appDelegate.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:findMatchViewController];
-   
-     RearMenuViewController *rearMenuViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"RearMenuViewController"];
-     appDelegate.revealController = [[ResideMenuViewController alloc] initWithContentViewController:appDelegate.frontNavigationController leftMenuViewController:rearMenuViewController rightMenuViewController:nil];
-   
-     [appDelegate.window setRootViewController:appDelegate.revealController];
-   
-     [appDelegate.window makeKeyAndVisible];
 }
 @end

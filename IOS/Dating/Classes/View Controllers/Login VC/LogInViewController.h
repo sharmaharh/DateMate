@@ -15,6 +15,8 @@
 
 - (IBAction)btnLoginFBPressed:(id)sender;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
+@property (strong, nonatomic) IBOutlet UIButton *btnFacebook;
+@property (strong, nonatomic) IBOutlet UILabel *lblFacebookLogo;
 
 
 @end

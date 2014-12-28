@@ -135,6 +135,6 @@
 
 
 
-+ (void)configureLayerForHexagonWithView:(UIView *)view withBorderColor:(UIColor *)color;
++ (void)configureLayerForHexagonWithView:(UIView *)view withBorderColor:(UIColor *)color WithCornerRadius:(CGFloat)cornerRadius WithLineWidth:(CGFloat)lineWidth withPathColor:(UIColor *)pathStrokeColor;
 
 @end

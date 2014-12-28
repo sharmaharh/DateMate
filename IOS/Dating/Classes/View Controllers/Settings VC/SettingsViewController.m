@@ -97,6 +97,8 @@
         {
             [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"fbID"];
             [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"fbFullName"];
+            appDelegate.userPreferencesDict = [NSMutableDictionary dictionary];
+            [[NSUserDefaults standardUserDefaults] setObject:appDelegate.userPreferencesDict forKey:@"UserPreferences"];
             [[NSUserDefaults standardUserDefaults] synchronize];
             [FacebookUtility sharedObject].fbID = @"";
             appDelegate.frontNavigationController = [self.storyboard instantiateViewControllerWithIdentifier:@"FirstNavigationController"];

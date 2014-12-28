@@ -22,7 +22,9 @@
     self.contentViewShadowOpacity = 0.6;
     self.contentViewShadowRadius = 12;
     self.contentViewShadowEnabled = YES;
-    
+    self.parallaxEnabled = NO;
+    self.bouncesHorizontally = NO;
+    self.backgroundImage = [UIImage imageNamed:@"app_background"];
     [FacebookUtility sharedObject].fbID = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbID"];
     [FacebookUtility sharedObject].fbFullName = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbFullName"];
     

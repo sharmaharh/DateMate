@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FacebookUtility.h"
 
 @interface PreferencesViewController : UIViewController <UITextFieldDelegate>
 

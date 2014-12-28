@@ -698,18 +698,17 @@
     [view addSubview:doneToolBar];
 }
 
-+ (void)configureLayerForHexagonWithView:(UIView *)view withBorderColor:(UIColor *)color
++ (void)configureLayerForHexagonWithView:(UIView *)view withBorderColor:(UIColor *)color WithCornerRadius:(CGFloat)cornerRadius WithLineWidth:(CGFloat)lineWidth withPathColor:(UIColor *)pathStrokeColor
 {
-    CGFloat lineWidth    = 5.0;
     UIBezierPath *path   = [Utils roundedPolygonPathWithRect:view.bounds
                                                   lineWidth:lineWidth
                                                       sides:6
-                                               cornerRadius:20];
+                                               cornerRadius:cornerRadius];
     
     CAShapeLayer *mask   = [CAShapeLayer layer];
     mask.path            = path.CGPath;
     mask.lineWidth       = lineWidth;
-    mask.strokeColor     = [UIColor clearColor].CGColor;
+    mask.strokeColor     = pathStrokeColor.CGColor;
     mask.fillColor       = [UIColor whiteColor].CGColor;
     view.layer.mask = mask;
     

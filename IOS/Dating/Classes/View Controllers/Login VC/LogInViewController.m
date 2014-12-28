@@ -36,6 +36,15 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     reqImageArray = [NSMutableArray array];
+    [self customizeLoginView];
+}
+
+- (void)customizeLoginView
+{
+    [self.lblFacebookLogo.layer setCornerRadius:self.lblFacebookLogo.frame.size.height/2];
+    [self.btnFacebook.layer setBorderWidth:0.5f];
+    [self.btnFacebook.layer setBorderColor:[UIColor whiteColor].CGColor];
+    [self.btnFacebook.layer setCornerRadius:self.btnFacebook.frame.size.height/2];
 }
 
 - (void)didReceiveMemoryWarning
@@ -58,7 +67,7 @@
     NSString *paramsString = @"id, name, first_name, last_name, gender, picture.type(large), email, birthday, location";
     NSArray *permissionsArray = @[@"read_stream",@"email",@"user_birthday",@"user_location",@"user_likes"];
     
-    [[FacebookUtility sharedObject]fetchFBPersonalInfoWithParams:paramsString withPermissions:permissionsArray completionHandler:^(id response, NSError *e) {
+    [[FacebookUtility sharedObject] fetchFBPersonalInfoWithParams:paramsString withPermissions:permissionsArray completionHandler:^(id response, NSError *e) {
         if (!e)
         {
             fbDict = response;
@@ -153,7 +162,7 @@
              {
                  NSLog(@"Response of Profile Picture Uploading Service = %@",response);
                  [self.activityIndicator stopAnimating];
-                 [self performSegueWithIdentifier:@"LoginToProfilePicturesIdentifier" sender:self];
+                 [self performSegueWithIdentifier:@"loginToSelectGenderIdentifier" sender:self];
              }
              else
              {
@@ -169,11 +178,8 @@
  // In a storyboard-based application, you will often want to do a little preparation before navigation
  - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
  {
-     if ([segue.identifier isEqualToString:@"LoginToProfilePicturesIdentifier"])
-     {
-         AddProfileImagesViewController *addProfileImagesViewController = [segue destinationViewController];
-         addProfileImagesViewController.profileImagesArray = reqImageArray;
-     }
+     [[NSUserDefaults standardUserDefaults] setObject:reqImageArray forKey:@"ProfileImages"];
+     [[NSUserDefaults standardUserDefaults] synchronize];
  }
  
 
@@ -233,6 +239,27 @@
 -(void)parseLogin :(NSDictionary*)FBUserDetailDict
 {
     /*
+     {
+     birthday = "01/29/1991";
+     email = "sharmaharh@gmail.com";
+     "first_name" = Harsh;
+     gender = male;
+     id = 661762160568643;
+     "last_name" = Sharma;
+     location =     {
+     id = 130646063637019;
+     name = "Noida, India";
+     };
+     name = "Harsh Sharma";
+     picture =     {
+     data =         {
+     "is_silhouette" = 0;
+     url = "https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xpa1/v/t1.0-1/p200x200/10173685_699047186840140_8668638152027902863_n.jpg?oh=be8409d6c8737a2806d893fa7177d797&oe=5516186E&__gda__=1426009299_ae7e0adbc908281bd18a12f6a9483f5b";
+     };
+     };
+     }
+     */
+    /*
      Response Parameters for Log In
      
      First Name *:   = "ent_first_name"
@@ -248,6 +275,14 @@
      Authentication type *:   name="ent_auth_type"
      *-marked are mandatory  name="ent_submit"
      */
+    appDelegate.userPreferencesDict = [NSMutableDictionary dictionary];
+    [appDelegate.userPreferencesDict setObject:@"15" forKey:@"ent_pref_lower_age"];
+    [appDelegate.userPreferencesDict setObject:@"30" forKey:@"ent_pref_upper_age"];
+    [appDelegate.userPreferencesDict setObject:@"100" forKey:@"ent_pref_radius"];
+    [appDelegate.userPreferencesDict setObject:fbDict[@"id"] forKey:@"ent_user_fbid"];
+    [appDelegate.userPreferencesDict setObject:[FBUserDetailDict[@"gender"] isEqualToString:@"male"]?@"1":@"2" forKey:@"ent_sex"];
+    
+    
     if (![Utils isInternetAvailable])
     {
         [Utils showOKAlertWithTitle:@"Dating" message:@"No Internet Connection!"];
@@ -261,10 +296,10 @@
         [[NSUserDefaults standardUserDefaults] synchronize];
         
 #if TARGET_IPHONE_SIMULATOR
-        NSDictionary *fbInfo = @{@"ent_first_name":fbDict[@"first_name"], @"ent_last_name":fbDict[@"last_name"], @"ent_fbid":fbDict[@"id"], @"ent_sex":@"1", @"ent_curr_lat":@"28.500", @"ent_curr_long":@"77.3", @"ent_dob":@"1991-01-29", @"ent_push_token" : @"iPhone_Simulator", @"ent_profile_pic":[profilePicsArray firstObject][@"source"]?[profilePicsArray firstObject][@"source"]:@"", @"ent_device_type":@"1", @"ent_auth_type":@"1"};
+        NSDictionary *fbInfo = @{@"ent_first_name":fbDict[@"first_name"], @"ent_last_name":fbDict[@"last_name"], @"ent_fbid":fbDict[@"id"], @"ent_sex":appDelegate.userPreferencesDict, @"ent_curr_lat":@"28.500", @"ent_curr_long":@"77.3", @"ent_dob":[self DOBofUserAsPerFB:FBUserDetailDict[@"birthday"]], @"ent_push_token" : @"iPhone_Simulator", @"ent_profile_pic":[profilePicsArray firstObject][@"source"]?[profilePicsArray firstObject][@"source"]:@"", @"ent_device_type":@"1", @"ent_auth_type":@"1"};
 #else
         
-        NSDictionary *fbInfo = @{@"ent_first_name":fbDict[@"first_name"], @"ent_last_name":fbDict[@"last_name"], @"ent_fbid":fbDict[@"id"], @"ent_sex":@"1", @"ent_curr_lat":@"28.500", @"ent_curr_long":@"77.3", @"ent_dob":@"1991-01-29", @"ent_push_token" : [[NSUserDefaults standardUserDefaults] objectForKey:@"deviceToken"], @"ent_profile_pic":[profilePicsArray firstObject][@"source"]?[profilePicsArray firstObject][@"source"]:@"", @"ent_device_type":@"1", @"ent_auth_type":@"1"};
+        NSDictionary *fbInfo = @{@"ent_first_name":fbDict[@"first_name"], @"ent_last_name":fbDict[@"last_name"], @"ent_fbid":fbDict[@"id"], @"ent_sex":appDelegate.userPreferencesDict, @"ent_curr_lat":@"28.500", @"ent_curr_long":@"77.3", @"ent_dob":[self DOBofUserAsPerFB:FBUserDetailDict[@"birthday"]], @"ent_push_token" : [[NSUserDefaults standardUserDefaults] objectForKey:@"deviceToken"], @"ent_profile_pic":[profilePicsArray firstObject][@"source"]?[profilePicsArray firstObject][@"source"]:@"", @"ent_device_type":@"1", @"ent_auth_type":@"1"};
         
 #endif
         
@@ -290,24 +325,22 @@
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:@"Please try again" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
                 [alert show];
             }
-            
-            // OPEN Screen To Watch Profile Images Uploaded.
-            
-            
-//            FindMatchViewController *findMatchViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FindMatchViewController"];
-//            appDelegate.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:findMatchViewController];
-//            
-//            RearMenuViewController *rearMenuViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"RearMenuViewController"];
-//            appDelegate.revealController = [[SWRevealViewController alloc] initWithRearViewController:rearMenuViewController frontViewController:appDelegate.frontNavigationController];
-//            
-//            [appDelegate.window setRootViewController:appDelegate.revealController];
-//            
-//            [appDelegate.window makeKeyAndVisible];
-            
+
             
         }];
     }
 
+}
+
+- (NSString *)DOBofUserAsPerFB:(NSString *)dobString
+{
+    //"01/29/1991"
+    //@"1991-01-29"
+    NSMutableArray *dobComponents = [[dobString componentsSeparatedByString:@"/"] mutableCopy];
+    [dobComponents insertObject:[dobComponents lastObject] atIndex:0];
+    [dobComponents removeLastObject];
+    
+    return [dobComponents componentsJoinedByString:@"-"];
 }
 
 

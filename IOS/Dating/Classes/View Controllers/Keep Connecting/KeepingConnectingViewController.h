@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BRFlabbyTableManager.h"
+#import "BRFlabbyTableViewCell.h"
 
 typedef enum : NSUInteger {
     kWink = 1,
@@ -19,9 +21,10 @@ typedef enum : NSUInteger {
     
 } EMotionNotification;
 
-@interface KeepingConnectingViewController : UIViewController
+@interface KeepingConnectingViewController : UIViewController <BRFlabbyTableManagerDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableViewPendingEmotions;
+@property (strong, nonatomic) BRFlabbyTableManager *flabbyTableManager;
 
 - (IBAction)btnRevealPressed:(id)sender;
 

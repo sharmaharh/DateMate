@@ -7,7 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "UIScrollView+ScrollIndicator.h"
 
 @interface SelectTastesViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegate>
+
+@property (strong, nonatomic) IBOutlet UICollectionView *collectionViewPreferences;
+@property (strong, nonatomic) NSMutableArray *preferencesArray;
+- (IBAction)btnProceedPressed:(id)sender;
+
 
 @end

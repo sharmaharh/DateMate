@@ -9,11 +9,16 @@
 #import "FindMatchViewController.h"
 #import "RecentChatsViewController.h"
 #import "FullImageViewController.h"
+#import "UserProfileDetailViewController.h"
+#import "PBJHexagonFlowLayout.h"
 
 @interface FindMatchViewController ()
 {
     NSArray *matchedProfilesArray;
     NSInteger currentProfileIndex;
+    NSArray *preferncesNameArray;
+    NSDictionary *preferencesDict;
+    NSTimer *profileTimer;
 }
 @end
 
@@ -31,7 +36,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self.navigationController setNavigationBarHidden:YES];
     // Do any additional setup after loading the view.
+    
+    preferencesDict = [NSDictionary dictionaryWithObjects:@[@"smoker",@"non-vegetarian",@"religious",@"night_owl",@"adventurous",@"traveler",@"possessive",@"talker",@"sleeper",@"gamer",@"romantic",@"trust",@"sexy",@"foodie",@"entrepreneur",@"workaholic",@"gadgetfreak",@"hippy",@"hugger",@"gymrat",@"techie",@"fashionmonger",@"moviebuff",@"tvjunkie",@"shy",@"humour",@"peacelover",@"punctual",@"lazy",@"dreamer",@"flirtatious",@"cuddle"] forKeys:@[@"Smoker",@"Non Vegetarian",@"Religious",@"Night Owl",@"Adventurous",@"Traveller",@"Possesive",@"Talker",@"Sleeper",@"Gamer",@"Romantic",@"Trust",@"Sexy",@"Foodie",@"Entrepreneur",@"Workaholic",@"Gadget Freak",@"Hippy",@"Hugger",@"Gym Rat",@"Techie",@"Fashion Monger",@"Movie Buff",@"TV Junkie",@"Shy",@"Humour",@"Peace Lover",@"Punctual",@"Lazy",@"Dreamer",@"Flirtatious",@"Cuddler"]];
 
     [self findMatchesList];
 }
@@ -39,6 +47,23 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+//    [self setupTutorialView];
+}
+
+- (void)setupTutorialView
+{
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"FindMatch"])
+    {
+        [self.viewTutorial setHidden:NO];
+        CALayer *glowLayer = [CALayer layer];
+        glowLayer.shadowColor = [UIColor blackColor].CGColor;
+        glowLayer.shadowRadius = 15.0f;
+        glowLayer.shadowOpacity = 1.0f;
+        glowLayer.shadowOffset = CGSizeZero;
+        
+        [glowLayer setBounds:CGRectMake(0, 0, 40, 40)];
+        [self.viewTutorial.layer addSublayer:glowLayer];
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -50,13 +75,50 @@
 - (void)setProfileOnLayout
 {
     NSDictionary *profileDict = matchedProfilesArray[currentProfileIndex];
-    
+    [self commonPreferencesWithOtherUserPreferences:[profileDict[@"prefLifeStyle"] componentsSeparatedByString:@","]];
+    preferncesNameArray = [[self commonPreferencesWithOtherUserPreferences:[profileDict[@"prefLifeStyle"] componentsSeparatedByString:@","]] mutableCopy];
+    PBJHexagonFlowLayout *flowLayout = [[PBJHexagonFlowLayout alloc] init];
+    flowLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
+    flowLayout.sectionInset = UIEdgeInsetsZero;
+    flowLayout.headerReferenceSize = CGSizeZero;
+    flowLayout.footerReferenceSize = CGSizeZero;
+    flowLayout.itemSize = CGSizeMake(70.0f, 80.0f);
+    flowLayout.itemsPerRow = [preferncesNameArray count];
+    [self.collectionViewPreferences setCollectionViewLayout:flowLayout];
+    [self.collectionViewPreferences setContentOffset:CGPointZero animated:NO];
+    [self.collectionViewPreferences reloadData];
     self.profileNameLabel.text = [NSString stringWithFormat:@"%@,%@",profileDict[@"firstName"],profileDict[@"age"]];
     
-    NSArray *userProfileImagesArray = matchedProfilesArray[currentProfileIndex][@"pPic"];
-    
-    [self setImageOnButton:self.btnProfileImage WithActivityIndicator:self.activityIndicator WithImageURL:[userProfileImagesArray firstObject][@"pImg"]];
+    [self setImageOnButton:self.btnProfileImage WithActivityIndicator:self.activityIndicator WithImageURL:[matchedProfilesArray[currentProfileIndex][@"oPic"] firstObject][@"pImg"]];
     [self setUpcomingProfilesInFindMatchesList];
+    
+    self.lblTimer.text = @"0";
+    [self.profileTimer invalidate];
+    
+    self.profileTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(displayTime) userInfo:nil repeats:YES];
+}
+
+- (NSArray *)commonPreferencesWithOtherUserPreferences:(NSArray *)otherUserPreferences
+{
+    NSArray *myPreferncesArray = [[[[[NSUserDefaults standardUserDefaults] objectForKey:@"UserPreferences"] mutableCopy] objectForKey:@"ent_pref_lifestyle"] componentsSeparatedByString:@","];
+    NSMutableSet* set1 = [NSMutableSet setWithArray:otherUserPreferences];
+    NSMutableSet* set2 = [NSMutableSet setWithArray:myPreferncesArray];
+    [set1 intersectSet:set2]; //this will give you only the obejcts that are in both sets
+    
+    return [set1 allObjects];
+}
+
+- (void)displayTime
+{
+    if (self.lblTimer.text.intValue > 12)
+    {
+        [self passProfileButtonPressed:nil];
+    }
+    else
+    {
+        [self.lblTimer setText:[NSString stringWithFormat:@"%i",[[self.lblTimer text] intValue]+1]];
+    }
+    
 }
 
 - (void)setImageOnButton:(UIButton *)btn WithActivityIndicator:(UIActivityIndicatorView *)activityIndicator WithImageURL:(NSString *)ImageURL
@@ -153,13 +215,14 @@
 {
     FullImageViewController *fullImageViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FullImageViewController"];
     fullImageViewController.currentPhotoIndex = btn.tag-1;
-    fullImageViewController.arrPhotoGallery = matchedProfilesArray[currentProfileIndex][@"pPic"];
+    fullImageViewController.arrPhotoGallery = matchedProfilesArray[currentProfileIndex][@"oPic"];
     fullImageViewController.fbID = matchedProfilesArray[currentProfileIndex][@"fbId"];
     [self presentViewController:fullImageViewController animated:YES completion:nil];
 }
 
 - (void)findMatchesList
 {
+    [self showErrorInProfileView];
     matchedProfilesArray = [NSMutableArray array];
     
     if (![Utils isInternetAvailable])
@@ -184,54 +247,23 @@
                      {
                          [self setProfileOnLayout];
                          
-                         for (UIView *view in self.view.subviews)
-                         {
-                             [view setHidden:NO];
-                         }
-                         UILabel *errorMsgLabel = (UILabel *)[self.view viewWithTag:100];
-                         [errorMsgLabel setHidden:YES];
-                         [self.btnPassProfile setHidden:NO];
-                         [[self.view viewWithTag:2] setHidden:NO];
+                         [self showProfileViewWithoutError];
                      }
                      else
                      {
-                         for (UIView *view in self.view.subviews)
-                         {
-                             [view setHidden:YES];
-                         }
-                         UILabel *errorMsgLabel = (UILabel *)[self.view viewWithTag:100];
-                         [errorMsgLabel setHidden:NO];
-                         
-                         [self.btnPassProfile setHidden:YES];
-                         [[self.view viewWithTag:2] setHidden:YES];
+                         [self showErrorInProfileView];
                      }
                      
                  }
                  else
                  {
                      matchedProfilesArray = [NSMutableArray array];
-                     for (UIView *view in self.view.subviews)
-                     {
-                         [view setHidden:YES];
-                     }
-                     UILabel *errorMsgLabel = (UILabel *)[self.view viewWithTag:100];
-                     [errorMsgLabel setHidden:NO];
-                     
-                     [self.btnPassProfile setHidden:YES];
-                     [[self.view viewWithTag:2] setHidden:YES];
+                     [self showErrorInProfileView];
                  }
              }
              else
              {
-                 for (UIView *view in self.view.subviews)
-                 {
-                     [view setHidden:YES];
-                 }
-                 UILabel *errorMsgLabel = (UILabel *)[self.view viewWithTag:100];
-                 [errorMsgLabel setHidden:NO];
-                 
-                 [self.btnPassProfile setHidden:YES];
-                 [[self.view viewWithTag:2] setHidden:YES];
+                 [self showErrorInProfileView];
              }
              
          }];
@@ -239,25 +271,41 @@
 
 }
 
+- (void)showProfileViewWithoutError
+{
+    for (int i = 1; i < 4 ; i++)
+    {
+        [[self.view viewWithTag:i] setHidden:NO];
+    }
+    UILabel *errorMsgLabel = (UILabel *)[self.view viewWithTag:4];
+    [errorMsgLabel setHidden:YES];
+}
+
+- (void)showErrorInProfileView
+{
+    for (int i = 1; i < 4 ; i++)
+    {
+        [[self.view viewWithTag:i] setHidden:YES];
+    }
+    UILabel *errorMsgLabel = (UILabel *)[self.view viewWithTag:4];
+    [errorMsgLabel setHidden:NO];
+}
+
 - (IBAction)passProfileButtonPressed:(id)sender
 {
-    [self removeCacheImages];
+    
     currentProfileIndex++;
     if (currentProfileIndex < matchedProfilesArray.count)
     {
+        [self removeCacheImages];
         [self setProfileOnLayout];
         [self setUpcomingProfilesInFindMatchesList];
     }
     else
     {
-        
-        for (UIView *view in self.view.subviews)
-        {
-            [view setHidden:YES];
-        }
-        UILabel *errorLabel = (UILabel *)[self.view viewWithTag:100];
-        [errorLabel setHidden:NO];
-
+        [self showErrorInProfileView];
+        self.lblTimer.text = @"";
+        [self.profileTimer invalidate];
     }
     
 }
@@ -287,7 +335,10 @@
          {
              if (!error)
              {
-                 [self passProfileButtonPressed:nil];
+                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                     [self passProfileButtonPressed:nil];
+                 });
+                 
                  
                  if ([response[@"errMsg"] isEqualToString:@"Congrats! You got a match"]) {
                      // Now Winked Back, Start Conversation
@@ -312,7 +363,15 @@
                  }
                  else
                  {
-                     [Utils showOKAlertWithTitle:@"Dating" message:response[@"errMsg"]];
+//                     [Utils showOKAlertWithTitle:@"Dating" message:response[@"errMsg"]];
+                     [self.lblRequestSent setText:[NSString stringWithFormat:@"You Stared at %@",matchedProfilesArray[currentProfileIndex][@"firstName"]]];
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                         [self.viewRequestSent setHidden:NO];
+                         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                             [self.viewRequestSent setHidden:YES];
+                         });
+                     });
+                     
                  }
                  
                  
@@ -332,6 +391,20 @@
     [self performSegueWithIdentifier:@"matchedProfileToProfileDetailIdentifier" sender:nil];
 }
 
+- (IBAction)btnDIsmissTutorialPressed:(id)sender
+{
+    [self.viewTutorial setHidden:YES];
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FindMatch"];
+}
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    UserProfileDetailViewController *userProfileDetailViewController = [segue destinationViewController];
+    userProfileDetailViewController.matchedProfilesArray = matchedProfilesArray;
+    userProfileDetailViewController.currentProfileIndex = currentProfileIndex;
+    [self.profileTimer invalidate];
+}
+
 - (void)setUpcomingProfilesInFindMatchesList
 {
     for (UIImageView *imageView in self.upcomingProfilesView.subviews)
@@ -339,24 +412,75 @@
         [imageView setHidden:YES];
     }
     
-    for (int i = currentProfileIndex; i < MIN(matchedProfilesArray.count, currentProfileIndex+3); i++)
+    for (NSInteger i = currentProfileIndex; i < MIN(matchedProfilesArray.count, currentProfileIndex+3); i++)
     {
         UIImageView *imageView = (UIImageView *)[self.upcomingProfilesView viewWithTag:i+100+1-currentProfileIndex];
         
-        [imageView setImageWithURL:[NSURL URLWithString:matchedProfilesArray[i][@"pPic"][0][@"pImg"]]];
+        [imageView setImageWithURL:[NSURL URLWithString:[matchedProfilesArray[i][@"oPic"] firstObject][@"pImg"]]];
         
         [imageView setHidden:NO];
         
         if (i == currentProfileIndex)
         {
-            [Utils configureLayerForHexagonWithView:imageView withBorderColor:[UIColor blueColor]];
+            [Utils configureLayerForHexagonWithView:imageView withBorderColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.4] WithCornerRadius:15 WithLineWidth:3 withPathColor:[UIColor greenColor]];
         }
         else
         {
-            [Utils configureLayerForHexagonWithView:imageView withBorderColor:[UIColor lightGrayColor]];
+            [Utils configureLayerForHexagonWithView:imageView withBorderColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.4] WithCornerRadius:15  WithLineWidth:3 withPathColor:[UIColor lightGrayColor]];
         }
         
     }
 }
 
+#pragma mark UICollectionView Delegate & Data Source
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    return [preferncesNameArray count];
+}
+
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section{
+    return UIEdgeInsetsMake(0 , 0, 0, 0);
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"UserQualityCell" forIndexPath:indexPath];
+    
+    NSString* string = preferncesNameArray[indexPath.row];
+    UIImageView *imageView = (UIImageView *)[cell viewWithTag:101];
+    [imageView setImage:[UIImage imageNamed:preferencesDict[string]]];
+    
+    UILabel *preferenceName = (UILabel *)[cell viewWithTag:102];
+    preferenceName.numberOfLines = 2;
+    
+    NSMutableParagraphStyle *style  = [[NSMutableParagraphStyle alloc] init];
+    CGSize strSize = [string boundingRectWithSize:CGSizeMake(100, MAXFLOAT) options:NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName : [UIFont fontWithName:@"SegoeUI" size:14]} context:nil].size;
+    NSLog(@"%@,%@",string,NSStringFromCGSize(strSize));
+    style.minimumLineHeight = 10.0f;
+    style.maximumLineHeight = 10.0f;
+    style.lineSpacing = 0;
+    NSDictionary *attributtes = @{NSParagraphStyleAttributeName : style};
+    
+    preferenceName.attributedText = [[NSAttributedString alloc] initWithString:string
+                                                                    attributes:attributtes];
+    [preferenceName setTextAlignment:NSTextAlignmentCenter];
+    if (strSize.width > 68)
+    {
+        [preferenceName setFont:[UIFont fontWithName:@"SegoeUI" size:9]];
+    }
+    else
+    {
+        [preferenceName setFont:[UIFont fontWithName:@"SegoeUI" size:11]];
+    }
+    
+    [preferenceName setAdjustsFontSizeToFitWidth:YES];
+    
+    [Utils configureLayerForHexagonWithView:cell withBorderColor:[UIColor clearColor] WithCornerRadius:15 WithLineWidth:3 withPathColor:[UIColor clearColor]];
+    
+    return cell;
+}
+
+- (IBAction)btnDismissRequestSentPressed:(id)sender {
+}
 @end
