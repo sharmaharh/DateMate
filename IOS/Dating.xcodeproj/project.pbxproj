@@ -167,6 +167,7 @@
 		AA04BCA31A26F5FD0090EFD2 /* RESideMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = AA04BC9F1A26F5FD0090EFD2 /* RESideMenu.m */; };
 		AA04BCA41A26F5FD0090EFD2 /* UIViewController+RESideMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = AA04BCA11A26F5FD0090EFD2 /* UIViewController+RESideMenu.m */; };
 		AA04BCA81A26F6B80090EFD2 /* ResideMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA04BCA71A26F6B80090EFD2 /* ResideMenuViewController.m */; };
+		AA16DCA71A52C2FA0002E867 /* SFCountdownView.m in Sources */ = {isa = PBXBuildFile; fileRef = AA16DCA61A52C2FA0002E867 /* SFCountdownView.m */; };
 		AA3D7F87199200C100C862CF /* RearMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3D7F86199200C100C862CF /* RearMenuViewController.m */; };
 		AA3D7F8B1992045100C862CF /* FindMatchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3D7F8A1992045100C862CF /* FindMatchViewController.m */; };
 		AA3D7FAB19921AFD00C862CF /* Bubble-0.png in Resources */ = {isa = PBXBuildFile; fileRef = AA3D7F9719921AFD00C862CF /* Bubble-0.png */; };
@@ -406,6 +407,8 @@
 		AA04BCA11A26F5FD0090EFD2 /* UIViewController+RESideMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+RESideMenu.m"; sourceTree = "<group>"; };
 		AA04BCA61A26F6B80090EFD2 /* ResideMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResideMenuViewController.h; sourceTree = "<group>"; };
 		AA04BCA71A26F6B80090EFD2 /* ResideMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResideMenuViewController.m; sourceTree = "<group>"; };
+		AA16DCA51A52C2FA0002E867 /* SFCountdownView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SFCountdownView.h; sourceTree = "<group>"; };
+		AA16DCA61A52C2FA0002E867 /* SFCountdownView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SFCountdownView.m; sourceTree = "<group>"; };
 		AA3D7F85199200C100C862CF /* RearMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RearMenuViewController.h; sourceTree = "<group>"; };
 		AA3D7F86199200C100C862CF /* RearMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RearMenuViewController.m; sourceTree = "<group>"; };
 		AA3D7F891992045100C862CF /* FindMatchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FindMatchViewController.h; sourceTree = "<group>"; };
@@ -677,6 +680,7 @@
 		3A2DE89A1983C4870035FA1B /* ThirdParty */ = {
 			isa = PBXGroup;
 			children = (
+				AA16DCA41A52C2FA0002E867 /* SFCountdownView */,
 				3A00F3D21A5075340039CE33 /* PBJHexagonLayout */,
 				3AA8EADA1A49CD3600A7D772 /* BRFlabbyTable */,
 				3A3F83531A3B64ED00D3C4E1 /* CustomScrollViewIndicator */,
@@ -1024,6 +1028,16 @@
 			path = ReSideViewController;
 			sourceTree = "<group>";
 		};
+		AA16DCA41A52C2FA0002E867 /* SFCountdownView */ = {
+			isa = PBXGroup;
+			children = (
+				AA16DCA51A52C2FA0002E867 /* SFCountdownView.h */,
+				AA16DCA61A52C2FA0002E867 /* SFCountdownView.m */,
+			);
+			name = SFCountdownView;
+			path = Dating/Classes/ThirdParty/SFCountdownView;
+			sourceTree = SOURCE_ROOT;
+		};
 		AA3D7F84199200AF00C862CF /* RearMenuVC */ = {
 			isa = PBXGroup;
 			children = (
@@ -1350,6 +1364,7 @@
 				3AA8EAE21A49CD3600A7D772 /* BRFlabbyTableViewCell.m in Sources */,
 				3A2DE8791983C0FD0035FA1B /* Dating.xcdatamodeld in Sources */,
 				3A2DE8721983C0FD0035FA1B /* main.m in Sources */,
+				AA16DCA71A52C2FA0002E867 /* SFCountdownView.m in Sources */,
 				AA3D7F87199200C100C862CF /* RearMenuViewController.m in Sources */,
 				3AC3637A19A7EDB100C7E273 /* PreferencesViewController.m in Sources */,
 				3AE4249B19D9C3D60046D144 /* FullImageViewController.m in Sources */,

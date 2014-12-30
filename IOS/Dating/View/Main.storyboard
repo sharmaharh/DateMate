@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5053" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
@@ -169,7 +169,7 @@
                                 <collectionViewLayout key="collectionViewLayout" id="tkS-pz-hNM"/>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="UserQualityCell" id="YbB-bv-vv9">
-                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="80" height="90"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="0.0" y="0.0" width="80" height="90"/>
@@ -251,6 +251,11 @@
                                         <color key="textColor" red="1" green="0.80392163989999998" blue="0.02745098248" alpha="1" colorSpace="deviceRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <view contentMode="scaleToFill" id="BPA-a8-Zaf" userLabel="View - Countdown" customClass="SFCountdownView">
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="220"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </view>
@@ -344,6 +349,7 @@
                         <outlet property="lblRequestSent" destination="21X-ve-caY" id="0cm-oO-vtT"/>
                         <outlet property="lblTimer" destination="WJg-Ll-NmV" id="bkq-CL-sCa"/>
                         <outlet property="profileNameLabel" destination="gMd-Tx-H0x" id="bya-Ox-1lm"/>
+                        <outlet property="sfCountdownView" destination="BPA-a8-Zaf" id="5T0-W5-OGG"/>
                         <outlet property="upcomingProfilesView" destination="LtW-7S-TWK" id="gbn-7a-qGg"/>
                         <outlet property="viewRequestSent" destination="8PC-7d-9jP" id="htm-BI-nfH"/>
                         <segue destination="JCQ-DA-XVW" kind="push" identifier="matchedProfileToProfileDetailIdentifier" id="bT4-yw-8tW"/>
@@ -758,7 +764,7 @@
                                 <collectionViewLayout key="collectionViewLayout" id="ZXA-Um-HN0"/>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="UserQualityCell" id="OKY-dI-yU9">
-                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
@@ -871,7 +877,7 @@
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="GalleryCell" id="ZZF-cD-QbX">
-                                        <rect key="frame" x="0.0" y="1" width="319" height="567"/>
+                                        <rect key="frame" x="0.0" y="-44" width="319" height="567"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="0.0" y="0.0" width="319" height="567"/>

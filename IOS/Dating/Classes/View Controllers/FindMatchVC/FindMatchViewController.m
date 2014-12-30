@@ -47,7 +47,18 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    [self setUpCountdownView];
 //    [self setupTutorialView];
+}
+
+- (void)setUpCountdownView
+{
+    [self.sfCountdownView setHidden:YES];
+    self.sfCountdownView.delegate = self;
+    self.sfCountdownView.backgroundAlpha = 0.2;
+    self.sfCountdownView.countdownColor = [UIColor whiteColor];
+    self.sfCountdownView.countdownFrom = 3;
+    self.sfCountdownView.finishText = @"Do it";
 }
 
 - (void)setupTutorialView
@@ -110,15 +121,27 @@
 
 - (void)displayTime
 {
-    if (self.lblTimer.text.intValue > 12)
+    if (self.lblTimer.text.intValue > 9)
     {
         [self passProfileButtonPressed:nil];
+    }
+    else if (self.lblTimer.text.intValue > 6)
+    {
+        [self.sfCountdownView setHidden:NO];
+        [self.sfCountdownView start];
+        [self.sfCountdownView updateAppearance];
     }
     else
     {
         [self.lblTimer setText:[NSString stringWithFormat:@"%i",[[self.lblTimer text] intValue]+1]];
     }
     
+}
+
+- (void) countdownFinished:(SFCountdownView *)view
+{
+    [self.sfCountdownView setHidden:YES];
+    [self.view setNeedsDisplay];
 }
 
 - (void)setImageOnButton:(UIButton *)btn WithActivityIndicator:(UIActivityIndicatorView *)activityIndicator WithImageURL:(NSString *)ImageURL

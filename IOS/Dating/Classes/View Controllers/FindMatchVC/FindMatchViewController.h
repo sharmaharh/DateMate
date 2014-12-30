@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SFCountdownView.h"
 
-@interface FindMatchViewController : UIViewController
+@interface FindMatchViewController : UIViewController <SFCountdownViewDelegate>
 
 - (IBAction)passProfileButtonPressed:(id)sender;
 - (IBAction)passEmotionsButtonPressed:(id)sender;
@@ -39,5 +40,6 @@
 
 @property (strong, nonatomic) IBOutlet UIView *viewRequestSent;
 @property (strong, nonatomic) IBOutlet UILabel *lblRequestSent;
+@property (weak, nonatomic) IBOutlet SFCountdownView *sfCountdownView;
 
 @end
