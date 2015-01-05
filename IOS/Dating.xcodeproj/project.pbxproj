@@ -270,6 +270,7 @@
 		3A3F83541A3B64ED00D3C4E1 /* UIScrollView+ScrollIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+ScrollIndicator.h"; sourceTree = "<group>"; };
 		3A3F83551A3B64ED00D3C4E1 /* UIScrollView+ScrollIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+ScrollIndicator.m"; sourceTree = "<group>"; };
 		3A66C2C419C23AD800AA1718 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		3A6A592C1A5AEBED00951DE9 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		3A6CFA871A2E1F8200842C48 /* SelectGenderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectGenderViewController.h; sourceTree = "<group>"; };
 		3A6CFA881A2E1F8200842C48 /* SelectGenderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectGenderViewController.m; sourceTree = "<group>"; };
 		3A6CFA8A1A2E233300842C48 /* SelectTastesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectTastesViewController.h; sourceTree = "<group>"; };
@@ -727,6 +728,7 @@
 			isa = PBXGroup;
 			children = (
 				3A9D160C1986C3350049CE09 /* Defines.h */,
+				3A6A592C1A5AEBED00951DE9 /* Constants.h */,
 			);
 			path = "Defines&Constants";
 			sourceTree = "<group>";
@@ -1132,9 +1134,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		3A2DE85F1983C0FD0035FA1B /* Dating */ = {
+		3A2DE85F1983C0FD0035FA1B /* Yocty */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3A2DE8921983C0FD0035FA1B /* Build configuration list for PBXNativeTarget "Dating" */;
+			buildConfigurationList = 3A2DE8921983C0FD0035FA1B /* Build configuration list for PBXNativeTarget "Yocty" */;
 			buildPhases = (
 				3A2DE85C1983C0FD0035FA1B /* Sources */,
 				3A2DE85D1983C0FD0035FA1B /* Frameworks */,
@@ -1144,7 +1146,7 @@
 			);
 			dependencies = (
 			);
-			name = Dating;
+			name = Yocty;
 			productName = Dating;
 			productReference = 3A2DE8601983C0FD0035FA1B /* Dating.app */;
 			productType = "com.apple.product-type.application";
@@ -1196,7 +1198,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				3A2DE85F1983C0FD0035FA1B /* Dating */,
+				3A2DE85F1983C0FD0035FA1B /* Yocty */,
 				3A2DE87F1983C0FD0035FA1B /* DatingTests */,
 			);
 		};
@@ -1411,7 +1413,7 @@
 /* Begin PBXTargetDependency section */
 		3A2DE8871983C0FD0035FA1B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 3A2DE85F1983C0FD0035FA1B /* Dating */;
+			target = 3A2DE85F1983C0FD0035FA1B /* Yocty */;
 			targetProxy = 3A2DE8861983C0FD0035FA1B /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -1517,15 +1519,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Basant Sharma (W7SJ3JQT5N)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Basant Sharma (W7SJ3JQT5N)";
 				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/Dating/Classes/ThirdParty";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Dating/Dating-Prefix.pch";
 				INFOPLIST_FILE = "Dating/Dating-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "6b1cb2e6-7b9c-4993-8606-5cb44ed0ebbb";
+				PROVISIONING_PROFILE = "65c773bf-6f61-4c25-959f-de8e9933848a";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1535,15 +1537,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Basant Sharma (W7SJ3JQT5N)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Basant Sharma (W7SJ3JQT5N)";
 				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/Dating/Classes/ThirdParty";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Dating/Dating-Prefix.pch";
 				INFOPLIST_FILE = "Dating/Dating-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "6b1cb2e6-7b9c-4993-8606-5cb44ed0ebbb";
+				PROVISIONING_PROFILE = "65c773bf-6f61-4c25-959f-de8e9933848a";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -1600,7 +1602,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3A2DE8921983C0FD0035FA1B /* Build configuration list for PBXNativeTarget "Dating" */ = {
+		3A2DE8921983C0FD0035FA1B /* Build configuration list for PBXNativeTarget "Yocty" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3A2DE8931983C0FD0035FA1B /* Debug */,
