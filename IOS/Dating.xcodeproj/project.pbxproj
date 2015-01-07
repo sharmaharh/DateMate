@@ -59,6 +59,7 @@
 		3A2DE8AB1983C7240035FA1B /* LogInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2DE8AA1983C7240035FA1B /* LogInViewController.m */; };
 		3A3F83561A3B64ED00D3C4E1 /* UIScrollView+ScrollIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A3F83551A3B64ED00D3C4E1 /* UIScrollView+ScrollIndicator.m */; };
 		3A66C2C519C23AD800AA1718 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A66C2C419C23AD800AA1718 /* QuartzCore.framework */; };
+		3A6A592E1A5C38F500951DE9 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A6A592D1A5C38F500951DE9 /* CoreLocation.framework */; };
 		3A6CFA891A2E1F8200842C48 /* SelectGenderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A6CFA881A2E1F8200842C48 /* SelectGenderViewController.m */; };
 		3A6CFA8C1A2E233300842C48 /* SelectTastesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A6CFA8B1A2E233300842C48 /* SelectTastesViewController.m */; };
 		3A6CFA8F1A2E29D200842C48 /* UserProfileDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A6CFA8E1A2E29D200842C48 /* UserProfileDetailViewController.m */; };
@@ -249,7 +250,7 @@
 		3A00F3D41A5075340039CE33 /* PBJHexagonFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PBJHexagonFlowLayout.m; sourceTree = "<group>"; };
 		3A0883AB1986D18400BCC79C /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
 		3A0883AC1986D18400BCC79C /* Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utils.m; sourceTree = "<group>"; };
-		3A2DE8601983C0FD0035FA1B /* Dating.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dating.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3A2DE8601983C0FD0035FA1B /* Dating.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Dating.app; path = Yocty.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A2DE8631983C0FD0035FA1B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		3A2DE8651983C0FD0035FA1B /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		3A2DE8671983C0FD0035FA1B /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -271,6 +272,7 @@
 		3A3F83551A3B64ED00D3C4E1 /* UIScrollView+ScrollIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+ScrollIndicator.m"; sourceTree = "<group>"; };
 		3A66C2C419C23AD800AA1718 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		3A6A592C1A5AEBED00951DE9 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		3A6A592D1A5C38F500951DE9 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		3A6CFA871A2E1F8200842C48 /* SelectGenderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectGenderViewController.h; sourceTree = "<group>"; };
 		3A6CFA881A2E1F8200842C48 /* SelectGenderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectGenderViewController.m; sourceTree = "<group>"; };
 		3A6CFA8A1A2E233300842C48 /* SelectTastesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectTastesViewController.h; sourceTree = "<group>"; };
@@ -447,6 +449,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3A6A592E1A5C38F500951DE9 /* CoreLocation.framework in Frameworks */,
 				3AB5685C1A09496B0096D106 /* MediaPlayer.framework in Frameworks */,
 				3A66C2C519C23AD800AA1718 /* QuartzCore.framework in Frameworks */,
 				3ABC28C1198C121A00E598B5 /* SystemConfiguration.framework in Frameworks */,
@@ -608,6 +611,7 @@
 		3A2DE8621983C0FD0035FA1B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3A6A592D1A5C38F500951DE9 /* CoreLocation.framework */,
 				3AB5685B1A09496B0096D106 /* MediaPlayer.framework */,
 				3A66C2C419C23AD800AA1718 /* QuartzCore.framework */,
 				3ABC28C0198C121A00E598B5 /* SystemConfiguration.framework */,
