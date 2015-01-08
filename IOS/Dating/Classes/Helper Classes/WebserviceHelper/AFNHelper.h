@@ -40,4 +40,6 @@ typedef void (^RequestCompletionBlock)(id response, NSError *error);
 
 -(void)callWebserviceWithMethod:(NSString *)method andBody:(NSString *)body;
 
+-(void)getDataWithMultipartRequestFromPath:(NSString *)path withParamDataImage:(NSMutableDictionary *)dictParam withBlock:(RequestCompletionBlock)block;
+
 @end

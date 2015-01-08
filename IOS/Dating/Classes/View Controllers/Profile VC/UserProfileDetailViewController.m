@@ -28,6 +28,8 @@
     preferencesDict = [NSDictionary dictionaryWithObjects:@[@"smoker",@"non-vegetarian",@"religious",@"night_owl",@"adventurous",@"traveler",@"possessive",@"talker",@"sleeper",@"gamer",@"romantic",@"trust",@"sexy",@"foodie",@"entrepreneur",@"workaholic",@"gadgetfreak",@"hippy",@"hugger",@"gymrat",@"techie",@"fashionmonger",@"moviebuff",@"tvjunkie",@"shy",@"humour",@"peacelover",@"punctual",@"lazy",@"dreamer",@"flirtatious",@"cuddle"] forKeys:@[@"Smoker",@"Non Vegetarian",@"Religious",@"Night Owl",@"Adventurous",@"Traveller",@"Possesive",@"Talker",@"Sleeper",@"Gamer",@"Romantic",@"Trust",@"Sexy",@"Foodie",@"Entrepreneur",@"Workaholic",@"Gadget Freak",@"Hippy",@"Hugger",@"Gym Rat",@"Techie",@"Fashion Monger",@"Movie Buff",@"TV Junkie",@"Shy",@"Humour",@"Peace Lover",@"Punctual",@"Lazy",@"Dreamer",@"Flirtatious",@"Cuddler"]];
     
     [self setImagesOnScrollView];
+    
+    [self.btnStare setHidden:!self.isFromMatches];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -319,8 +321,6 @@
         [errorLabel setHidden:NO];
         
     }
-    
-    
 }
 
 - (IBAction)btnBackPressed:(id)sender

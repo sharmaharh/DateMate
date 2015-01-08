@@ -117,7 +117,6 @@
         [tempButton addGestureRecognizer:panGesture];
         tempButton.tag = btnTag;
         
-        
         Btn.tag = btnTag*2;
         
         [self.view insertSubview:tempButton belowSubview:Btn];
@@ -127,7 +126,6 @@
     }
     else if([recognizer state] == UIGestureRecognizerStateEnded)
     {
-        [recognizer.view.layer setBorderWidth:0.0f];
         [self dismissDeleteView];
     }
 }
@@ -153,9 +151,6 @@
     recognizer.view.center = CGPointMake(recognizer.view.center.x + translation.x,recognizer.view.center.y + translation.y);
     
     UIButton *button1 = (UIButton *)[self.view viewWithTag:1];
-    UIButton *button2 = (UIButton *)[self.view viewWithTag:2];
-    UIButton *button3 = (UIButton *)[self.view viewWithTag:3];
-    UIButton *button4 = (UIButton *)[self.view viewWithTag:4];
     
     BOOL isIntersectWithImage = CGRectIntersectsRect(recognizer.view.frame, button1.frame);
     BOOL isIntersectWithDeletion = CGRectIntersectsRect(recognizer.view.frame, self.viewDelete.frame);
@@ -183,15 +178,11 @@
     }
     else if ([recognizer state] == UIGestureRecognizerStateChanged)
     {
-        [button1.layer setBorderWidth:0.0f];
         [self.viewDelete.layer setBorderWidth:0.0f];
+        [button1.layer setBorderColor:[UIColor whiteColor].CGColor];
         if (isIntersectWithImage)
         {
             [button1.layer setBorderColor:[UIColor redColor].CGColor];
-            [button1.layer setBorderWidth:1.0f];
-            [button2.layer setBorderWidth:0.0f];
-            [button3.layer setBorderWidth:0.0f];
-            [button4.layer setBorderWidth:0.0f];
         }
         
         if (isIntersectWithDeletion)
@@ -199,8 +190,6 @@
             [self.viewDelete.layer setBorderWidth:1.0f];
             [self.viewDelete.layer setBorderColor:[UIColor yellowColor].CGColor];
         }
-    
-        
     }
 
     UIButton *tempbutton = (UIButton *)recognizer.view;
@@ -208,19 +197,18 @@
     if([recognizer state] == UIGestureRecognizerStateEnded)
     {
         shouldStartPanning = NO;
-        [button1.layer setBorderWidth:0.0f];
         UIImage *intersectedButtonImage = nil;
         
         UIButton *pannedButton = (UIButton *)[self.view viewWithTag:tempbutton.tag/2];
         
-        if (isIntersectWithImage)
+        if(isIntersectWithImage)
         {
             intersectedButtonImage = button1.currentImage;
                     
             UIImage *tempbuttonImage = tempbutton.currentImage;
             
             [button1 setImage:tempbuttonImage forState:UIControlStateNormal];
-            
+            [button1.layer setBorderColor:[UIColor whiteColor].CGColor];
             [pannedButton setImage:intersectedButtonImage forState:UIControlStateNormal];
             
             [self.imagesArray exchangeObjectAtIndex:pannedButton.tag-1 withObjectAtIndex:0];
@@ -231,6 +219,7 @@
             [pannedButton setImage:nil forState:UIControlStateNormal];
             [self.imagesArray replaceObjectAtIndex:pannedButton.tag-1 withObject:@""];
         }
+        
         [tempbutton removeFromSuperview];
         [self dismissDeleteView];
     }
@@ -411,8 +400,13 @@
     {
         [editedArray removeObjectIdenticalTo:@""];
     }
-    [editedArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        [editedArray replaceObjectAtIndex:idx withObject:UIImagePNGRepresentation(editedArray[idx])];
+    [editedArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop)
+    {
+        if ([editedArray[idx] isKindOfClass:[UIImage class]])
+        {
+            [editedArray replaceObjectAtIndex:idx withObject:UIImagePNGRepresentation(editedArray[idx])];
+        }
+        
     }];
     
     [requestDict setObject:editedArray forKey:@"ent_img_file"];
@@ -421,10 +415,10 @@
     [requestDict setObject:deletedImageUrlArray forKey:@"ent_image_name"];
     
     AFNHelper *afnHelper = [AFNHelper new];
-    
-    [afnHelper getDataFromPath:@"uploadImage" withParamDataImage:requestDict andImage:nil withBlock:^(id response, NSError *error) {
+    [afnHelper getDataWithMultipartRequestFromPath:@"uploadImage" withParamDataImage:requestDict withBlock:^(id response, NSError *error) {
         
     }];
+
 }
 
 #pragma mark ----

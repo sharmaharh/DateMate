@@ -8,6 +8,7 @@
 
 #import "KeepingConnectingViewController.h"
 #import "RecentChatsViewController.h"
+#import "UserProfileDetailViewController.h"
 
 @interface KeepingConnectingViewController ()
 {
@@ -128,10 +129,11 @@
     [cell setFlabbyColor:cellColors[indexPath.row%cellColors.count]];
     
     UIButton *stareBackBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [stareBackBtn setFrame:CGRectMake(0, 0, 40, 50)];
+    [stareBackBtn setFrame:CGRectMake(0, 0, 80, 44)];
     stareBackBtn.tag = indexPath.row;
     [stareBackBtn setTitleColor:cellColors[(indexPath.row+1)%cellColors.count] forState:UIControlStateNormal];
     [stareBackBtn addTarget:self action:@selector(stareBackButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [stareBackBtn setBackgroundColor:[UIColor yellowColor]];
     
     [cell setAccessoryView:stareBackBtn];
     return cell;
@@ -142,7 +144,16 @@
     AFNHelper *afnHelper = [AFNHelper new];
     [afnHelper getDataFromPath:@"getProfile" withParamData:[@{@"ent_user_fbid": notificationsArray[indexPath.row][@"fbId"]} mutableCopy] withBlock:^(id response, NSError *error)
      {
-         
+         if ([response[@"matches"] count])
+         {
+             UserProfileDetailViewController *userProfileDetailViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"UserProfileDetailViewController"];
+             userProfileDetailViewController.matchedProfilesArray = response[@"matches"];
+             userProfileDetailViewController.currentProfileIndex = 0;
+         }
+         else
+         {
+             [Utils showOKAlertWithTitle:_Alert_Title message:@"Unable to fetch profile info."];
+         }
      }];
 }
 

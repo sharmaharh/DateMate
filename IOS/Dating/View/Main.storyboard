@@ -663,7 +663,7 @@
         <!--User Profile Detail View Controller-->
         <scene sceneID="7hG-fG-mDE">
             <objects>
-                <viewController id="JCQ-DA-XVW" customClass="UserProfileDetailViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="UserProfileDetailViewController" id="JCQ-DA-XVW" customClass="UserProfileDetailViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="DNp-5B-wAG">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

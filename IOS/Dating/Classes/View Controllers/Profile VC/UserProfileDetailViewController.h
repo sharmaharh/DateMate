@@ -29,4 +29,5 @@
 @property (strong, nonatomic) IBOutlet UIView *viewRequestSent;
 @property (strong, nonatomic) IBOutlet UILabel *lblRequestSent;
 
+@property (assign, nonatomic) BOOL isFromMatches;
 @end
