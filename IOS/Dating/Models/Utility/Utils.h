@@ -8,9 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-@interface Utils : NSObject <UIActionSheetDelegate>
+@interface Utils : NSObject <UIActionSheetDelegate, CLLocationManagerDelegate>
 
-
+@property (strong, nonatomic) CLLocationManager *locationManager;
+@property (strong, nonatomic) CLLocation *currentLocation;
 @property(assign,nonatomic)BOOL internetActive;
 @property(nonatomic,copy) void(^alertCompletionBlock)(UIAlertView *alert ,NSInteger index);
 @property(nonatomic,copy) void(^actionSheetCompletionBlock)(UIActionSheet *actionSheet ,NSInteger index);
@@ -136,5 +137,14 @@
 
 
 + (void)configureLayerForHexagonWithView:(UIView *)view withBorderColor:(UIColor *)color WithCornerRadius:(CGFloat)cornerRadius WithLineWidth:(CGFloat)lineWidth withPathColor:(UIColor *)pathStrokeColor;
+
+
+
+//---------------------------------------------------------------
+
+- (void)startLocationManager;
+
+- (void)stopUpdatingLocation;
+
 
 @end

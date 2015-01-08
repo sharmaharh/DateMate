@@ -25,6 +25,8 @@ typedef enum : NSUInteger {
 
 @property (weak, nonatomic) IBOutlet UITableView *tableViewPendingEmotions;
 @property (strong, nonatomic) BRFlabbyTableManager *flabbyTableManager;
+@property (strong, nonatomic) IBOutlet UIView *viewRequestSent;
+@property (strong, nonatomic) IBOutlet UILabel *lblRequestSent;
 
 - (IBAction)btnRevealPressed:(id)sender;
 

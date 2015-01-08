@@ -16,6 +16,7 @@
     NSDictionary *fbDict;
     NSMutableArray *profilePicsArray;
     NSMutableArray *reqImageArray;
+    CLLocationManager *locationManager;
 }
 
 @end
@@ -37,6 +38,7 @@
     // Do any additional setup after loading the view.
     reqImageArray = [NSMutableArray array];
     [self customizeLoginView];
+    [[Utils sharedInstance] startLocationManager];
 }
 
 - (void)customizeLoginView
@@ -60,7 +62,7 @@
 {
     if (![Utils isInternetAvailable])
     {
-        [Utils showOKAlertWithTitle:@"Dating" message:@"No Internet Connection!"];
+        [Utils showOKAlertWithTitle:_Alert_Title message:NO_INERNET_MSG];
         return;
     }
     
@@ -72,17 +74,16 @@
         {
             fbDict = response;
             [self fetchProfilePhotoWithFBResponse:response];
-//            [self parseLogin:nil];
         }
         else
         {
-            [Utils showOKAlertWithTitle:@"Dating" message:@"Failed to Fetch Data from Facebook"];
+            [Utils showOKAlertWithTitle:_Alert_Title message:@"Failed to Fetch Info from Facebook, Please try again later."];
         }
     }];
     
 }
 
-- (void)fetchProfilePictureImagesBasedOnLikes
+- (void)fetchProfilePhotoWithFBResponse:(NSDictionary *)fbResponse
 {
     profilePicsArray = [NSMutableArray array];
     [[FacebookUtility sharedObject] getUserProfilePicturesAlbumsWithCompletionBlock:^(id response, NSError *error) {
@@ -93,20 +94,22 @@
                 [[FacebookUtility sharedObject] getAlbumsPhotosWithLikes:response[@"id"] WithCompletionBlock:^(id response, NSError *error)
                  {
                      NSDictionary *responseDict = [NSDictionary dictionaryWithDictionary:response];
-                
+                     
                      if ([responseDict[@"data"] isKindOfClass:[NSArray class]])
                      {
                          profilePicsArray = [[self filterArrayInLikesDescendingOrderFromArray:responseDict[@"data"]] mutableCopy];
-                         
-                         
+                         [self parseLogin:fbResponse];
                      }
                      
                  }];
             }
+            else
+            {
+                [Utils showOKAlertWithTitle:_Alert_Title message:@"Oops, an error occured in fetching Profile Photos.Please try again."];
+            }
         }
         
     }];
-    
 }
 
 - (NSArray *)filterArrayInLikesDescendingOrderFromArray:(NSArray *)imagesArray
@@ -135,102 +138,6 @@
     //    then simply sort the array by doing:
     return [imagesArray sortedArrayUsingComparator:imageLikesComparator];
     
-}
-
-- (void)uploadProfilePictures
-{
-    NSInteger count = 0;
-    if (profilePicsArray.count < 4)
-    {
-        count = profilePicsArray.count;
-    }
-    else
-        count = profilePicsArray.count;
-    
-    if (count > 0)
-    {
-        
-        for (int i = 0; i < MIN(4, [profilePicsArray count]); i++)
-        {
-            [reqImageArray addObject:profilePicsArray[i][@"source"]];
-        }
-        [self.activityIndicator startAnimating];
-        AFNHelper *afnHelper = [AFNHelper new];
-        [afnHelper getDataFromPath:@"uploadImage" withParamData:[@{@"ent_user_fbid": [FacebookUtility sharedObject].fbID , @"ent_other_urls":[reqImageArray componentsJoinedByString:@","],@"ent_image_flag":@"1"} mutableCopy] withBlock:^(id response, NSError *error)
-         {
-             if (!error)
-             {
-                 NSLog(@"Response of Profile Picture Uploading Service = %@",response);
-                 [self.activityIndicator stopAnimating];
-                 [self performSegueWithIdentifier:@"loginToSelectGenderIdentifier" sender:self];
-             }
-             else
-             {
-                 [Utils showOKAlertWithTitle:@"Dating" message:@"Error in Uploading Images"];
-             }
-         }];
-    }
-    
-}
-
- #pragma mark - Navigation
- 
- // In a storyboard-based application, you will often want to do a little preparation before navigation
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
- {
-     [[NSUserDefaults standardUserDefaults] setObject:reqImageArray forKey:@"ProfileImages"];
-     [[NSUserDefaults standardUserDefaults] synchronize];
- }
- 
-
--(void)getFacebookUserDetails
-{
-
-    [[FacebookUtility sharedObject]fetchMeWithFields:@"id,birthday,gender,first_name,age_range,last_name,name,picture.type(normal)" FBCompletionBlock:^(id response, NSError *error)
-     {
-         if (!error)
-         {
-             [self fetchProfilePhotoWithFBResponse:response];
-         }
-         else{
-             //                 [pi hideProgressIndicator];
-             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:@"Please try again" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-             alert.tag = 202;
-             [alert show];
-         }
-     }];
-    
-}
-
-- (void)fetchProfilePhotoWithFBResponse:(NSDictionary *)fbResponse
-{
-    profilePicsArray = [NSMutableArray array];
-    [[FacebookUtility sharedObject] getUserProfilePicturesAlbumsWithCompletionBlock:^(id response, NSError *error) {
-        if (!error)
-        {
-            if ([response isKindOfClass:[NSDictionary class]])
-            {
-                [[FacebookUtility sharedObject] getAlbumsPhotosWithLikes:response[@"id"] WithCompletionBlock:^(id response, NSError *error)
-                 {
-                     NSDictionary *responseDict = [NSDictionary dictionaryWithDictionary:response];
-                     
-                     if ([responseDict[@"data"] isKindOfClass:[NSArray class]])
-                     {
-                         profilePicsArray = [[self filterArrayInLikesDescendingOrderFromArray:responseDict[@"data"]] mutableCopy];
-                         [self parseLogin:fbResponse];
-                         
-                     }
-                     
-                 }];
-            }
-            else{
-                //                 [pi hideProgressIndicator];
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:@"Please try again" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-                [alert show];
-            }
-        }
-        
-    }];
 }
 
 #pragma mark -
@@ -285,7 +192,7 @@
     
     if (![Utils isInternetAvailable])
     {
-        [Utils showOKAlertWithTitle:@"Dating" message:@"No Internet Connection!"];
+        [Utils showOKAlertWithTitle:_Alert_Title message:NO_INERNET_MSG];
     }
     else
     {
@@ -295,11 +202,26 @@
         [[NSUserDefaults standardUserDefaults] setObject:[FacebookUtility sharedObject].fbFullName forKey:@"fbFullName"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
+        NSString *profilePicString = @"";
+        
+        for (int i = 0; i < MIN(4, [profilePicsArray count]); i++)
+        {
+            NSDictionary *dict = profilePicsArray[i];
+            profilePicString = [profilePicString stringByAppendingString:[NSString stringWithFormat:@"%@,",dict[@"source"]]];
+        }
+        
+        if ([profilePicString length])
+        {
+            profilePicString = [profilePicString substringToIndex:profilePicString.length-1];
+        }
+        
+        
 #if TARGET_IPHONE_SIMULATOR
-        NSDictionary *fbInfo = @{@"ent_first_name":fbDict[@"first_name"], @"ent_last_name":fbDict[@"last_name"], @"ent_fbid":fbDict[@"id"], @"ent_sex":appDelegate.userPreferencesDict, @"ent_curr_lat":@"28.500", @"ent_curr_long":@"77.3", @"ent_dob":[self DOBofUserAsPerFB:FBUserDetailDict[@"birthday"]], @"ent_push_token" : @"iPhone_Simulator", @"ent_profile_pic":[profilePicsArray firstObject][@"source"]?[profilePicsArray firstObject][@"source"]:@"", @"ent_device_type":@"1", @"ent_auth_type":@"1"};
+        
+        NSDictionary *fbInfo = @{@"ent_first_name":fbDict[@"first_name"], @"ent_last_name":fbDict[@"last_name"], @"ent_fbid":fbDict[@"id"], @"ent_sex":appDelegate.userPreferencesDict, @"ent_curr_lat":@"28.500", @"ent_curr_long":@"77.3", @"ent_dob":[self DOBofUserAsPerFB:FBUserDetailDict[@"birthday"]], @"ent_push_token" : @"iPhone_Simulator", @"ent_profile_pic":profilePicString, @"ent_device_type":@"1", @"ent_auth_type":@"1"};
 #else
         
-        NSDictionary *fbInfo = @{@"ent_first_name":fbDict[@"first_name"], @"ent_last_name":fbDict[@"last_name"], @"ent_fbid":fbDict[@"id"], @"ent_sex":appDelegate.userPreferencesDict, @"ent_curr_lat":@"28.500", @"ent_curr_long":@"77.3", @"ent_dob":[self DOBofUserAsPerFB:FBUserDetailDict[@"birthday"]], @"ent_push_token" : [[NSUserDefaults standardUserDefaults] objectForKey:@"deviceToken"], @"ent_profile_pic":[profilePicsArray firstObject][@"source"]?[profilePicsArray firstObject][@"source"]:@"", @"ent_device_type":@"1", @"ent_auth_type":@"1"};
+        NSDictionary *fbInfo = @{@"ent_first_name":fbDict[@"first_name"], @"ent_last_name":fbDict[@"last_name"], @"ent_fbid":fbDict[@"id"], @"ent_sex":appDelegate.userPreferencesDict, @"ent_curr_lat":@"28.500", @"ent_curr_long":@"77.3", @"ent_dob":[self DOBofUserAsPerFB:FBUserDetailDict[@"birthday"]], @"ent_push_token" : [[NSUserDefaults standardUserDefaults] objectForKey:@"deviceToken"], @"ent_profile_pic":profilePicString, @"ent_device_type":@"1", @"ent_auth_type":@"1"};
         
 #endif
         
@@ -309,24 +231,30 @@
             [self.activityIndicator stopAnimating];
             if (!error)
             {
-                if ([response[@"profilePic"] isKindOfClass:[NSArray class]])
+                if ([response[@"profilePic"] length])
                 {
-                    reqImageArray = [NSMutableArray arrayWithObject:response[@"profilePic"]];
+                    [reqImageArray addObject:response[@"profilePic"]];
                 }
-                [self uploadProfilePictures];
+                
+                if ([response[@"otherPic"] isKindOfClass:[NSArray class]])
+                {
+                    for (NSDictionary *dict in response[@"otherPic"])
+                    {
+                        [reqImageArray addObject:dict[@"url"]];
+                    }
+
+                }
+                
+                [self performSegueWithIdentifier:@"loginToSelectGenderIdentifier" sender:self];
+
                 // Save Auth Token
                 [[NSUserDefaults standardUserDefaults] setObject:response[@"token"] forKey:@"token"];
-                [[NSUserDefaults standardUserDefaults] setObject:response forKey:@"ProfileInfo"];
-                [[NSUserDefaults standardUserDefaults] synchronize];
                 
             }
-            else{
-                //                 [pi hideProgressIndicator];
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:@"Please try again" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-                [alert show];
+            else
+            {
+                [Utils showOKAlertWithTitle:_Alert_Title message:@"Oops, an error occured while logging in your profile. Please try again later."];
             }
-
-            
         }];
     }
 
@@ -343,6 +271,19 @@
     return [dobComponents componentsJoinedByString:@"-"];
 }
 
+#pragma mark - Navigation
 
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    [[NSUserDefaults standardUserDefaults] setObject:reqImageArray forKey:@"ProfileImages"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [[Utils sharedInstance] stopUpdatingLocation];
+    [super viewDidDisappear:animated];
+}
 
 @end

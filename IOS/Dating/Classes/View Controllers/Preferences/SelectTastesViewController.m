@@ -154,8 +154,6 @@
 
         if (!error)
         {
-//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Dating" message:@"Preferences updated successfully." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-//            [alert show];
             [[NSUserDefaults standardUserDefaults] setObject:appDelegate.userPreferencesDict forKey:@"UserPreferences"];
             
             [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"LoginPersistingClass"];
@@ -163,10 +161,11 @@
             
             FindMatchViewController *findMatchViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FindMatchViewController"];
             appDelegate.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:findMatchViewController];
+            [appDelegate.frontNavigationController setNavigationBarHidden:YES];
+
             
-            RearMenuViewController *rearMenuViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"RearMenuViewController"];
-            appDelegate.revealController = [[ResideMenuViewController alloc] initWithContentViewController:appDelegate.frontNavigationController leftMenuViewController:rearMenuViewController rightMenuViewController:nil];
-            
+            appDelegate.revealController = [self.storyboard instantiateViewControllerWithIdentifier:@"ResideMenuViewController"];
+            appDelegate.revealController.contentViewController = appDelegate.frontNavigationController;
             [appDelegate.window setRootViewController:appDelegate.revealController];
             
             [appDelegate.window makeKeyAndVisible];

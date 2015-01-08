@@ -72,6 +72,7 @@
 - (void) start
 {
     [self stop];
+    [self setHidden:NO];
     self.currentCountdownValue = self.countdownFrom;
     
     self.countdownLabel.text = [NSString stringWithFormat:@"%d", self.countdownFrom];
@@ -107,7 +108,7 @@
                  [self stop];
                  if (self.delegate) {
                      [self.delegate countdownFinished:self];
-                     [self removeFromSuperview];
+                     [self setHidden:YES];
                  }
                  
              } else {
@@ -130,7 +131,7 @@
 - (NSString*)finishText
 {
     if (!_finishText) {
-        _finishText = @"Go";
+        _finishText = @"";
     }
     
     return _finishText;

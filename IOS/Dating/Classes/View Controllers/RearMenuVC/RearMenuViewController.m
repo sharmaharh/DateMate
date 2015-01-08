@@ -182,6 +182,7 @@
                 
                 UserProfileViewController *userProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"UserProfileViewController"];
                 UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:userProfileViewController];
+                [navigationController setNavigationBarHidden:YES];
                 [appDelegate.revealController setContentViewController:navigationController animated:YES];
             }
             // Seems the user attempts to 'switch' to exactly the same controller he came from!
@@ -198,6 +199,7 @@
                 
                 FindMatchViewController *findMatchViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FindMatchViewController"];
                 UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:findMatchViewController];
+                [navigationController setNavigationBarHidden:YES];
                 [appDelegate.revealController setContentViewController:navigationController animated:YES];
             }
             // Seems the user attempts to 'switch' to exactly the same controller he came from!
@@ -213,6 +215,7 @@
             {
                 KeepingConnectingViewController *keepConnectingViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"KeepingConnectingViewController"];
                 UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:keepConnectingViewController];
+                [navigationController setNavigationBarHidden:YES];
                 [appDelegate.revealController setContentViewController:navigationController animated:YES];
             }
 
@@ -227,6 +230,7 @@
             {
                 RecentChatsViewController *chatViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"RecentChatsViewController"];
                 UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:chatViewController];
+                [navigationController setNavigationBarHidden:YES];
                 [appDelegate.revealController setContentViewController:navigationController animated:YES];
             }
             
@@ -240,6 +244,7 @@
             {
                 SettingsViewController *settingsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"SettingsViewController"];
                 UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:settingsViewController];
+                [navigationController setNavigationBarHidden:YES];
                 [appDelegate.revealController setContentViewController:navigationController animated:YES];
             }
 

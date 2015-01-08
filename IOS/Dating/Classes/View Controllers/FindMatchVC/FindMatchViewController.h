@@ -40,6 +40,6 @@
 
 @property (strong, nonatomic) IBOutlet UIView *viewRequestSent;
 @property (strong, nonatomic) IBOutlet UILabel *lblRequestSent;
-@property (weak, nonatomic) IBOutlet SFCountdownView *sfCountdownView;
+@property (strong, nonatomic) IBOutlet SFCountdownView *sfCountdownView;
 
 @end

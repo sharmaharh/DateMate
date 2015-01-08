@@ -36,10 +36,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self.navigationController setNavigationBarHidden:YES];
     // Do any additional setup after loading the view.
     
-    preferencesDict = [NSDictionary dictionaryWithObjects:@[@"smoker",@"non-vegetarian",@"religious",@"night_owl",@"adventurous",@"traveler",@"possessive",@"talker",@"sleeper",@"gamer",@"romantic",@"trust",@"sexy",@"foodie",@"entrepreneur",@"workaholic",@"gadgetfreak",@"hippy",@"hugger",@"gymrat",@"techie",@"fashionmonger",@"moviebuff",@"tvjunkie",@"shy",@"humour",@"peacelover",@"punctual",@"lazy",@"dreamer",@"flirtatious",@"cuddle"] forKeys:@[@"Smoker",@"Non Vegetarian",@"Religious",@"Night Owl",@"Adventurous",@"Traveller",@"Possesive",@"Talker",@"Sleeper",@"Gamer",@"Romantic",@"Trust",@"Sexy",@"Foodie",@"Entrepreneur",@"Workaholic",@"Gadget Freak",@"Hippy",@"Hugger",@"Gym Rat",@"Techie",@"Fashion Monger",@"Movie Buff",@"TV Junkie",@"Shy",@"Humour",@"Peace Lover",@"Punctual",@"Lazy",@"Dreamer",@"Flirtatious",@"Cuddler"]];
+    preferencesDict = User_Preferences_Dict;
 
     [self findMatchesList];
 }
@@ -58,7 +57,8 @@
     self.sfCountdownView.backgroundAlpha = 0.2;
     self.sfCountdownView.countdownColor = [UIColor whiteColor];
     self.sfCountdownView.countdownFrom = 3;
-    self.sfCountdownView.finishText = @"Do it";
+    [self.sfCountdownView updateAppearance];
+    self.sfCountdownView.finishText = @"";
 }
 
 - (void)setupTutorialView
@@ -103,7 +103,7 @@
     [self setImageOnButton:self.btnProfileImage WithActivityIndicator:self.activityIndicator WithImageURL:[matchedProfilesArray[currentProfileIndex][@"oPic"] firstObject][@"pImg"]];
     [self setUpcomingProfilesInFindMatchesList];
     
-    self.lblTimer.text = @"0";
+    self.lblTimer.text = @"10";
     [self.profileTimer invalidate];
     
     self.profileTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(displayTime) userInfo:nil repeats:YES];
@@ -121,27 +121,29 @@
 
 - (void)displayTime
 {
-    if (self.lblTimer.text.intValue > 9)
+    if (self.lblTimer.text.intValue < 1)
     {
         [self passProfileButtonPressed:nil];
     }
-    else if (self.lblTimer.text.intValue > 6)
+    else if (self.lblTimer.text.intValue < 5)
     {
-        [self.sfCountdownView setHidden:NO];
         [self.sfCountdownView start];
-        [self.sfCountdownView updateAppearance];
+        [self.lblTimer setHidden:YES];
+        [self.profileTimer invalidate];
     }
     else
     {
-        [self.lblTimer setText:[NSString stringWithFormat:@"%i",[[self.lblTimer text] intValue]+1]];
+        [self.lblTimer setText:[NSString stringWithFormat:@"%i",[[self.lblTimer text] intValue]-1]];
     }
     
 }
 
 - (void) countdownFinished:(SFCountdownView *)view
 {
-    [self.sfCountdownView setHidden:YES];
+    [self passProfileButtonPressed:nil];
+    [self.lblTimer setHidden:NO];
     [self.view setNeedsDisplay];
+    [self.sfCountdownView updateAppearance];
 }
 
 - (void)setImageOnButton:(UIButton *)btn WithActivityIndicator:(UIActivityIndicatorView *)activityIndicator WithImageURL:(NSString *)ImageURL
@@ -314,10 +316,19 @@
     [errorMsgLabel setHidden:NO];
 }
 
+- (void)showWaitingForProfileDataView
+{
+    for (int i = 1; i < 4 ; i++)
+    {
+        [[self.view viewWithTag:i] setHidden:YES];
+    }
+}
+
 - (IBAction)passProfileButtonPressed:(id)sender
 {
     
     currentProfileIndex++;
+    [self.sfCountdownView stop];
     if (currentProfileIndex < matchedProfilesArray.count)
     {
         [self removeCacheImages];

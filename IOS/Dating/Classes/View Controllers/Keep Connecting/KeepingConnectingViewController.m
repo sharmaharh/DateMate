@@ -7,7 +7,7 @@
 //
 
 #import "KeepingConnectingViewController.h"
-
+#import "RecentChatsViewController.h"
 
 @interface KeepingConnectingViewController ()
 {
@@ -33,6 +33,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.flabbyTableManager = [[BRFlabbyTableManager alloc] initWithTableView:self.tableViewPendingEmotions];
+    [self.tableViewPendingEmotions setBackgroundColor:[UIColor clearColor]];
     cellColors = @[[UIColor colorWithRed:51.0f/255.0f green:147.0f/255.0f blue:228.0f/255.0f alpha:1.0f],
       [UIColor colorWithRed:1 green:1 blue:1 alpha:1.0f]];
     
@@ -106,10 +107,8 @@
 {
     tableView.rowHeight = 70;
     [tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-    if ([notificationsArray count]) {
-        return 20;
-    }
-    return 0;
+    
+    return [notificationsArray count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -121,28 +120,30 @@
         cell = [[BRFlabbyTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     }
-//    [self setImageOnCell:cell onIndexPath:indexPath];
+    [self setImageOnCell:cell onIndexPath:indexPath];
     cell.textLabel.text = notificationsArray[indexPath.row%notificationsArray.count][@"fName"];
-//    cell.textLabel.text = @"Harsh Sharma";
     cell.detailTextLabel.text = [self emotionStringByEmotionNotification:[notificationsArray[indexPath.row%notificationsArray.count][@"flag"] intValue]];
-//    cell.detailTextLabel.text = @"Stared";
     [cell setFlabby:YES];
     [cell setLongPressAnimated:YES];
     [cell setFlabbyColor:cellColors[indexPath.row%cellColors.count]];
-    return cell;
     
-//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-//    
-//    if (!cell)
-//    {
-//        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
-//        [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-//    }
-//    
-//    
-//    
-//    
-//    return cell;
+    UIButton *stareBackBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [stareBackBtn setFrame:CGRectMake(0, 0, 40, 50)];
+    stareBackBtn.tag = indexPath.row;
+    [stareBackBtn setTitleColor:cellColors[(indexPath.row+1)%cellColors.count] forState:UIControlStateNormal];
+    [stareBackBtn addTarget:self action:@selector(stareBackButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    
+    [cell setAccessoryView:stareBackBtn];
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    AFNHelper *afnHelper = [AFNHelper new];
+    [afnHelper getDataFromPath:@"getProfile" withParamData:[@{@"ent_user_fbid": notificationsArray[indexPath.row][@"fbId"]} mutableCopy] withBlock:^(id response, NSError *error)
+     {
+         
+     }];
 }
 
 - (void)setImageOnCell:(UITableViewCell *)cell onIndexPath:(NSIndexPath *)indexPath
@@ -162,6 +163,71 @@
     
 }
 
+- (void)stareBackButtonPressed:(UIButton *)stareBtn
+{
+    if (![Utils isInternetAvailable])
+    {
+        [Utils showOKAlertWithTitle:@"Dating" message:@"No Internet Connection!"];
+    }
+    else
+    {
+//        AFNHelper *afnhelper = [AFNHelper new];
+//        NSMutableDictionary *requestDic = [NSMutableDictionary dictionaryWithObjects:@[[FacebookUtility sharedObject].fbID,matchedProfilesArray[currentProfileIndex][@"fbId"],@"1"] forKeys:@[@"ent_user_fbid",@"ent_invitee_fbid",@"ent_user_action"]];
+//        
+//        [afnhelper getDataFromPath:@"inviteAction" withParamData:requestDic withBlock:^(id response, NSError *error)
+//         {
+//             if (!error)
+//             {
+//                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//                     [self.tableViewPendingEmotions deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:stareBtn.tag inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+//                 });
+//                 
+//                 
+//                 if ([response[@"errMsg"] isEqualToString:@"Congrats! You got a match"]) {
+//                     // Now Winked Back, Start Conversation
+//                     [[Utils sharedInstance] openAlertViewWithTitle:@"Dating" message:response[@"errMsg"] buttons:@[@"Cancel",@"Chat"] completion:^(UIAlertView *alert, NSInteger buttonIndex)
+//                      {
+//                          if (buttonIndex)
+//                          {
+//                              
+//                              UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
+//                              RecentChatsViewController *recentChatViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecentChatsViewController"];
+//                              appDelegate.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:recentChatViewController];
+//                              recentChatViewController.isFromPush = NO;
+//                              [appDelegate.revealController setContentViewController:appDelegate.frontNavigationController animated:NO];
+//                              ChatViewController *chatViewConrtroller = [ChatViewController sharedChatInstance];
+//                              chatViewConrtroller.recieveFBID = response[@"uFbId"];
+//                              chatViewConrtroller.userName = response[@"uName"];
+//                              [appDelegate.frontNavigationController pushViewController:chatViewConrtroller animated:YES];
+//                          }
+//                          
+//                      }];
+//                     
+//                 }
+//                 else
+//                 {
+//                     //                     [Utils showOKAlertWithTitle:@"Dating" message:response[@"errMsg"]];
+//                     [self.lblRequestSent setText:[NSString stringWithFormat:@"You Stared at %@",matchedProfilesArray[currentProfileIndex][@"firstName"]]];
+//                     dispatch_async(dispatch_get_main_queue(), ^{
+//                         [self.viewRequestSent setHidden:NO];
+//                         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//                             [self.viewRequestSent setHidden:YES];
+//                         });
+//                     });
+//                     
+//                 }
+//                 
+//                 
+//             }
+//             else
+//             {
+//                 [Utils showOKAlertWithTitle:@"Dating" message:@"Error Occured, Please Try Again"];
+//             }
+//             
+//         }];
+    }
+}
+
 - (NSString *)emotionStringByEmotionNotification:(EMotionNotification)emotionNotificationType
 {
     switch (emotionNotificationType)
@@ -170,7 +236,7 @@
             return @"Wink";
             
         case kStare:
-            return @"Stare";
+            return @"Stare Back";
             
         case kWave:
             return @"Wave";

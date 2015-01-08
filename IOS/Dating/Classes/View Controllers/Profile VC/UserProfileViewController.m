@@ -39,8 +39,8 @@
     {
         self.imagesArray = [[[NSUserDefaults standardUserDefaults] arrayForKey:@"ProfileImages"] mutableCopy];
     }
-    editedArray = [NSMutableArray arrayWithObjects:@"",@"",@"",@"", nil];
-    deletedImageUrlArray = [NSMutableArray arrayWithObjects:@"",@"",@"",@"", nil];
+    editedArray = [NSMutableArray arrayWithObjects:@"",@"",@"", nil];
+    deletedImageUrlArray = [NSMutableArray array];
     [self setImagesOnLayout];
 }
 
@@ -55,7 +55,10 @@
     for (int i = 0; i < 4; i++)
     {
         UIButton *btn = (UIButton *)[self.view viewWithTag:i+1];
-        
+        [btn.layer setCornerRadius:btn.frame.size.height/2];
+        [btn setClipsToBounds:YES];
+        [btn.layer setBorderColor:[UIColor whiteColor].CGColor];
+        [btn.layer setBorderWidth:1.0f];
         if (i)
         {
             // Add Long Tap Gesture
@@ -75,7 +78,7 @@
         }
         
         [btn addTarget:self action:@selector(profilePictureBtnPressed:) forControlEvents:UIControlEventTouchUpInside];
-        [btn.imageView setContentMode:UIViewContentModeScaleAspectFit];
+        [btn.imageView setContentMode:UIViewContentModeScaleAspectFill];
         UIActivityIndicatorView *activityIndicatorView = (UIActivityIndicatorView *)[self.view viewWithTag:i+11];
         if (self.imagesArray.count > i)
         {
@@ -95,7 +98,11 @@
         
         UIButton *tempButton = [[UIButton alloc] initWithFrame:recognizer.view.frame];
         [tempButton setImage:Btn.currentImage forState:UIControlStateNormal];
-        [tempButton.imageView setContentMode:UIViewContentModeScaleAspectFit];
+        [tempButton.imageView setContentMode:UIViewContentModeScaleAspectFill];
+        [tempButton setClipsToBounds:YES];
+        [tempButton.layer setCornerRadius:tempButton.frame.size.height/2];
+        [tempButton.layer setBorderColor:[UIColor whiteColor].CGColor];
+        [tempButton.layer setBorderWidth:1.0f];
         UILongPressGestureRecognizer *longTapGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongTap:)];
         [tempButton addTarget:self action:@selector(profilePictureBtnPressed:) forControlEvents:UIControlEventTouchUpInside];
         [tempButton setBackgroundColor:[UIColor grayColor]];
@@ -393,9 +400,31 @@
 
 - (IBAction)btnSaveProfilePressed:(id)sender
 {
-    NSDictionary *reqDict = @{@"ent_user_fbid": [FacebookUtility sharedObject].fbID, @"ent_delete_flag" : [deletedImageUrlArray count]?@"1":@"0",@"ent_image_flag":@"2",@"ent_img_file":editedArray};
+    NSMutableDictionary *requestDict = [NSMutableDictionary dictionary];
+    [requestDict setObject:[FacebookUtility sharedObject].fbID forKey:@"ent_user_fbid"];
+    
+    if (ProfileImage)
+    {
+        [requestDict setObject:UIImagePNGRepresentation(ProfileImage) forKey:@"ent_prof_file"];
+    }
+    if ([editedArray count])
+    {
+        [editedArray removeObjectIdenticalTo:@""];
+    }
+    [editedArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [editedArray replaceObjectAtIndex:idx withObject:UIImagePNGRepresentation(editedArray[idx])];
+    }];
+    
+    [requestDict setObject:editedArray forKey:@"ent_img_file"];
+    [requestDict setObject:@"2" forKey:@"ent_image_flag"];
+    [requestDict setObject:[deletedImageUrlArray count]?@"1":@"0" forKey:@"ent_delete_flag"];
+    [requestDict setObject:deletedImageUrlArray forKey:@"ent_image_name"];
+    
     AFNHelper *afnHelper = [AFNHelper new];
-//    [afnHelper getDataFromPath:@"uploadImage" withParamDataImage:nil andImage:<#(UIImage *)#> withBlock:<#^(id response, NSError *error)block#>]
+    
+    [afnHelper getDataFromPath:@"uploadImage" withParamDataImage:requestDict andImage:nil withBlock:^(id response, NSError *error) {
+        
+    }];
 }
 
 #pragma mark ----
@@ -403,6 +432,8 @@
 
 -(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
+    UIButton *btn = (UIButton *)[self.view viewWithTag:selectedButtonTag];
+    
     if (selectedButtonTag == 1)
     {
         ProfileImage = info[UIImagePickerControllerEditedImage];
@@ -414,15 +445,12 @@
             [deletedImageUrlArray addObject:self.imagesArray[selectedButtonTag-1]];
         }
         
-        UIButton *btn = (UIButton *)[self.view viewWithTag:selectedButtonTag];
-        [btn setImage:info[UIImagePickerControllerEditedImage] forState:UIControlStateNormal];
         if (info[UIImagePickerControllerEditedImage])
         {
             [editedArray replaceObjectAtIndex:selectedButtonTag-1 withObject:info[UIImagePickerControllerEditedImage]];
         }
     }
-    
-    
+    [btn setImage:info[UIImagePickerControllerEditedImage] forState:UIControlStateNormal];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

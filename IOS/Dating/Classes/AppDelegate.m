@@ -108,6 +108,7 @@ AppDelegate* appDelegate = nil;
         if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"LoginPersistingClass"] length])
         {
             self.frontNavigationController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"FirstNavigationController"];
+            [self.frontNavigationController setNavigationBarHidden:YES];
             [self.frontNavigationController pushViewController:[mainStoryBoard instantiateViewControllerWithIdentifier:[[NSUserDefaults standardUserDefaults] objectForKey:@"LoginPersistingClass"]] animated:NO];
             [FacebookUtility sharedObject].fbID = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbID"];
             [FacebookUtility sharedObject].fbFullName = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbFullName"];
@@ -121,6 +122,7 @@ AppDelegate* appDelegate = nil;
                 
                 FindMatchViewController *findMatchViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"FindMatchViewController"];
                 self.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:findMatchViewController];
+                [self.frontNavigationController setNavigationBarHidden:YES];
                 [FacebookUtility sharedObject].fbID = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbID"];
                 [FacebookUtility sharedObject].fbFullName = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbFullName"];
                 
@@ -133,7 +135,7 @@ AppDelegate* appDelegate = nil;
             {
                 // Login
                 self.frontNavigationController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"FirstNavigationController"];
-                
+                [self.frontNavigationController setNavigationBarHidden:YES];
                 self.window.rootViewController = self.frontNavigationController;
             }
         }
@@ -264,9 +266,6 @@ AppDelegate* appDelegate = nil;
 - (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error
 {
     [Utils showOKAlertWithTitle:@"DateMate" message:error.localizedDescription];
-//    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-//    [userDefaults setObject:@"1234" forKey:kDeviceToken];
-//    [userDefaults synchronize];
 }
 
 - (void)application:(UIApplication*)application didReceiveRemoteNotification:(NSDictionary *)userInfo
@@ -364,12 +363,6 @@ AppDelegate* appDelegate = nil;
     }
     
 }
-
-//- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler
-//{
-//    NSLog(@"Server Notification When Disabled = %@",userInfo);
-//    
-//}
 
 - (NSInteger)indexOfObjectWithSenderID:(NSString *)sFid InArray:(NSMutableArray *)nameArray
 {

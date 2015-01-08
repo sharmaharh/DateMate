@@ -9,10 +9,12 @@
 #ifndef Dating_Defines_h
 #define Dating_Defines_h
 
+#import <CoreLocation/CoreLocation.h>
 #import "ResideMenuViewController.h"
 #import "AppDelegate.h"
 #import "AFNHelper.h"
 #import "Utils.h"
+#import "Constants.h"
 #import "FacebookUtility.h"
 
 #endif

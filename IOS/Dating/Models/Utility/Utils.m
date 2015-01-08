@@ -765,4 +765,38 @@
     return path;
 }
 
+#pragma mark Tracking & Updating Location
+
+- (void)startLocationManager
+{
+    self.locationManager = [[CLLocationManager alloc] init];
+    self.locationManager.delegate = self;
+    self.locationManager.distanceFilter = kCLDistanceFilterNone; //whenever we move
+    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+    
+    [self.locationManager startUpdatingLocation];
+    
+    if(IS_OS_8_OR_LATER) {
+        [self.locationManager requestWhenInUseAuthorization];
+    }
+    
+    if(![CLLocationManager locationServicesEnabled])
+    {
+        [Utils showOKAlertWithTitle:@"Location Services Disabled" message:@"Yocty requires your location. Please allow access from settings."];
+    }
+}
+
+- (void)stopUpdatingLocation
+{
+    [self.locationManager stopUpdatingLocation];
+    self.locationManager = nil;
+}
+
+#pragma mark Location Manager Delegate
+
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
+{
+    self.currentLocation = [locations firstObject];
+}
+
 @end
