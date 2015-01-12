@@ -183,8 +183,8 @@
      *-marked are mandatory  name="ent_submit"
      */
     appDelegate.userPreferencesDict = [NSMutableDictionary dictionary];
-    [appDelegate.userPreferencesDict setObject:@"15" forKey:@"ent_pref_lower_age"];
-    [appDelegate.userPreferencesDict setObject:@"30" forKey:@"ent_pref_upper_age"];
+    [appDelegate.userPreferencesDict setObject:@"20" forKey:@"ent_pref_lower_age"];
+    [appDelegate.userPreferencesDict setObject:@"26" forKey:@"ent_pref_upper_age"];
     [appDelegate.userPreferencesDict setObject:@"100" forKey:@"ent_pref_radius"];
     [appDelegate.userPreferencesDict setObject:fbDict[@"id"] forKey:@"ent_user_fbid"];
     [appDelegate.userPreferencesDict setObject:[FBUserDetailDict[@"gender"] isEqualToString:@"male"]?@"1":@"2" forKey:@"ent_sex"];

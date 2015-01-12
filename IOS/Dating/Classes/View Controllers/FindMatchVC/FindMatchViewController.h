@@ -11,23 +11,21 @@
 
 @interface FindMatchViewController : UIViewController <SFCountdownViewDelegate>
 
-- (IBAction)passProfileButtonPressed:(id)sender;
 - (IBAction)passEmotionsButtonPressed:(id)sender;
 - (IBAction)btnProfileDetailPressed:(id)sender;
 - (IBAction)btnDIsmissTutorialPressed:(id)sender;
-- (IBAction)btnDismissRequestSentPressed:(id)sender;
-
+- (void)passProfileButtonPressed:(id)sender;
+- (void)findMatchesList;
 - (void)displayTime;
 
 @property (strong, nonatomic) NSTimer *profileTimer;
 @property (assign, nonatomic) NSInteger currentProfileIndex;
 
-@property (strong, nonatomic) IBOutlet UIButton *btnPassProfile;
 @property (strong, nonatomic) IBOutlet UIButton *btnProfileImage;
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
+@property (strong, nonatomic) IBOutlet UIButton *btnStare;
 
 @property (weak, nonatomic) IBOutlet UILabel *profileNameLabel;
-@property (strong, nonatomic) IBOutlet UICollectionView *collectionViewPreferences;
 @property (strong, nonatomic) IBOutlet UILabel *lblTimer;
 
 @property (strong, nonatomic) IBOutlet UIView *upcomingProfilesView;

@@ -39,8 +39,7 @@
     NSString *imgURLString = [[[NSUserDefaults standardUserDefaults] arrayForKey:@"ProfileImages"] firstObject];
     
     [self setImageOnButton:self.proflePicImageView WithImageURL:imgURLString];
-    [self.proflePicImageView setContentMode:UIViewContentModeScaleAspectFit];
-    
+    [self.lblUsername setText:[FacebookUtility sharedObject].fbFullName];
     [Utils configureLayerForHexagonWithView:self.proflePicImageView withBorderColor:[UIColor colorWithRed:1 green:1 blue:1 alpha:0.6] WithCornerRadius:20 WithLineWidth:3 withPathColor:[UIColor clearColor]];
 }
 
@@ -52,17 +51,17 @@
     __block NSString *bigImageURLString = ImageURL;
     //    BOOL doesExist = [arrFilePath containsObject:filePath];
     
-    NSString *dirPath = [self ProfileImageFolderPath];
+    NSString *dirPath = [FileManager ProfileImageFolderPathWithFBID:[FacebookUtility sharedObject].fbID];
     NSString *filePath = [dirPath stringByAppendingPathComponent:[ImageURL lastPathComponent]];
     
     BOOL doesExist = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
     
     if (doesExist)
     {
-        UIImage *image = [UIImage imageWithContentsOfFile:filePath];
+        UIImage *image = [Utils scaleImage:[UIImage imageWithContentsOfFile:filePath] WithRespectToFrame:imgView.frame];
         if (image)
         {
-            [imgView setImage:[UIImage imageWithData:[NSData dataWithContentsOfFile:filePath]]];
+            [imgView setImage:image];
         }
         else
         {
@@ -84,7 +83,7 @@
                      imageData = data;
                      UIImage *image = nil;
                      data = nil;
-                     image = [UIImage imageWithData:imageData];
+                     image = [Utils scaleImage:[UIImage imageWithData:imageData] WithRespectToFrame:imgView.frame];
                      if (image == nil)
                      {
                          image = [UIImage imageNamed:@"Bubble-0"];
@@ -119,17 +118,6 @@
         });
     }
     
-}
-
-
-- (NSString *)ProfileImageFolderPath
-{
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *basePath = [paths objectAtIndex:0];
-    
-    basePath = [basePath stringByAppendingPathComponent:@"Profile_Images"];
-    basePath = [basePath stringByAppendingPathComponent:[FacebookUtility sharedObject].fbID];
-    return basePath;
 }
 
 - (void)didReceiveMemoryWarning
@@ -201,6 +189,11 @@
                 UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:findMatchViewController];
                 [navigationController setNavigationBarHidden:YES];
                 [appDelegate.revealController setContentViewController:navigationController animated:YES];
+            }
+            else
+            {
+                FindMatchViewController *findMatchViewController =  (FindMatchViewController *)((UINavigationController *)appDelegate.revealController.contentViewController).topViewController;
+                [findMatchViewController findMatchesList];
             }
             // Seems the user attempts to 'switch' to exactly the same controller he came from!
 

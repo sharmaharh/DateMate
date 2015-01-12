@@ -14,6 +14,7 @@
 #import "AppDelegate.h"
 #import "AFNHelper.h"
 #import "Utils.h"
+#import "FileManager.h"
 #import "Constants.h"
 #import "FacebookUtility.h"
 

@@ -12,35 +12,40 @@
 #import "RearMenuViewController.h"
 
 @interface SelectTastesViewController ()
-{
-    NSArray *preferenceImagesArray;
-    NSArray *preferncesNameArray;
-}
+
+@property (nonatomic, strong) UIView *hsIndicatorView;
 @end
 
 @implementation SelectTastesViewController
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
-    
+    [self customizeView];
+}
+
+- (void)customizeView
+{
     PBJHexagonFlowLayout *flowLayout = [[PBJHexagonFlowLayout alloc] init];
     flowLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
     flowLayout.sectionInset = UIEdgeInsetsZero;
-//    flowLayout.minimumInteritemSpacing = 10.0f;
-//    flowLayout.minimumLineSpacing = 10.0f;
     flowLayout.headerReferenceSize = CGSizeZero;
     flowLayout.footerReferenceSize = CGSizeZero;
     flowLayout.itemSize = CGSizeMake(90.0f, 100.0f);
     flowLayout.itemsPerRow = 8;
     self.preferencesArray = [NSMutableArray array];
-
-    preferncesNameArray = @[@"Smoker",@"Non Vegetarian",@"Religious",@"Night Owl",@"Adventurous",@"Traveller",@"Possesive",@"Talker",@"Sleeper",@"Gamer",@"Romantic",@"Trust",@"Sexy",@"Foodie",@"Entrepreneur",@"Workaholic",@"Gadget Freak",@"Hippy",@"Hugger",@"Gym Rat",@"Techie",@"Fashion Monger",@"Movie Buff",@"TV Junkie",@"Shy",@"Humour",@"Peace Lover",@"Punctual",@"Lazy",@"Dreamer",@"Flirtatious",@"Cuddler"];
     
-    preferenceImagesArray = @[@"smoker",@"non-vegetarian",@"religious",@"night_owl",@"adventurous",@"traveler",@"possessive",@"talker",@"sleeper",@"gamer",@"romantic",@"trust",@"sexy",@"foodie",@"entrepreneur",@"workaholic",@"gadgetfreak",@"hippy",@"hugger",@"gymrat",@"techie",@"fashionmonger",@"moviebuff",@"tvjunkie",@"shy",@"humour",@"peacelover",@"punctual",@"lazy",@"dreamer",@"flirtatious",@"cuddle"];
+    _hsIndicatorView = [[UIView alloc] initWithFrame:CGRectMake(self.scrollIndicatorBG.frame.origin.x, self.scrollIndicatorBG.frame.origin.y, 100, self.scrollIndicatorBG.frame.size.height)];
+    _hsIndicatorView.backgroundColor = [UIColor whiteColor];
+    [_hsIndicatorView.layer setCornerRadius:_hsIndicatorView.frame.size.height/2];
+    [_scrollIndicatorBG.layer setCornerRadius:_scrollIndicatorBG.frame.size.height/2];
     
-    [self.collectionViewPreferences enableCustomScrollIndicatorsWithScrollIndicatorType:JMOScrollIndicatorTypeClassic positions:JMOHorizontalScrollIndicatorPositionBottom color:[UIColor whiteColor]];
+    [self.view addSubview:_hsIndicatorView];
+    [self.btnContinue.layer setCornerRadius:self.btnContinue.frame.size.height/2];
+    [self.btnContinue.layer setBorderColor:[UIColor whiteColor].CGColor];
+    [self.btnContinue.layer setBorderWidth:1.0f];
+    
     [self.collectionViewPreferences setCollectionViewLayout:flowLayout];
-    // Do any additional setup after loading the view.
 }
 
 - (void)didReceiveMemoryWarning {
@@ -52,7 +57,7 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return [preferncesNameArray count];
+    return [User_Preferences_Dict count];
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -60,11 +65,11 @@
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"UserQualityCell" forIndexPath:indexPath];
     
     UIImageView *imageView = (UIImageView *)[cell viewWithTag:1];
-    [imageView setImage:[UIImage imageNamed:preferenceImagesArray[indexPath.row%preferenceImagesArray.count]]];
+    [imageView setImage:[UIImage imageNamed:User_Preferences_Dict[[User_Preferences_Dict allKeys][indexPath.row]]]];
     
     UILabel *preferenceName = (UILabel *)[cell viewWithTag:2];
     preferenceName.numberOfLines = 2;
-    NSString* string = preferncesNameArray[indexPath.row];
+    NSString* string = [User_Preferences_Dict allKeys][indexPath.row];
     NSMutableParagraphStyle *style  = [[NSMutableParagraphStyle alloc] init];
     CGSize strSize = [string boundingRectWithSize:CGSizeMake(100, MAXFLOAT) options:NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName : [UIFont fontWithName:@"SegoeUI" size:14]} context:nil].size;
     NSLog(@"%@,%@",string,NSStringFromCGSize(strSize));
@@ -144,7 +149,7 @@
     
     for (NSInteger i = 0; i < self.preferencesArray.count; i++)
     {
-        [self.preferencesArray replaceObjectAtIndex:i withObject:[preferncesNameArray objectAtIndex:[[self.preferencesArray objectAtIndex:i] intValue]]];
+        [self.preferencesArray replaceObjectAtIndex:i withObject:[[User_Preferences_Dict allKeys] objectAtIndex:[[self.preferencesArray objectAtIndex:i] intValue]]];
     }
     
     [appDelegate.userPreferencesDict setObject:[self.preferencesArray componentsJoinedByString:@","] forKey:@"ent_pref_lifestyle"];
@@ -183,9 +188,34 @@
     
 }
 
--(void)dealloc
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    [self.collectionViewPreferences disableCustomScrollIndicator];
+    CGFloat contentWidth = scrollView.contentSize.width;
+    CGFloat contentOffsetX = scrollView.contentOffset.x;
+    CGFloat scrollWidth = self.scrollIndicatorBG.frame.size.width;
+    CGFloat indicatorWidth = _hsIndicatorView.frame.size.width;
+    
+    if (contentOffsetX <= 0)
+    {
+        CGRect IndicatorFrame = _hsIndicatorView.frame;
+        IndicatorFrame.origin.x = self.scrollIndicatorBG.frame.origin.x;
+        _hsIndicatorView.frame = IndicatorFrame;
+        return;
+    }
+
+    if (contentOffsetX >= scrollView.contentSize.width - scrollView.frame.size.width)
+    {
+        CGRect IndicatorFrame = _hsIndicatorView.frame;
+        IndicatorFrame.origin.x = self.scrollIndicatorBG.frame.origin.x + self.scrollIndicatorBG.frame.size.width - indicatorWidth;
+        _hsIndicatorView.frame = IndicatorFrame;
+        return;
+    }
+    
+    CGFloat x = (contentOffsetX + 10) * (scrollWidth-indicatorWidth) / (contentWidth-scrollWidth) + self.scrollIndicatorBG.frame.origin.x;
+    
+    CGRect IndicatorFrame = _hsIndicatorView.frame;
+    IndicatorFrame.origin.x = x;
+    _hsIndicatorView.frame = IndicatorFrame;
 }
 
 @end

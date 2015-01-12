@@ -15,4 +15,6 @@
 @interface RearMenuViewController : UIViewController
 
 @property (strong, nonatomic) IBOutlet UIImageView *proflePicImageView;
+@property (strong, nonatomic) IBOutlet UILabel *lblUsername;
+
 @end

@@ -49,7 +49,8 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
-    
+    cell.backgroundColor = [UIColor clearColor];
+    cell.textLabel.textColor = [UIColor whiteColor];
     cell.textLabel.text = settingOptionsArray[indexPath.row];
     
     return cell;
@@ -114,10 +115,6 @@
     }];
     
     
-}
-
-- (IBAction)btnRevealPressed:(id)sender
-{
 }
 
 

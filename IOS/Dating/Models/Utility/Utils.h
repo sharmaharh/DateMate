@@ -84,6 +84,7 @@
  ------------------------------------------------------*/
 
 + (UIImage *)scaleImage:(UIImage *)image maxWidth:(int) maxWidth maxHeight:(int) maxHeight;
++ (UIImage *)scaleImage:(UIImage *)image WithRespectToFrame:(CGRect)imageRect;
 + (NSString*) stringFromImage:(UIImage*)image;
 + (UIImage*) imageFromString:(NSString*)imageString;
 + (UIImage *)generatePhotoThumbnail:(UIImage *)image ;

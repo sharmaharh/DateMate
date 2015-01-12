@@ -16,8 +16,6 @@
 {
     NSArray *matchedProfilesArray;
     NSInteger currentProfileIndex;
-    NSArray *preferncesNameArray;
-    NSDictionary *preferencesDict;
     NSTimer *profileTimer;
 }
 @end
@@ -37,16 +35,15 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
-    preferencesDict = User_Preferences_Dict;
-
+    self.btnStare.layer.borderWidth = 1.0f;
+    self.btnStare.layer.cornerRadius = self.btnStare.frame.size.height/2;
+    self.btnStare.layer.borderColor = [UIColor whiteColor].CGColor;
     [self findMatchesList];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self setUpCountdownView];
 //    [self setupTutorialView];
 }
 
@@ -86,37 +83,15 @@
 - (void)setProfileOnLayout
 {
     NSDictionary *profileDict = matchedProfilesArray[currentProfileIndex];
-    [self commonPreferencesWithOtherUserPreferences:[profileDict[@"prefLifeStyle"] componentsSeparatedByString:@","]];
-    preferncesNameArray = [[self commonPreferencesWithOtherUserPreferences:[profileDict[@"prefLifeStyle"] componentsSeparatedByString:@","]] mutableCopy];
-    PBJHexagonFlowLayout *flowLayout = [[PBJHexagonFlowLayout alloc] init];
-    flowLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
-    flowLayout.sectionInset = UIEdgeInsetsZero;
-    flowLayout.headerReferenceSize = CGSizeZero;
-    flowLayout.footerReferenceSize = CGSizeZero;
-    flowLayout.itemSize = CGSizeMake(70.0f, 80.0f);
-    flowLayout.itemsPerRow = [preferncesNameArray count];
-    [self.collectionViewPreferences setCollectionViewLayout:flowLayout];
-    [self.collectionViewPreferences setContentOffset:CGPointZero animated:NO];
-    [self.collectionViewPreferences reloadData];
     self.profileNameLabel.text = [NSString stringWithFormat:@"%@,%@",profileDict[@"firstName"],profileDict[@"age"]];
     
-    [self setImageOnButton:self.btnProfileImage WithActivityIndicator:self.activityIndicator WithImageURL:[matchedProfilesArray[currentProfileIndex][@"oPic"] firstObject][@"pImg"]];
+    [self setImageOnButton:self.btnProfileImage WithActivityIndicator:self.activityIndicator WithImageURL:[matchedProfilesArray[currentProfileIndex][@"oPic"] firstObject][@"url"]];
     [self setUpcomingProfilesInFindMatchesList];
     
     self.lblTimer.text = @"10";
     [self.profileTimer invalidate];
     
     self.profileTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(displayTime) userInfo:nil repeats:YES];
-}
-
-- (NSArray *)commonPreferencesWithOtherUserPreferences:(NSArray *)otherUserPreferences
-{
-    NSArray *myPreferncesArray = [[[[[NSUserDefaults standardUserDefaults] objectForKey:@"UserPreferences"] mutableCopy] objectForKey:@"ent_pref_lifestyle"] componentsSeparatedByString:@","];
-    NSMutableSet* set1 = [NSMutableSet setWithArray:otherUserPreferences];
-    NSMutableSet* set2 = [NSMutableSet setWithArray:myPreferncesArray];
-    [set1 intersectSet:set2]; //this will give you only the obejcts that are in both sets
-    
-    return [set1 allObjects];
 }
 
 - (void)displayTime
@@ -148,23 +123,25 @@
 
 - (void)setImageOnButton:(UIButton *)btn WithActivityIndicator:(UIActivityIndicatorView *)activityIndicator WithImageURL:(NSString *)ImageURL
 {
+    [btn.imageView setContentMode:UIViewContentModeCenter];
     if (!ImageURL || !ImageURL.length) {
         return;
     }
     __block NSString *bigImageURLString = ImageURL;
     //    BOOL doesExist = [arrFilePath containsObject:filePath];
     
-    NSString *dirPath = [self ProfileImageFolderPathWithFBID:matchedProfilesArray[currentProfileIndex][@"fbId"]];
+    NSString *dirPath = [FileManager ProfileImageFolderPathWithFBID:matchedProfilesArray[currentProfileIndex][@"fbId"]];
     NSString *filePath = [dirPath stringByAppendingPathComponent:[ImageURL lastPathComponent]];
     
     BOOL doesExist = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
     
     if (doesExist)
     {
-        UIImage *image = [UIImage imageWithContentsOfFile:filePath];
+        UIImage *image = [Utils scaleImage:[UIImage imageWithContentsOfFile:filePath] WithRespectToFrame:btn.frame];
         if (image)
         {
-            [btn setImage:[UIImage imageWithData:[NSData dataWithContentsOfFile:filePath]] forState:UIControlStateNormal];
+            
+            [btn setImage:image forState:UIControlStateNormal];
             [activityIndicator stopAnimating];
         }
         else
@@ -187,7 +164,7 @@
                     imageData = data;
                     UIImage *image = nil;
                     data = nil;
-                    image = [UIImage imageWithData:imageData];
+                    image = [Utils scaleImage:[UIImage imageWithData:imageData] WithRespectToFrame:btn.frame];
                     if (image == nil)
                     {
                         image = [UIImage imageNamed:@"Bubble-0"];
@@ -226,16 +203,6 @@
     
 }
 
-- (NSString *)ProfileImageFolderPathWithFBID:(NSString *)fbID
-{
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *basePath = [paths objectAtIndex:0];
-    
-    basePath = [basePath stringByAppendingPathComponent:@"Profile_Images"];
-    basePath = [basePath stringByAppendingPathComponent:matchedProfilesArray[currentProfileIndex][@"fbId"]];
-    return basePath;
-}
-
 - (void)showFullPicture:(UIButton *)btn
 {
     FullImageViewController *fullImageViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FullImageViewController"];
@@ -249,7 +216,8 @@
 {
     [self showErrorInProfileView];
     matchedProfilesArray = [NSMutableArray array];
-    
+    currentProfileIndex = 0;
+    [self setUpCountdownView];
     if (![Utils isInternetAvailable])
     {
         [Utils showOKAlertWithTitle:@"Dating" message:@"No Internet Connection!"];
@@ -324,7 +292,7 @@
     }
 }
 
-- (IBAction)passProfileButtonPressed:(id)sender
+- (void)passProfileButtonPressed:(id)sender
 {
     
     currentProfileIndex++;
@@ -346,7 +314,7 @@
 
 - (void)removeCacheImages
 {
-    NSString *filePath = [self ProfileImageFolderPathWithFBID:matchedProfilesArray[currentProfileIndex][@"fbId"]];
+    NSString *filePath = [FileManager ProfileImageFolderPathWithFBID:matchedProfilesArray[currentProfileIndex][@"fbId"]];
     if ([[NSFileManager defaultManager] fileExistsAtPath:filePath])
     {
         [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
@@ -397,7 +365,6 @@
                  }
                  else
                  {
-//                     [Utils showOKAlertWithTitle:@"Dating" message:response[@"errMsg"]];
                      [self.lblRequestSent setText:[NSString stringWithFormat:@"You Stared at %@",matchedProfilesArray[currentProfileIndex][@"firstName"]]];
                      dispatch_async(dispatch_get_main_queue(), ^{
                          [self.viewRequestSent setHidden:NO];
@@ -412,7 +379,7 @@
              }
              else
              {
-                 [Utils showOKAlertWithTitle:@"Dating" message:@"Error Occured, Please Try Again"];
+                 [Utils showOKAlertWithTitle:_Alert_Title message:@"Error Occured, Please Try Again"];
              }
              
          }];
@@ -436,6 +403,8 @@
     UserProfileDetailViewController *userProfileDetailViewController = [segue destinationViewController];
     userProfileDetailViewController.matchedProfilesArray = matchedProfilesArray;
     userProfileDetailViewController.currentProfileIndex = currentProfileIndex;
+    userProfileDetailViewController.isFromMatches = YES;
+    [self.sfCountdownView stop];
     [self.profileTimer invalidate];
 }
 
@@ -449,72 +418,21 @@
     for (NSInteger i = currentProfileIndex; i < MIN(matchedProfilesArray.count, currentProfileIndex+3); i++)
     {
         UIImageView *imageView = (UIImageView *)[self.upcomingProfilesView viewWithTag:i+100+1-currentProfileIndex];
-        
-        [imageView setImageWithURL:[NSURL URLWithString:[matchedProfilesArray[i][@"oPic"] firstObject][@"pImg"]]];
+        [self setImageOnButton:imageView WithActivityIndicator:nil WithImageURL:[matchedProfilesArray[i][@"oPic"] firstObject][@"url"]];
+        [imageView setImageWithURL:[NSURL URLWithString:[matchedProfilesArray[i][@"oPic"] firstObject][@"url"]]];
         
         [imageView setHidden:NO];
         
         if (i == currentProfileIndex)
         {
-            [Utils configureLayerForHexagonWithView:imageView withBorderColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.4] WithCornerRadius:15 WithLineWidth:3 withPathColor:[UIColor greenColor]];
+            [Utils configureLayerForHexagonWithView:imageView withBorderColor:[UIColor greenColor] WithCornerRadius:15 WithLineWidth:3 withPathColor:[UIColor clearColor]];
         }
         else
         {
-            [Utils configureLayerForHexagonWithView:imageView withBorderColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.4] WithCornerRadius:15  WithLineWidth:3 withPathColor:[UIColor lightGrayColor]];
+            [Utils configureLayerForHexagonWithView:imageView withBorderColor:[UIColor lightGrayColor] WithCornerRadius:15  WithLineWidth:3 withPathColor:[UIColor clearColor]];
         }
         
     }
 }
 
-#pragma mark UICollectionView Delegate & Data Source
-
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
-{
-    return [preferncesNameArray count];
-}
-
-- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section{
-    return UIEdgeInsetsMake(0 , 0, 0, 0);
-}
-
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"UserQualityCell" forIndexPath:indexPath];
-    
-    NSString* string = preferncesNameArray[indexPath.row];
-    UIImageView *imageView = (UIImageView *)[cell viewWithTag:101];
-    [imageView setImage:[UIImage imageNamed:preferencesDict[string]]];
-    
-    UILabel *preferenceName = (UILabel *)[cell viewWithTag:102];
-    preferenceName.numberOfLines = 2;
-    
-    NSMutableParagraphStyle *style  = [[NSMutableParagraphStyle alloc] init];
-    CGSize strSize = [string boundingRectWithSize:CGSizeMake(100, MAXFLOAT) options:NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName : [UIFont fontWithName:@"SegoeUI" size:14]} context:nil].size;
-    NSLog(@"%@,%@",string,NSStringFromCGSize(strSize));
-    style.minimumLineHeight = 10.0f;
-    style.maximumLineHeight = 10.0f;
-    style.lineSpacing = 0;
-    NSDictionary *attributtes = @{NSParagraphStyleAttributeName : style};
-    
-    preferenceName.attributedText = [[NSAttributedString alloc] initWithString:string
-                                                                    attributes:attributtes];
-    [preferenceName setTextAlignment:NSTextAlignmentCenter];
-    if (strSize.width > 68)
-    {
-        [preferenceName setFont:[UIFont fontWithName:@"SegoeUI" size:9]];
-    }
-    else
-    {
-        [preferenceName setFont:[UIFont fontWithName:@"SegoeUI" size:11]];
-    }
-    
-    [preferenceName setAdjustsFontSizeToFitWidth:YES];
-    
-    [Utils configureLayerForHexagonWithView:cell withBorderColor:[UIColor clearColor] WithCornerRadius:15 WithLineWidth:3 withPathColor:[UIColor clearColor]];
-    
-    return cell;
-}
-
-- (IBAction)btnDismissRequestSentPressed:(id)sender {
-}
 @end

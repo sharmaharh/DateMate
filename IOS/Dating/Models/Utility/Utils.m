@@ -176,6 +176,43 @@
 	
 }
 
++ (UIImage *)scaleImage:(UIImage *)image WithRespectToFrame:(CGRect)imageRect
+{
+    CGImageRef imgRef = image.CGImage;
+    CGFloat imgWidth = CGImageGetWidth(imgRef);
+    CGFloat imgHeight = CGImageGetHeight(imgRef);
+    
+    CGFloat scaleFactor = 1;
+    
+    if (imgWidth >= imageRect.size.width && imgHeight < imageRect.size.height)
+    {
+        scaleFactor = imageRect.size.height/imgHeight;
+    }
+    else if (imgWidth < imageRect.size.width && imgHeight >= imageRect.size.height)
+    {
+        scaleFactor = imageRect.size.width/imgWidth;
+    }
+    else
+    {
+        if (imgWidth >= imgHeight)
+            scaleFactor = imageRect.size.height/imgHeight;
+        
+        else
+            scaleFactor = imageRect.size.width/imgWidth;
+    }
+    UIImage *imageCopy = [UIImage imageWithCGImage:imgRef scale:1/scaleFactor orientation:image.imageOrientation];
+
+//    UIGraphicsBeginImageContext(imageRect.size);
+//    [image drawInRect:CGRectMake(0,0,newSize.width,newSize.height)];
+//    UIImage* newImage = UIGraphicsGetImageFromCurrentImageContext();
+//    UIGraphicsEndImageContext();
+    
+    
+    return imageCopy;
+    
+}
+
+
 #pragma mark Image Conversion
 + (NSString*) stringFromImage:(UIImage*)image
 {

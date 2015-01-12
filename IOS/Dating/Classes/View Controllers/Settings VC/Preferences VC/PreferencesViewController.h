@@ -8,18 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
-@interface PreferencesViewController : UIViewController <UITextFieldDelegate>
+@interface PreferencesViewController : UIViewController <UITextFieldDelegate, UITextViewDelegate>
 
-
-@property (weak, nonatomic) IBOutlet UISegmentedControl *segmentPrefferedSex;
-
-
-@property (weak, nonatomic) IBOutlet UITextField *textfieldPrefferdLowerAge;
-@property (weak, nonatomic) IBOutlet UITextField *textfieldPrefferdUpperAge;
-@property (weak, nonatomic) IBOutlet UITextField *textfieldPrefferdRadius;
-@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
 
 - (IBAction)buttonSubmitPrefferencesPressed:(id)sender;
+
+@property (strong, nonatomic) IBOutlet UITableView *preferencesTableView;
+@property (strong, nonatomic) IBOutlet UICollectionView *collectionViewPreferences;
+- (IBAction)btnBackPressed:(id)sender;
 
 
 @end

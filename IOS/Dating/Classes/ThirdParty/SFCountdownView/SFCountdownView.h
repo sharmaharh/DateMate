@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-static const int kDefaultCountdownFrom = 5;
+static const int kDefaultCountdownFrom = 3;
 
 @class SFCountdownView;
 
@@ -22,6 +22,7 @@ static const int kDefaultCountdownFrom = 5;
 @interface SFCountdownView : UIView
 
 @property (nonatomic) int countdownFrom;
+@property (nonatomic) int currentCountdownValue;
 @property (nonatomic) NSString* finishText;
 
 // appearance settings

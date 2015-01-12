@@ -13,8 +13,6 @@
 @property (nonatomic) NSTimer* timer;
 @property (nonatomic) UILabel* countdownLabel;
 
-@property (nonatomic) int currentCountdownValue;
-
 @end
 
 #define COUNTDOWN_LABEL_FONT_SCALE_FACTOR 0.3
@@ -46,7 +44,7 @@
     
     // countdown label
     float fontSize = self.bounds.size.width * COUNTDOWN_LABEL_FONT_SCALE_FACTOR;
-    
+    self.countdownFrom = kDefaultCountdownFrom;
     self.countdownLabel = [[UILabel alloc] init];
     [self.countdownLabel setFont:[UIFont fontWithName:self.fontName size:fontSize]];
     [self.countdownLabel setTextColor:self.countdownColor];
@@ -148,9 +146,6 @@
 
 - (int) countdownFrom
 {
-    if (_countdownFrom == 0) {
-        _countdownFrom = kDefaultCountdownFrom;
-    }
     
     return _countdownFrom;
 }
