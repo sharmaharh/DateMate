@@ -66,8 +66,10 @@
         return;
     }
     
-    NSString *paramsString = @"id, name, first_name, last_name, gender, picture.type(large), email, birthday, location";
-    NSArray *permissionsArray = @[@"read_stream",@"email",@"user_birthday",@"user_location",@"user_likes"];
+    NSString *paramsString = @"id, name, first_name, last_name, gender, picture.type(large), email, birthday, location, bio";
+    NSArray *permissionsArray = @[@"email",@"user_birthday",@"user_location",@"user_likes"];
+    [self.btnFacebook setUserInteractionEnabled:NO];
+    [self.activityIndicator startAnimating];
     
     [[FacebookUtility sharedObject] fetchFBPersonalInfoWithParams:paramsString withPermissions:permissionsArray completionHandler:^(id response, NSError *e) {
         if (!e)
@@ -77,6 +79,8 @@
         }
         else
         {
+            [self.btnFacebook setUserInteractionEnabled:YES];
+            [self.activityIndicator stopAnimating];
             [Utils showOKAlertWithTitle:_Alert_Title message:@"Failed to Fetch Info from Facebook, Please try again later."];
         }
     }];
@@ -93,20 +97,40 @@
             {
                 [[FacebookUtility sharedObject] getAlbumsPhotosWithLikes:response[@"id"] WithCompletionBlock:^(id response, NSError *error)
                  {
-                     NSDictionary *responseDict = [NSDictionary dictionaryWithDictionary:response];
-                     
-                     if ([responseDict[@"data"] isKindOfClass:[NSArray class]])
+                     if (!error)
                      {
-                         profilePicsArray = [[self filterArrayInLikesDescendingOrderFromArray:responseDict[@"data"]] mutableCopy];
-                         [self parseLogin:fbResponse];
+                         NSDictionary *responseDict = [NSDictionary dictionaryWithDictionary:response];
+                         
+                         if ([responseDict[@"data"] isKindOfClass:[NSArray class]])
+                         {
+                             profilePicsArray = [[self filterArrayInLikesDescendingOrderFromArray:responseDict[@"data"]] mutableCopy];
+                             [self parseLogin:fbResponse];
+                         }
+                         else
+                         {
+                             [self.btnFacebook setUserInteractionEnabled:YES];
+                             [self.activityIndicator stopAnimating];
+                         }
+                     }
+                     else
+                     {
+                         [self.btnFacebook setUserInteractionEnabled:YES];
+                         [self.activityIndicator stopAnimating];
                      }
                      
                  }];
             }
             else
             {
+                [self.btnFacebook setUserInteractionEnabled:YES];
+                [self.activityIndicator stopAnimating];
                 [Utils showOKAlertWithTitle:_Alert_Title message:@"Oops, an error occured in fetching Profile Photos.Please try again."];
             }
+        }
+        else
+        {
+            [self.btnFacebook setUserInteractionEnabled:YES];
+            [self.activityIndicator stopAnimating];
         }
         
     }];
@@ -147,21 +171,26 @@
 {
     /*
      {
-     birthday = "01/29/1991";
-     email = "sharmaharh@gmail.com";
-     "first_name" = Harsh;
+     bio = "The more u talk to me,
+     \nThe more u get addicted to me........
+     \n
+     \nbloOd grouP=O+
+     \nlol";
+     birthday = "02/16/1991";
+     email = "navneetsharma77navneet@gmail.com";
+     "first_name" = Navneet;
      gender = male;
-     id = 661762160568643;
+     id = 10203175848489479;
      "last_name" = Sharma;
      location =     {
-     id = 130646063637019;
-     name = "Noida, India";
+     id = 112628452084970;
+     name = Yamunanagar;
      };
-     name = "Harsh Sharma";
+     name = "Navneet Sharma";
      picture =     {
      data =         {
      "is_silhouette" = 0;
-     url = "https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xpa1/v/t1.0-1/p200x200/10173685_699047186840140_8668638152027902863_n.jpg?oh=be8409d6c8737a2806d893fa7177d797&oe=5516186E&__gda__=1426009299_ae7e0adbc908281bd18a12f6a9483f5b";
+     url = "https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xfa1/v/t1.0-1/p200x200/262217_3991638541793_1099481420_n.jpg?oh=1fa8cdb32dfae17cc7e994567471c94f&oe=552228C3&__gda__=1429444347_99413cb7f6c6b9dd962a8c72a714c550";
      };
      };
      }
@@ -188,11 +217,21 @@
     [appDelegate.userPreferencesDict setObject:@"100" forKey:@"ent_pref_radius"];
     [appDelegate.userPreferencesDict setObject:fbDict[@"id"] forKey:@"ent_user_fbid"];
     [appDelegate.userPreferencesDict setObject:[FBUserDetailDict[@"gender"] isEqualToString:@"male"]?@"1":@"2" forKey:@"ent_sex"];
+    if ([[fbDict allKeys] containsObject:@"bio"])
+    {
+        [appDelegate.userPreferencesDict setObject:fbDict[@"bio"] forKey:@"ent_pers_desc"];
+    }
+    else
+    {
+        [appDelegate.userPreferencesDict setObject:@"" forKey:@"ent_pers_desc"];
+    }
+    
     
     
     if (![Utils isInternetAvailable])
     {
         [Utils showOKAlertWithTitle:_Alert_Title message:NO_INERNET_MSG];
+        [self.btnFacebook setUserInteractionEnabled:YES];
     }
     else
     {
@@ -218,16 +257,17 @@
         
 #if TARGET_IPHONE_SIMULATOR
         
-        NSDictionary *fbInfo = @{@"ent_first_name":fbDict[@"first_name"], @"ent_last_name":fbDict[@"last_name"], @"ent_fbid":fbDict[@"id"], @"ent_sex":appDelegate.userPreferencesDict, @"ent_curr_lat":@"28.500", @"ent_curr_long":@"77.3", @"ent_dob":[self DOBofUserAsPerFB:FBUserDetailDict[@"birthday"]], @"ent_push_token" : @"iPhone_Simulator", @"ent_profile_pic":profilePicString, @"ent_device_type":@"1", @"ent_auth_type":@"1"};
+        NSDictionary *fbInfo = @{@"ent_first_name":fbDict[@"first_name"], @"ent_last_name":fbDict[@"last_name"], @"ent_fbid":fbDict[@"id"], @"ent_sex":appDelegate.userPreferencesDict[@"ent_sex"], @"ent_curr_lat":@"28.500", @"ent_curr_long":@"77.3", @"ent_dob":[self DOBofUserAsPerFB:FBUserDetailDict[@"birthday"]], @"ent_push_token" : @"iPhone_Simulator", @"ent_profile_pic":profilePicString, @"ent_device_type":@"1", @"ent_auth_type":@"1",@"ent_pers_desc":appDelegate.userPreferencesDict[@"ent_pers_desc"]};
 #else
         
-        NSDictionary *fbInfo = @{@"ent_first_name":fbDict[@"first_name"], @"ent_last_name":fbDict[@"last_name"], @"ent_fbid":fbDict[@"id"], @"ent_sex":appDelegate.userPreferencesDict, @"ent_curr_lat":@"28.500", @"ent_curr_long":@"77.3", @"ent_dob":[self DOBofUserAsPerFB:FBUserDetailDict[@"birthday"]], @"ent_push_token" : [[NSUserDefaults standardUserDefaults] objectForKey:@"deviceToken"], @"ent_profile_pic":profilePicString, @"ent_device_type":@"1", @"ent_auth_type":@"1"};
+        NSDictionary *fbInfo = @{@"ent_first_name":fbDict[@"first_name"], @"ent_last_name":fbDict[@"last_name"], @"ent_fbid":fbDict[@"id"], @"ent_sex":appDelegate.userPreferencesDict[@"ent_sex"], @"ent_curr_lat":@"28.500", @"ent_curr_long":@"77.3", @"ent_dob":[self DOBofUserAsPerFB:FBUserDetailDict[@"birthday"]], @"ent_push_token" : [[NSUserDefaults standardUserDefaults] objectForKey:@"deviceToken"], @"ent_profile_pic":profilePicString, @"ent_device_type":@"1", @"ent_auth_type":@"1",@"ent_pers_desc":appDelegate.userPreferencesDict[@"ent_pers_desc"]};
         
 #endif
         
-        [self.activityIndicator startAnimating];
+        
         AFNHelper *afnhelper = [AFNHelper new];
         [afnhelper getDataFromPath:@"login" withParamData:[fbInfo mutableCopy] withBlock:^(id response, NSError *error) {
+            [self.btnFacebook setUserInteractionEnabled:YES];
             [self.activityIndicator stopAnimating];
             if (!error)
             {

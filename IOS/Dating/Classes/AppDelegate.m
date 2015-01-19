@@ -28,6 +28,7 @@ AppDelegate* appDelegate = nil;
 {
     self.window=[[UIWindow alloc]initWithFrame:[[UIScreen mainScreen] bounds]];
     appDelegate = self;
+    
     appDelegate.userPreferencesDict = [NSMutableDictionary dictionary];
     if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"UserPreferences"] count])
     {
@@ -179,7 +180,7 @@ AppDelegate* appDelegate = nil;
                         if (image)
                         {
                             
-                            NSString *filePath = [basePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%u.png",[imageURLArray indexOfObject:dict]+1]];
+                            NSString *filePath = [basePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lu.png",[imageURLArray indexOfObject:dict]+1]];
                             
                             [[NSFileManager defaultManager] createFileAtPath:filePath contents:data attributes:nil];
                             

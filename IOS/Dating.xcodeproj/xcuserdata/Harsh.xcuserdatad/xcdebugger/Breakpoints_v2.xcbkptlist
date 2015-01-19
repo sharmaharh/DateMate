@@ -195,13 +195,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Dating/Classes/View Controllers/Settings VC/Preferences VC/PreferencesViewController.m"
-            timestampString = "442661705.177732"
+            filePath = "Dating/Classes/Helper Classes/WebSocket Manager/MyWebSocket.m"
+            timestampString = "443271731.027535"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "659"
-            endingLineNumber = "659"
-            landmarkName = "-updateSliderLabels"
+            startingLineNumber = "456"
+            endingLineNumber = "456"
+            landmarkName = "-didSendPong:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -211,13 +211,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Dating/Classes/ThirdParty/NMRangeSlider/NMRangeSlider.m"
-            timestampString = "442657215.602037"
+            filePath = "Dating/Classes/Helper Classes/WebSocket Manager/MyWebSocket.m"
+            timestampString = "443271731.027535"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "577"
-            endingLineNumber = "577"
-            landmarkName = "-layoutSubviews"
+            startingLineNumber = "271"
+            endingLineNumber = "271"
+            landmarkName = "-didReceiveBinaryMessage:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -227,13 +227,59 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Dating/Classes/View Controllers/Settings VC/Preferences VC/PreferencesViewController.m"
-            timestampString = "442661705.177732"
+            filePath = "Dating/Classes/Helper Classes/WebSocket Manager/MyWebSocket.m"
+            timestampString = "443271563.387383"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "447"
-            endingLineNumber = "447"
-            landmarkName = "-addAgeSilder"
+            startingLineNumber = "220"
+            endingLineNumber = "220"
+            landmarkName = "-didReceiveError:"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[MyWebSocket didReceiveError:]"
+                  moduleName = "yOcty"
+                  urlString = "file:///Users/Harsh/Documents/Bruze/Dating/Classes/Helper%20Classes/WebSocket%20Manager/MyWebSocket.m"
+                  timestampString = "443277542.400277"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "220"
+                  endingLineNumber = "220"
+                  offsetFromSymbolStart = "64">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__31-[MyWebSocket didReceiveError:]_block_invoke"
+                  moduleName = "yOcty"
+                  urlString = "file:///Users/Harsh/Documents/Bruze/Dating/Classes/Helper%20Classes/WebSocket%20Manager/MyWebSocket.m"
+                  timestampString = "443277542.400424"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "220"
+                  endingLineNumber = "220"
+                  offsetFromSymbolStart = "40">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Dating/Classes/View Controllers/FindMatchVC/FindMatchViewController.m"
+            timestampString = "443132436.16372"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "84"
+            endingLineNumber = "84"
+            landmarkName = "-setProfileOnLayout"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -243,13 +289,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Dating/Models/Utility/Utils.m"
-            timestampString = "442772756.879733"
+            filePath = "Dating/Classes/View Controllers/Preferences/SelectTastesViewController.m"
+            timestampString = "443211990.170238"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "204"
-            endingLineNumber = "204"
-            landmarkName = "+scaleImage:WithRespectToFrame:"
+            startingLineNumber = "155"
+            endingLineNumber = "155"
+            landmarkName = "-btnProceedPressed:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -259,44 +305,12 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Dating/Models/Utility/Utils.m"
-            timestampString = "442773402.429549"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "185"
-            endingLineNumber = "185"
-            landmarkName = "+scaleImage:WithRespectToFrame:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Dating/Classes/View Controllers/RearMenuVC/RearMenuViewController.m"
-            timestampString = "442774163.760662"
+            filePath = "Dating/Classes/View Controllers/Chat VC/ChatViewController.m"
+            timestampString = "443277632.959895"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "62"
             endingLineNumber = "62"
-            landmarkName = "-setImageOnButton:WithImageURL:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Dating/Classes/View Controllers/RearMenuVC/RearMenuViewController.m"
-            timestampString = "442774163.760662"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "44"
-            endingLineNumber = "44"
             landmarkName = "-viewDidLoad"
             landmarkType = "5">
          </BreakpointContent>
@@ -307,13 +321,29 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Dating/Classes/View Controllers/FindMatchVC/FindMatchViewController.m"
-            timestampString = "442775729.494508"
+            filePath = "Dating/Classes/View Controllers/Chat VC/ChatViewController.m"
+            timestampString = "443277542.271451"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "141"
-            endingLineNumber = "141"
-            landmarkName = "-setImageOnButton:WithActivityIndicator:WithImageURL:"
+            startingLineNumber = "83"
+            endingLineNumber = "83"
+            landmarkName = "-viewDidLoad"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Dating/Classes/View Controllers/Chat VC/ChatViewController.m"
+            timestampString = "443277713.719594"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "699"
+            endingLineNumber = "699"
+            landmarkName = "-tableView:numberOfRowsInSection:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

@@ -271,6 +271,7 @@ NSString *const PARAM_ENT_STATUS=@"ent_status";
              if (error)
              {
                  NSLog(@"err:%@",error);
+                 completionBlock(nil,error);
              }
              else if (FB_ISSESSIONOPENWITHSTATE(status))
              {

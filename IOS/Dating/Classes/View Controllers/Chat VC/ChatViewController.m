@@ -12,6 +12,7 @@
 #import "AudioRecordingView.h"
 #import "FullImageViewController.h"
 
+
 @interface ChatViewController ()
 {
     NSString *headerTitle;
@@ -40,6 +41,7 @@
     dispatch_once(&once, ^{
         UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
         sharedInstance = [mainStoryBoard instantiateViewControllerWithIdentifier:@"ChatViewController"];
+        
     });
     return sharedInstance;
 }
@@ -51,6 +53,60 @@
     isFirstTime = YES;
     self.tableViewChat.sectionFooterHeight = 0;
     totalChatCount = 0;
+    
+    [[MyWebSocket sharedInstance] sendText:@{@"type" : @"participate", @"userId" : [FacebookUtility sharedObject].fbID, @"roomId" : self.recieveFBID} acknowledge:^(NSDictionary *messageDict, NSError *error) {
+        if (!error)
+        {
+            if ([[messageDict allKeys] containsObject:@"type"] && [messageDict objectForKey:@"type"])
+            {
+                if ([[messageDict objectForKey:@"type"] isEqualToString:@"message"])
+                {
+                    NSLog(@"Message Recieved = %@",messageDict);
+                    
+                    if (!self.messages)
+                    {
+                        self.messages = [NSMutableArray array];
+                    }
+                    
+                    if ([messageDict[@"body"][@"chat"] count])
+                    {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self recieveMessage:messageDict[@"body"][@"chat"]];
+                        });
+                        
+                    
+                    }
+                    
+                }
+                else if ([[messageDict objectForKey:@"type"] isEqualToString:@"mediaUpload"])
+                {
+                    [self.tableViewChat reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[self.messages count]-1 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+                    
+//                    if ([messageDict[@"body"][@"isUpload"] boolValue])
+//                    {
+//                        
+//                        [self.tableViewChat reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[self.messages count]-1 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+//                        
+////                        Message *msgToWatch = [[self.messages filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+////                            Message *msgObject=(Message *) evaluatedObject;
+////                            return ([msgObject.messageID hasPrefix:messageDict[@"body"][msg_ID]]);
+////                        }]] firstObject];
+////                        
+////                        if (msgToWatch)
+////                        {
+////                            NSInteger index = [self.messages indexOfObject:msgToWatch];
+////                            if ([self.messages count] > index)
+////                            {
+////                                [self.tableViewChat reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+////                            }
+////                            
+////                        }
+//                    }
+                }
+            }
+        }
+        
+    }];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -67,9 +123,9 @@
             self.recieveFBID = @"";
         }
         
-        [self getUserStatus];
+//        [self getUserStatus];
         
-        [self getChatHistory];
+//        [self getChatHistory];
     }
     
 }
@@ -269,7 +325,7 @@
     [self.textFieldMessage resignFirstResponder];
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Attachment" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Image",@"Video",@"Audio", nil];
     actionSheet.tag = 1;
-    [actionSheet showFromBarButtonItem:(UIBarButtonItem *)sender animated:YES];
+    [actionSheet showInView:self.view];
 }
 
 - (IBAction)btnSendMessagePressed:(id)sender
@@ -391,19 +447,39 @@
     
     if (self.attachmentType == kText)
     {
-        reqDict = [NSMutableDictionary dictionaryWithObjects:@[[FacebookUtility sharedObject].fbID,self.recieveFBID,[NSString stringWithFormat:@"%i",self.attachmentType],self.textFieldMessage.text,[NSData data]] forKeys:@[@"ent_user_fbid",@"ent_user_recever_fbid",@"ent_media_action",@"ent_message",@"ent_media_file"]];
+        reqDict = [NSMutableDictionary dictionaryWithObjects:@[@"message",[FacebookUtility sharedObject].fbID,self.recieveFBID,[NSString stringWithFormat:@"%i",self.attachmentType],self.textFieldMessage.text] forKeys:@[@"type",@"ent_user_fbid",@"ent_user_recever_fbid",@"ent_media_action",@"ent_message"]];
         
-        [afnHelper getDataFromPath:@"sendMessage" withParamData:reqDict withBlock:^(id response, NSError *error) {
+        [[MyWebSocket sharedInstance] sendText:reqDict acknowledge:^(NSDictionary *messageDict, NSError *error) {
+            if (!error)
+            {
+                 NSLog(@"Message Recieved = %@",messageDict);
+            }
             
-            NSLog(@"Message Sent Response = %@",response);
         }];
+        
+//        [afnHelper getDataFromPath:@"sendMessage" withParamData:reqDict withBlock:^(id response, NSError *error) {
+//            
+//            NSLog(@"Message Sent Response = %@",response);
+//        }];
     }
     else
     {
-        reqDict = [NSMutableDictionary dictionaryWithObjects:@[[FacebookUtility sharedObject].fbID,self.recieveFBID,[NSString stringWithFormat:@"%i",self.attachmentType],@""] forKeys:@[@"ent_user_fbid",@"ent_user_recever_fbid",@"ent_media_action",@"ent_message"]];
+        reqDict = [NSMutableDictionary dictionaryWithObjects:@[@"message",[FacebookUtility sharedObject].fbID,self.recieveFBID,[NSString stringWithFormat:@"%i",self.attachmentType],@""] forKeys:@[@"type",@"ent_user_fbid",@"ent_user_recever_fbid",@"ent_media_action",@"ent_message"]];
+        
+        NSString *typeString = [NSString stringWithFormat:@"setFilename__1001__%@__%@__%i",[FacebookUtility sharedObject].fbID,self.recieveFBID,self.attachmentType];
+        
+        reqDict = [NSMutableDictionary dictionaryWithObjects:@[typeString,[ChatAttachmentHelperClass sharedInstance].attachmentData] forKeys:@[@"type",@"data"]];
         
         if (self.attachmentType == kImage)
         {
+            [[MyWebSocket sharedInstance] sendData:reqDict acknowledge:^(NSDictionary *messageDict, NSError *error) {
+                if (!error)
+                {
+                    NSLog(@"Message Recieved = %@",messageDict);
+                }
+                
+            }];
+            
             [afnHelper getDataFromPath:@"sendMessage" withParamDataImage:reqDict andImage:[UIImage imageWithData:[ChatAttachmentHelperClass sharedInstance].attachmentData] withBlock:^(id response, NSError *error) {
                 NSLog(@"Message Sent Response = %@",response);
             }];

@@ -45,78 +45,92 @@
 
 - (void)setImageOnButton:(UIImageView *)imgView WithImageURL:(NSString *)ImageURL
 {
-    if (!ImageURL || !ImageURL.length) {
-        return;
-    }
-    __block NSString *bigImageURLString = ImageURL;
-    //    BOOL doesExist = [arrFilePath containsObject:filePath];
+    [imgView setContentMode:UIViewContentModeCenter];
     
-    NSString *dirPath = [FileManager ProfileImageFolderPathWithFBID:[FacebookUtility sharedObject].fbID];
-    NSString *filePath = [dirPath stringByAppendingPathComponent:[ImageURL lastPathComponent]];
-    
-    BOOL doesExist = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
-    
-    if (doesExist)
-    {
-        UIImage *image = [Utils scaleImage:[UIImage imageWithContentsOfFile:filePath] WithRespectToFrame:imgView.frame];
-        if (image)
+    [[HSImageDownloader sharedInstance] imageWithImageURL:ImageURL withFBID:[FacebookUtility sharedObject].fbID withImageDownloadedBlock:^(UIImage *image, NSString *imgURL, NSError *error) {
+        
+        if (!error)
         {
-            [imgView setImage:image];
+            [imgView setImage:[Utils scaleImage:image WithRespectToFrame:imgView.frame]];
         }
         else
         {
-            [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
-            [self setImageOnButton:imgView WithImageURL:ImageURL];
+            [imgView setImage:[UIImage imageNamed:@"Bubble-0"]];
         }
-        
-    }
-    else
-    {
-        dispatch_async(dispatch_queue_create("ProfilePics", nil), ^{
-            
-            
-            __block NSData *imageData = nil;
-            [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:bigImageURLString]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *res, NSData *data, NSError *error)
-             {
-                 if (!error)
-                 {
-                     imageData = data;
-                     UIImage *image = nil;
-                     data = nil;
-                     image = [Utils scaleImage:[UIImage imageWithData:imageData] WithRespectToFrame:imgView.frame];
-                     if (image == nil)
-                     {
-                         image = [UIImage imageNamed:@"Bubble-0"];
-                     }
-                     
-                     [imgView setImage:image];
-                     
-                     // Write Image in Document Directory
-                     int64_t delayInSeconds = 0.4;
-                     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-                     
-                     
-                     dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^(void){
-                         if (![[NSFileManager defaultManager] fileExistsAtPath:filePath])
-                         {
-                             if (![[NSFileManager defaultManager] fileExistsAtPath:dirPath])
-                             {
-                                 [[NSFileManager defaultManager] createDirectoryAtPath:dirPath withIntermediateDirectories:YES attributes:nil error:nil];
-                             }
-                             
-                             [[NSFileManager defaultManager] createFileAtPath:filePath contents:imageData attributes:nil];
-                             imageData = nil;
-                         }
-                     });
-                 }
-                 
-             }];
-            
-            bigImageURLString = nil;
-            
-            
-        });
-    }
+    }];
+    
+//    if (!ImageURL || !ImageURL.length) {
+//        return;
+//    }
+//    __block NSString *bigImageURLString = ImageURL;
+//    //    BOOL doesExist = [arrFilePath containsObject:filePath];
+//    
+//    NSString *dirPath = [FileManager ProfileImageFolderPathWithFBID:[FacebookUtility sharedObject].fbID];
+//    NSString *filePath = [dirPath stringByAppendingPathComponent:[ImageURL lastPathComponent]];
+//    
+//    BOOL doesExist = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
+//    
+//    if (doesExist)
+//    {
+//        UIImage *image = [Utils scaleImage:[UIImage imageWithContentsOfFile:filePath] WithRespectToFrame:imgView.frame];
+//        if (image)
+//        {
+//            [imgView setImage:image];
+//        }
+//        else
+//        {
+//            [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+//            [self setImageOnButton:imgView WithImageURL:ImageURL];
+//        }
+//        
+//    }
+//    else
+//    {
+//        dispatch_async(dispatch_queue_create("ProfilePics", nil), ^{
+//            
+//            
+//            __block NSData *imageData = nil;
+//            [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:bigImageURLString]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *res, NSData *data, NSError *error)
+//             {
+//                 if (!error)
+//                 {
+//                     imageData = data;
+//                     UIImage *image = nil;
+//                     data = nil;
+//                     image = [Utils scaleImage:[UIImage imageWithData:imageData] WithRespectToFrame:imgView.frame];
+//                     if (image == nil)
+//                     {
+//                         image = [UIImage imageNamed:@"Bubble-0"];
+//                     }
+//                     
+//                     [imgView setImage:image];
+//                     
+//                     // Write Image in Document Directory
+//                     int64_t delayInSeconds = 0.4;
+//                     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+//                     
+//                     
+//                     dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^(void){
+//                         if (![[NSFileManager defaultManager] fileExistsAtPath:filePath])
+//                         {
+//                             if (![[NSFileManager defaultManager] fileExistsAtPath:dirPath])
+//                             {
+//                                 [[NSFileManager defaultManager] createDirectoryAtPath:dirPath withIntermediateDirectories:YES attributes:nil error:nil];
+//                             }
+//                             
+//                             [[NSFileManager defaultManager] createFileAtPath:filePath contents:imageData attributes:nil];
+//                             imageData = nil;
+//                         }
+//                     });
+//                 }
+//                 
+//             }];
+//            
+//            bigImageURLString = nil;
+//            
+//            
+//        });
+//    }
     
 }
 
@@ -157,7 +171,9 @@
 {
     
     // We know the frontViewController is a NavigationController
+    
     UINavigationController *frontNavigationController = (id)appDelegate.revealController.contentViewController;  // <-- we know it is a NavigationController
+    UIViewController *topController = frontNavigationController.topViewController;
     NSInteger row = indexPath.row;
     
 	// Here you'd implement some of your own logic... I simply take for granted that the first row (=0) corresponds to the "FrontViewController".
@@ -165,7 +181,7 @@
     switch (row) {
         case 0:
             // Profile
-            if (![frontNavigationController.topViewController isKindOfClass:[UserProfileViewController class]] )
+            if (![topController isKindOfClass:[UserProfileViewController class]] )
             {
                 
                 UserProfileViewController *userProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"UserProfileViewController"];
@@ -182,7 +198,7 @@
         case 1:
         {
             // Find Matches
-            if ( ![frontNavigationController.topViewController isKindOfClass:[FindMatchViewController class]] )
+            if ( ![topController isKindOfClass:[FindMatchViewController class]] )
             {
                 
                 FindMatchViewController *findMatchViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FindMatchViewController"];
@@ -204,7 +220,7 @@
             
         case 2:
             // Pending Emotions
-            if ( ![frontNavigationController.topViewController isKindOfClass:[KeepingConnectingViewController class]] )
+            if ( ![topController isKindOfClass:[KeepingConnectingViewController class]] )
             {
                 KeepingConnectingViewController *keepConnectingViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"KeepingConnectingViewController"];
                 UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:keepConnectingViewController];
@@ -219,7 +235,7 @@
             
         case 3:
             // Chat
-            if ( ![frontNavigationController.topViewController isKindOfClass:[RecentChatsViewController class]] )
+            if ( ![topController isKindOfClass:[RecentChatsViewController class]] )
             {
                 RecentChatsViewController *chatViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"RecentChatsViewController"];
                 UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:chatViewController];
@@ -233,7 +249,7 @@
             
         case 4:
             // Settings
-            if ( ![frontNavigationController.topViewController isKindOfClass:[SettingsViewController class]] )
+            if ( ![topController isKindOfClass:[SettingsViewController class]] )
             {
                 SettingsViewController *settingsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"SettingsViewController"];
                 UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:settingsViewController];
@@ -248,7 +264,8 @@
         default:
             break;
     }
-	
+    topController = nil;
+    frontNavigationController = nil;
 }
 
 @end

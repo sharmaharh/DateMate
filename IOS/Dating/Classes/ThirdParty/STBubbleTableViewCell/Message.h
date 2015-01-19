@@ -8,14 +8,14 @@
 
 #pragma mark Message_Keys
 
-#define msg_Date         @"dt"
-#define msg_ID           @"mid"
-#define msg_text         @"msg"
-#define msg_Reciver_ID   @"rfid"
-#define msg_Sender_ID    @"sfid"
-#define msg_Sender_Name  @"sname"
-#define msg_Media @"media_file"
-#define msg_Media_URL @"msgfile"
+#define msg_Date          @"dt"
+#define msg_ID            @"mid"
+#define msg_text          @"msg"
+#define msg_Reciver_ID    @"rfid"
+#define msg_Sender_ID     @"sfid"
+#define msg_Sender_Name   @"sname"
+#define msg_Media         @"media_file"
+#define msg_Media_URL     @"msgfile"
 #define msg_Media_Section @"msgtype"
 
 #import <Foundation/Foundation.h>

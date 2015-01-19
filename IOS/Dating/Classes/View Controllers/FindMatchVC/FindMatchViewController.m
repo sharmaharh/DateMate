@@ -14,9 +14,7 @@
 
 @interface FindMatchViewController ()
 {
-    NSArray *matchedProfilesArray;
-    NSInteger currentProfileIndex;
-    NSTimer *profileTimer;
+    NSMutableArray *matchedProfilesArray;
 }
 @end
 
@@ -49,6 +47,7 @@
 
 - (void)setUpCountdownView
 {
+    [self.sfCountdownView stop];
     [self.sfCountdownView setHidden:YES];
     self.sfCountdownView.delegate = self;
     self.sfCountdownView.backgroundAlpha = 0.2;
@@ -82,12 +81,14 @@
 
 - (void)setProfileOnLayout
 {
-    NSDictionary *profileDict = matchedProfilesArray[currentProfileIndex];
+    NSLog(@"CURRENT INDEX = %li",self.currentProfileIndex);
+    NSDictionary *profileDict = matchedProfilesArray[self.currentProfileIndex];
     self.profileNameLabel.text = [NSString stringWithFormat:@"%@,%@",profileDict[@"firstName"],profileDict[@"age"]];
+    [self.btnProfileImage setImage:nil forState:UIControlStateNormal];
     
-    [self setImageOnButton:self.btnProfileImage WithActivityIndicator:self.activityIndicator WithImageURL:[matchedProfilesArray[currentProfileIndex][@"oPic"] firstObject][@"url"]];
+    [self setImageOnButton:self.btnProfileImage WithActivityIndicator:self.activityIndicator WithImageURL:[matchedProfilesArray[self.currentProfileIndex][@"oPic"] firstObject][@"url"]];
     [self setUpcomingProfilesInFindMatchesList];
-    
+    [self.lblTimer setHidden:NO];
     self.lblTimer.text = @"10";
     [self.profileTimer invalidate];
     
@@ -96,127 +97,250 @@
 
 - (void)displayTime
 {
-    if (self.lblTimer.text.intValue < 1)
+    if ([self.btnProfileImage currentImage])
     {
-        [self passProfileButtonPressed:nil];
-    }
-    else if (self.lblTimer.text.intValue < 5)
-    {
-        [self.sfCountdownView start];
-        [self.lblTimer setHidden:YES];
-        [self.profileTimer invalidate];
-    }
-    else
-    {
+        [self.btnProfileImage setUserInteractionEnabled:YES];
+        
+        if (self.lblTimer.text.intValue < 2)
+        {
+            [self.btnProfileImage setUserInteractionEnabled:NO];
+        }
+        else if (self.lblTimer.text.intValue < 1)
+        {
+            [self.profileTimer invalidate];
+            [self passProfileButtonPressed:nil];
+        }
+        else if (self.lblTimer.text.intValue == 4)
+        {
+            [self.sfCountdownView start];
+            [self.lblTimer setHidden:YES];
+        }
+        
         [self.lblTimer setText:[NSString stringWithFormat:@"%i",[[self.lblTimer text] intValue]-1]];
     }
-    
+
 }
 
 - (void) countdownFinished:(SFCountdownView *)view
 {
+    NSLog(@"COUNTDOWN FINISHED METHOD");
+    [self.view setNeedsDisplay];
+    [view updateAppearance];
     [self passProfileButtonPressed:nil];
     [self.lblTimer setHidden:NO];
-    [self.view setNeedsDisplay];
-    [self.sfCountdownView updateAppearance];
+    
 }
 
 - (void)setImageOnButton:(UIButton *)btn WithActivityIndicator:(UIActivityIndicatorView *)activityIndicator WithImageURL:(NSString *)ImageURL
 {
     [btn.imageView setContentMode:UIViewContentModeCenter];
-    if (!ImageURL || !ImageURL.length) {
-        return;
-    }
-    __block NSString *bigImageURLString = ImageURL;
-    //    BOOL doesExist = [arrFilePath containsObject:filePath];
+    [activityIndicator startAnimating];
     
-    NSString *dirPath = [FileManager ProfileImageFolderPathWithFBID:matchedProfilesArray[currentProfileIndex][@"fbId"]];
-    NSString *filePath = [dirPath stringByAppendingPathComponent:[ImageURL lastPathComponent]];
-    
-    BOOL doesExist = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
-    
-    if (doesExist)
-    {
-        UIImage *image = [Utils scaleImage:[UIImage imageWithContentsOfFile:filePath] WithRespectToFrame:btn.frame];
-        if (image)
+    [[HSImageDownloader sharedInstance] imageWithImageURL:ImageURL withFBID:matchedProfilesArray[self.currentProfileIndex][@"fbId"] withImageDownloadedBlock:^(UIImage *image, NSString *imgURL, NSError *error) {
+        [activityIndicator stopAnimating];
+        
+        if (!error)
         {
-            
-            [btn setImage:image forState:UIControlStateNormal];
-            [activityIndicator stopAnimating];
+            [btn setImage:[Utils scaleImage:image WithRespectToFrame:btn.frame] forState:UIControlStateNormal];
         }
         else
         {
-            [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
-            [self setImageOnButton:btn WithActivityIndicator:activityIndicator WithImageURL:ImageURL];
+            [btn setImage:[UIImage imageNamed:@"Bubble-0"] forState:UIControlStateNormal];
         }
+    }];
     
-    }
-    else
-    {
-        dispatch_async(dispatch_queue_create("ProfilePics", nil), ^{
-            
-            
-            __block NSData *imageData = nil;
-            [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:bigImageURLString]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *res, NSData *data, NSError *error)
-            {
-                if (!error)
-                {
-                    imageData = data;
-                    UIImage *image = nil;
-                    data = nil;
-                    image = [Utils scaleImage:[UIImage imageWithData:imageData] WithRespectToFrame:btn.frame];
-                    if (image == nil)
-                    {
-                        image = [UIImage imageNamed:@"Bubble-0"];
-                    }
-                    
-                    [btn setImage:image forState:UIControlStateNormal];
-                    
-                    [activityIndicator stopAnimating];
-                    
-                    // Write Image in Document Directory
-                    int64_t delayInSeconds = 0.4;
-                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-                    
-                    
-                    dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^(void){
-                        if (![[NSFileManager defaultManager] fileExistsAtPath:filePath])
-                        {
-                            if (![[NSFileManager defaultManager] fileExistsAtPath:dirPath])
-                            {
-                                [[NSFileManager defaultManager] createDirectoryAtPath:dirPath withIntermediateDirectories:YES attributes:nil error:nil];
-                            }
-                            
-                            [[NSFileManager defaultManager] createFileAtPath:filePath contents:imageData attributes:nil];
-                            imageData = nil;
-                        }
-                    });
-                }
-                
-            }];
-            
-            bigImageURLString = nil;
-            
-            
-        });
-    }
+//    __block NSString *bigImageURLString = ImageURL;
+//    //    BOOL doesExist = [arrFilePath containsObject:filePath];
+//    
+//    NSString *dirPath = [FileManager ProfileImageFolderPathWithFBID:matchedProfilesArray[self.currentProfileIndex][@"fbId"]];
+//    NSString *filePath = [dirPath stringByAppendingPathComponent:[ImageURL lastPathComponent]];
+//    
+//    BOOL doesExist = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
+//    
+//    if (doesExist)
+//    {
+//        UIImage *image = [Utils scaleImage:[UIImage imageWithContentsOfFile:filePath] WithRespectToFrame:btn.frame];
+//        if (image)
+//        {
+//            
+//            [btn setImage:image forState:UIControlStateNormal];
+//            [activityIndicator stopAnimating];
+//        }
+//        else
+//        {
+//            [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+//            [self setImageOnButton:btn WithActivityIndicator:activityIndicator WithImageURL:ImageURL];
+//        }
+//    
+//    }
+//    else
+//    {
+//        dispatch_async(dispatch_queue_create("ProfilePics", nil), ^{
+//            
+//            
+//            __block NSData *imageData = nil;
+//            [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:bigImageURLString]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *res, NSData *data, NSError *error)
+//            {
+//                if (!error)
+//                {
+//                    imageData = data;
+//                    UIImage *image = nil;
+//                    data = nil;
+//                    image = [Utils scaleImage:[UIImage imageWithData:imageData] WithRespectToFrame:btn.frame];
+//                    if (image == nil)
+//                    {
+//                        image = [UIImage imageNamed:@"Bubble-0"];
+//                    }
+//                    
+//                    [btn setImage:image forState:UIControlStateNormal];
+//                    
+//                    [activityIndicator stopAnimating];
+//                    
+//                    // Write Image in Document Directory
+//                    int64_t delayInSeconds = 0.4;
+//                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+//                    
+//                    
+//                    dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^(void){
+//                        if (![[NSFileManager defaultManager] fileExistsAtPath:filePath])
+//                        {
+//                            if (![[NSFileManager defaultManager] fileExistsAtPath:dirPath])
+//                            {
+//                                [[NSFileManager defaultManager] createDirectoryAtPath:dirPath withIntermediateDirectories:YES attributes:nil error:nil];
+//                            }
+//                            
+//                            [[NSFileManager defaultManager] createFileAtPath:filePath contents:imageData attributes:nil];
+//                            imageData = nil;
+//                        }
+//                    });
+//                }
+//                
+//            }];
+//            
+//            bigImageURLString = nil;
+//            
+//            
+//        });
+//    }
     
 }
+
+- (void)setImageOnImageView:(UIImageView *)imgView WithActivityIndicator:(UIActivityIndicatorView *)activityIndicator WithImageURL:(NSString *)ImageURL
+{
+    [imgView setContentMode:UIViewContentModeCenter];
+    [activityIndicator startAnimating];
+    
+    [[HSImageDownloader sharedInstance] imageWithImageURL:ImageURL withFBID:matchedProfilesArray[self.currentProfileIndex][@"fbId"] withImageDownloadedBlock:^(UIImage *image, NSString *imgURL, NSError *error) {
+        [activityIndicator stopAnimating];
+        [imgView setHidden:NO];
+        if (!error)
+        {
+            [imgView setImage:[Utils scaleImage:image WithRespectToFrame:imgView.frame]];
+        }
+        else
+        {
+            [imgView setImage:[UIImage imageNamed:@"Bubble-0"]];
+        }
+    }];
+    
+    
+//    [imgView setContentMode:UIViewContentModeCenter];
+//    if (!ImageURL || !ImageURL.length) {
+//        return;
+//    }
+//    __block NSString *bigImageURLString = ImageURL;
+//    //    BOOL doesExist = [arrFilePath containsObject:filePath];
+//    
+//    NSString *dirPath = [FileManager ProfileImageFolderPathWithFBID:matchedProfilesArray[self.currentProfileIndex][@"fbId"]];
+//    NSString *filePath = [dirPath stringByAppendingPathComponent:[ImageURL lastPathComponent]];
+//    
+//    BOOL doesExist = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
+//    
+//    if (doesExist)
+//    {
+//        UIImage *image = [Utils scaleImage:[UIImage imageWithContentsOfFile:filePath] WithRespectToFrame:imgView.frame];
+//        if (image)
+//        {
+//            
+//            [imgView setImage:image];
+//            [activityIndicator stopAnimating];
+//        }
+//        else
+//        {
+//            [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+//            [self setImageOnImageView:imgView WithActivityIndicator:activityIndicator WithImageURL:ImageURL];
+//        }
+//        
+//    }
+//    else
+//    {
+//        dispatch_async(dispatch_queue_create("ProfilePics", nil), ^{
+//            
+//            
+//            __block NSData *imageData = nil;
+//            [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:bigImageURLString]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *res, NSData *data, NSError *error)
+//             {
+//                 if (!error)
+//                 {
+//                     imageData = data;
+//                     UIImage *image = nil;
+//                     data = nil;
+//                     image = [Utils scaleImage:[UIImage imageWithData:imageData] WithRespectToFrame:imgView.frame];
+//                     if (image == nil)
+//                     {
+//                         image = [UIImage imageNamed:@"Bubble-0"];
+//                     }
+//                     
+//                     [imgView setImage:image];
+//                     
+//                     [activityIndicator stopAnimating];
+//                     
+//                     // Write Image in Document Directory
+//                     int64_t delayInSeconds = 0.4;
+//                     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+//                     
+//                     
+//                     dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^(void){
+//                         if (![[NSFileManager defaultManager] fileExistsAtPath:filePath])
+//                         {
+//                             if (![[NSFileManager defaultManager] fileExistsAtPath:dirPath])
+//                             {
+//                                 [[NSFileManager defaultManager] createDirectoryAtPath:dirPath withIntermediateDirectories:YES attributes:nil error:nil];
+//                             }
+//                             
+//                             [[NSFileManager defaultManager] createFileAtPath:filePath contents:imageData attributes:nil];
+//                             imageData = nil;
+//                         }
+//                     });
+//                 }
+//                 
+//             }];
+//            
+//            bigImageURLString = nil;
+//            
+//            
+//        });
+//    }
+    
+}
+
 
 - (void)showFullPicture:(UIButton *)btn
 {
     FullImageViewController *fullImageViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FullImageViewController"];
     fullImageViewController.currentPhotoIndex = btn.tag-1;
-    fullImageViewController.arrPhotoGallery = matchedProfilesArray[currentProfileIndex][@"oPic"];
-    fullImageViewController.fbID = matchedProfilesArray[currentProfileIndex][@"fbId"];
+    fullImageViewController.arrPhotoGallery = matchedProfilesArray[self.currentProfileIndex][@"oPic"];
+    fullImageViewController.fbID = matchedProfilesArray[self.currentProfileIndex][@"fbId"];
     [self presentViewController:fullImageViewController animated:YES completion:nil];
 }
 
 - (void)findMatchesList
 {
+    [self resetView];
     [self showErrorInProfileView];
+    
     matchedProfilesArray = [NSMutableArray array];
-    currentProfileIndex = 0;
+    
     [self setUpCountdownView];
     if (![Utils isInternetAvailable])
     {
@@ -235,9 +359,11 @@
              {
                  if ([[response objectForKey:@"matches"] isKindOfClass:[NSArray class]])
                  {
-                     matchedProfilesArray = [response objectForKey:@"matches"];
+                     matchedProfilesArray = [[response objectForKey:@"matches"] mutableCopy];
                      if ([matchedProfilesArray count])
                      {
+                         [self clubProfileImageInMainArray];
+                         self.currentProfileIndex = 0;
                          [self setProfileOnLayout];
                          
                          [self showProfileViewWithoutError];
@@ -262,6 +388,19 @@
          }];
     }
 
+}
+
+- (void)clubProfileImageInMainArray
+{
+    NSMutableArray *matchedProfileCopy = [matchedProfilesArray mutableCopy];
+    for (NSDictionary *dict in matchedProfileCopy)
+    {
+        NSMutableDictionary *tempDict = [dict mutableCopy];
+        NSMutableArray *tempArray = [[tempDict objectForKey:@"oPic"] mutableCopy];
+        [tempArray insertObject:@{@"url" : tempDict[@"pPic"]} atIndex:0];
+        [tempDict setObject:tempArray forKey:@"oPic"];
+        [matchedProfilesArray replaceObjectAtIndex:[matchedProfilesArray indexOfObject:dict] withObject:tempDict];
+    }
 }
 
 - (void)showProfileViewWithoutError
@@ -294,36 +433,56 @@
 
 - (void)passProfileButtonPressed:(id)sender
 {
+    [self removeCacheImages];
+    self.currentProfileIndex++;
     
-    currentProfileIndex++;
-    [self.sfCountdownView stop];
-    if (currentProfileIndex < matchedProfilesArray.count)
+    if (self.currentProfileIndex < matchedProfilesArray.count)
     {
-        [self removeCacheImages];
         [self setProfileOnLayout];
         [self setUpcomingProfilesInFindMatchesList];
+        
+
     }
     else
     {
         [self showErrorInProfileView];
         self.lblTimer.text = @"";
-        [self.profileTimer invalidate];
     }
-    
+    [self.sfCountdownView stop];
 }
+
+- (void)resetView
+{
+    [self.sfCountdownView stop];
+    [self.sfCountdownView updateAppearance];
+    [self.btnProfileImage setImage:nil forState:UIControlStateNormal];
+    self.lblTimer.text = @"";
+    self.profileNameLabel.text = @"";
+    for (UIImageView *imageView in self.upcomingProfilesView.subviews)
+    {
+        [imageView setImage:nil];
+    }
+}
+
 
 - (void)removeCacheImages
 {
-    NSString *filePath = [FileManager ProfileImageFolderPathWithFBID:matchedProfilesArray[currentProfileIndex][@"fbId"]];
-    if ([[NSFileManager defaultManager] fileExistsAtPath:filePath])
+    if (self.currentProfileIndex < [matchedProfilesArray count])
     {
-        [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+        NSString *filePath = [FileManager ProfileImageFolderPathWithFBID:matchedProfilesArray[self.currentProfileIndex][@"fbId"]];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:filePath])
+        {
+            [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+        }
     }
     
 }
 
 - (IBAction)passEmotionsButtonPressed:(id)sender
 {
+    [self.profileTimer invalidate];
+    [self setUpCountdownView];
+    
     if (![Utils isInternetAvailable])
     {
         [Utils showOKAlertWithTitle:@"Dating" message:@"No Internet Connection!"];
@@ -331,7 +490,7 @@
     else
     {
         AFNHelper *afnhelper = [AFNHelper new];
-        NSMutableDictionary *requestDic = [NSMutableDictionary dictionaryWithObjects:@[[FacebookUtility sharedObject].fbID,matchedProfilesArray[currentProfileIndex][@"fbId"],@"1"] forKeys:@[@"ent_user_fbid",@"ent_invitee_fbid",@"ent_user_action"]];
+        NSMutableDictionary *requestDic = [NSMutableDictionary dictionaryWithObjects:@[[FacebookUtility sharedObject].fbID,matchedProfilesArray[self.currentProfileIndex][@"fbId"],@"1"] forKeys:@[@"ent_user_fbid",@"ent_invitee_fbid",@"ent_user_action"]];
         
         [afnhelper getDataFromPath:@"inviteAction" withParamData:requestDic withBlock:^(id response, NSError *error)
          {
@@ -365,13 +524,17 @@
                  }
                  else
                  {
-                     [self.lblRequestSent setText:[NSString stringWithFormat:@"You Stared at %@",matchedProfilesArray[currentProfileIndex][@"firstName"]]];
-                     dispatch_async(dispatch_get_main_queue(), ^{
-                         [self.viewRequestSent setHidden:NO];
-                         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                             [self.viewRequestSent setHidden:YES];
+                     if (self.currentProfileIndex < [matchedProfilesArray count])
+                     {
+                         [self.lblRequestSent setText:[NSString stringWithFormat:@"You Stared at %@",matchedProfilesArray[self.currentProfileIndex][@"firstName"]]];
+                         dispatch_async(dispatch_get_main_queue(), ^{
+                             [self.viewRequestSent setHidden:NO];
+                             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                 [self.viewRequestSent setHidden:YES];
+                             });
                          });
-                     });
+                     }
+                     
                      
                  }
                  
@@ -400,12 +563,13 @@
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    UserProfileDetailViewController *userProfileDetailViewController = [segue destinationViewController];
-    userProfileDetailViewController.matchedProfilesArray = matchedProfilesArray;
-    userProfileDetailViewController.currentProfileIndex = currentProfileIndex;
-    userProfileDetailViewController.isFromMatches = YES;
     [self.sfCountdownView stop];
     [self.profileTimer invalidate];
+    
+    UserProfileDetailViewController *userProfileDetailViewController = [segue destinationViewController];
+    userProfileDetailViewController.matchedProfilesArray = matchedProfilesArray;
+    userProfileDetailViewController.currentProfileIndex = self.currentProfileIndex;
+    userProfileDetailViewController.isFromMatches = YES;
 }
 
 - (void)setUpcomingProfilesInFindMatchesList
@@ -415,15 +579,12 @@
         [imageView setHidden:YES];
     }
     
-    for (NSInteger i = currentProfileIndex; i < MIN(matchedProfilesArray.count, currentProfileIndex+3); i++)
+    for (NSInteger i = self.currentProfileIndex; i < MIN(matchedProfilesArray.count, self.currentProfileIndex+3); i++)
     {
-        UIImageView *imageView = (UIImageView *)[self.upcomingProfilesView viewWithTag:i+100+1-currentProfileIndex];
-        [self setImageOnButton:imageView WithActivityIndicator:nil WithImageURL:[matchedProfilesArray[i][@"oPic"] firstObject][@"url"]];
-        [imageView setImageWithURL:[NSURL URLWithString:[matchedProfilesArray[i][@"oPic"] firstObject][@"url"]]];
+        UIImageView *imageView = (UIImageView *)[self.upcomingProfilesView viewWithTag:i+100+1-self.currentProfileIndex];
+        [self setImageOnImageView:imageView WithActivityIndicator:nil WithImageURL:[matchedProfilesArray[i][@"oPic"] firstObject][@"url"]];
         
-        [imageView setHidden:NO];
-        
-        if (i == currentProfileIndex)
+        if (i == self.currentProfileIndex)
         {
             [Utils configureLayerForHexagonWithView:imageView withBorderColor:[UIColor greenColor] WithCornerRadius:15 WithLineWidth:3 withPathColor:[UIColor clearColor]];
         }
@@ -433,6 +594,13 @@
         }
         
     }
+}
+
+-(void)viewDidDisappear:(BOOL)animated
+{
+    [self.profileTimer invalidate];
+    self.profileTimer = nil;
+    [super viewDidDisappear:animated];
 }
 
 @end

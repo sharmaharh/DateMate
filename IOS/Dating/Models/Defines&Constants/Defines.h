@@ -17,5 +17,6 @@
 #import "FileManager.h"
 #import "Constants.h"
 #import "FacebookUtility.h"
+#import "HSImageDownloader.h"
 
 #endif

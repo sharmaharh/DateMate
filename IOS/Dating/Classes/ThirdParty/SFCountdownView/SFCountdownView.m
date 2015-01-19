@@ -146,7 +146,6 @@
 
 - (int) countdownFrom
 {
-    
     return _countdownFrom;
 }
 

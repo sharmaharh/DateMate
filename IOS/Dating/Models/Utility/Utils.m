@@ -194,18 +194,27 @@
     }
     else
     {
-        if (imgWidth >= imgHeight)
-            scaleFactor = imageRect.size.height/imgHeight;
-        
+        if (imgWidth <= imgHeight)
+        {
+            scaleFactor = imgWidth/MAX(imageRect.size.width, imageRect.size.height);
+//            if (imageRect.size.width >= imageRect.size.height)
+//                scaleFactor = imageRect.size.width/imgWidth;
+//            
+//            else
+//                scaleFactor = imageRect.size.height/imgHeight;
+        }
         else
-            scaleFactor = imageRect.size.width/imgWidth;
+        {
+            scaleFactor = imgHeight/MAX(imageRect.size.width, imageRect.size.height);
+//            if (imageRect.size.width >= imageRect.size.height)
+//                scaleFactor = imageRect.size.height/imgHeight;
+//            
+//            else
+//                scaleFactor = imageRect.size.width/imgWidth;
+        }
+        
     }
-    UIImage *imageCopy = [UIImage imageWithCGImage:imgRef scale:1/scaleFactor orientation:image.imageOrientation];
-
-//    UIGraphicsBeginImageContext(imageRect.size);
-//    [image drawInRect:CGRectMake(0,0,newSize.width,newSize.height)];
-//    UIImage* newImage = UIGraphicsGetImageFromCurrentImageContext();
-//    UIGraphicsEndImageContext();
+    UIImage *imageCopy = [UIImage imageWithCGImage:imgRef scale:scaleFactor orientation:image.imageOrientation];
     
     
     return imageCopy;

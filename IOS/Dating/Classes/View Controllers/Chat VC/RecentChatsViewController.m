@@ -33,6 +33,40 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.nameArray = [NSMutableArray array];
+   
+    [[MyWebSocket sharedInstance] connectSocketWithBlock:^(BOOL connected, NSError *error) {
+
+        
+        [[MyWebSocket sharedInstance] sendText:@{@"type" : @"login", @"userId" : [FacebookUtility sharedObject].fbID} acknowledge:^(NSDictionary *messageDict, NSError *error)
+        {
+            if (!error)
+            {
+                if ([[messageDict allKeys] containsObject:@"type"] && [messageDict objectForKey:@"type"])
+                {
+                    if ([[messageDict objectForKey:@"type"] isEqualToString:@"getProfileMatches"])
+                    {
+                        NSLog(@"Recent Chat response = %@",messageDict);
+                        if ([messageDict[@"body"][@"likes"] count])
+                        {
+                            self.nameArray = [messageDict[@"body"][@"likes"] mutableCopy];
+                            [self addRecentChatsToDatabase];
+                        }
+                        else
+                        {
+                            self.nameArray = [NSMutableArray array];
+                        }
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self.tableViewRecentChats reloadData];
+                        });
+                        
+                    }
+                }
+            }
+                        
+        }];
+        
+    }];
+    
     if (self.isFromPush)
     {
         [self.navigationController pushViewController:[ChatViewController sharedChatInstance] animated:YES];
@@ -43,7 +77,6 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    [self getRecentChatUsers];
     [super viewWillAppear:animated];
 }
 
@@ -103,6 +136,8 @@
     else
     {
         //Deal with Service
+        
+        
         AFNHelper *afnHelper = [AFNHelper new];
         [afnHelper getDataFromPath:@"getProfileMatches" withParamData:[@{@"ent_user_fbid": [FacebookUtility sharedObject].fbID} mutableCopy] withBlock:^(id response, NSError *error)
          {
@@ -317,9 +352,6 @@
 }
 */
 
-- (IBAction)btnRevealPressed:(id)sender
-{
-}
 - (IBAction)btnAllContactsPressed:(id)sender {
 }
 @end

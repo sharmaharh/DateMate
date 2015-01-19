@@ -10,6 +10,7 @@
 #import "ChatAttachmentHelperClass.h"
 #import "STBubbleTableViewCell.h"
 #import "Message.h"
+#import "MyWebSocket.h"
 #import <MediaPlayer/MediaPlayer.h>
 
 @interface ChatViewController : UIViewController <UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, STBubbleTableViewCellDataSource, STBubbleTableViewCellDelegate,AttachmentHelperDelegate>

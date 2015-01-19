@@ -107,7 +107,7 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"Selected Cell Index = %li",(long)indexPath.row);
+    
     UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
     if (![self.preferencesArray containsObject:[NSNumber numberWithInteger:indexPath.row]])
     {
@@ -146,13 +146,13 @@
         [Utils showOKAlertWithTitle:@"Dating" message:@"Please select atleast 5 preferences to proceed"];
         return;
     }
-    
+    NSMutableArray *reqPreferencesArray = [NSMutableArray arrayWithArray:self.preferencesArray];
     for (NSInteger i = 0; i < self.preferencesArray.count; i++)
     {
-        [self.preferencesArray replaceObjectAtIndex:i withObject:[[User_Preferences_Dict allKeys] objectAtIndex:[[self.preferencesArray objectAtIndex:i] intValue]]];
+        [reqPreferencesArray replaceObjectAtIndex:i withObject:[[User_Preferences_Dict allKeys] objectAtIndex:[[self.preferencesArray objectAtIndex:i] intValue]]];
     }
     
-    [appDelegate.userPreferencesDict setObject:[self.preferencesArray componentsJoinedByString:@","] forKey:@"ent_pref_lifestyle"];
+    [appDelegate.userPreferencesDict setObject:[reqPreferencesArray componentsJoinedByString:@","] forKey:@"ent_pref_lifestyle"];
     
     AFNHelper *afnhelper = [AFNHelper new];
     [afnhelper getDataFromPath:@"updatePreferences" withParamData:appDelegate.userPreferencesDict withBlock:^(id response, NSError *error) {
