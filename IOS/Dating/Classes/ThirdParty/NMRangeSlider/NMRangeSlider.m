@@ -433,7 +433,7 @@ NSUInteger DeviceSystemMajorVersion() {
     
     UIImage* currentTrackImage = [self trackImageForCurrentValues];
     
-    retValue.size = CGSizeMake(currentTrackImage.size.width, currentTrackImage.size.height);
+    retValue.size = CGSizeMake(currentTrackImage.size.width, 4);
     
     if(currentTrackImage.capInsets.top || currentTrackImage.capInsets.bottom)
     {
@@ -472,7 +472,7 @@ NSUInteger DeviceSystemMajorVersion() {
 {
     CGRect trackBackgroundRect;
     
-    trackBackgroundRect.size = CGSizeMake(_trackBackgroundImage.size.width, _trackBackgroundImage.size.height);
+    trackBackgroundRect.size = CGSizeMake(_trackBackgroundImage.size.width, 4);
     
     if(_trackBackgroundImage.capInsets.top || _trackBackgroundImage.capInsets.bottom)
     {
@@ -568,7 +568,8 @@ NSUInteger DeviceSystemMajorVersion() {
     {
         _upperValue = _maximumValue;
     }
-
+    [self.track setBackgroundColor:[UIColor blueColor]];
+    [self.trackBackground setBackgroundColor:[UIColor whiteColor]];
     self.trackBackground.frame = [self trackBackgroundRect];
     self.track.frame = [self trackRect];
     self.track.image = [self trackImageForCurrentValues];

@@ -502,11 +502,11 @@
     
     image = [UIImage imageNamed:@"slider-metal-trackBackground"];
     image = [image resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 5.0, 0.0, 5.0)];
-    slider.trackBackgroundImage = image;
+    slider.trackBackgroundImage = nil;
     
     image = [UIImage imageNamed:@"slider-metal-track"];
     image = [image resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 7.0, 0.0, 7.0)];
-    slider.trackImage = image;
+    slider.trackImage = nil;
     
     image = [UIImage imageNamed:@"slider-metal-handle"];
     image = [image imageWithAlignmentRectInsets:UIEdgeInsetsMake(-1, 2, 1, 2)];
