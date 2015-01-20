@@ -154,9 +154,14 @@
         [Utils showOKAlertWithTitle:_Alert_Title message:NO_INERNET_MSG];
         return;
     }
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    [cell setUserInteractionEnabled:NO];
+    
     AFNHelper *afnHelper = [AFNHelper new];
     [afnHelper getDataFromPath:@"getProfile" withParamData:[@{@"ent_user_fbid": notificationsArray[indexPath.row][@"fbId"]} mutableCopy] withBlock:^(id response, NSError *error)
      {
+         [cell setUserInteractionEnabled:YES];
+         
          if ([response[@"matches"] count])
          {
              UserProfileDetailViewController *userProfileDetailViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"UserProfileDetailViewController"];

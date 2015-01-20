@@ -79,6 +79,7 @@ typedef void(^ImageDownlodedBlock)(UIImage *image, NSString *imgURL ,NSError *er
             __block NSData *imageData = nil;
             [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:bigImageURLString]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *res, NSData *data, NSError *error)
              {
+                 
                  NSMutableArray *callingsArray = [self.imageQueueDict objectForKey:res.URL.absoluteString];
                  
                  if (!error)
@@ -93,7 +94,11 @@ typedef void(^ImageDownlodedBlock)(UIImage *image, NSString *imgURL ,NSError *er
                          image = [UIImage imageNamed:@"Bubble-0"];
                      }
                      
-                     [self.imageQueueDict removeObjectForKey:res.URL.absoluteString];
+                     if ([res.URL.absoluteString length])
+                     {
+                         [self.imageQueueDict removeObjectForKey:res.URL.absoluteString];
+                     }
+                     
                      
                      for (ImageDownlodedBlock block in callingsArray)
                      {

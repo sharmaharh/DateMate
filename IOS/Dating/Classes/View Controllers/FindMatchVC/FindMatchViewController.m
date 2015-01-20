@@ -115,7 +115,7 @@
             [self.sfCountdownView start];
             [self.lblTimer setHidden:YES];
         }
-        
+        [self.btnStare setTitle:[NSString stringWithFormat:@"Stare %i",[[self.lblTimer text] intValue]-1] forState:UIControlStateNormal];
         [self.lblTimer setText:[NSString stringWithFormat:@"%i",[[self.lblTimer text] intValue]-1]];
     }
 
@@ -127,7 +127,7 @@
     [self.view setNeedsDisplay];
     [view updateAppearance];
     [self passProfileButtonPressed:nil];
-    [self.lblTimer setHidden:NO];
+    [self.lblTimer setHidden:YES];
     
 }
 

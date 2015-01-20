@@ -29,7 +29,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    settingOptionsArray = @[@"Preferences",@"Log Out",@"Option 3", @"Option 4", @"Option 5"];
+    settingOptionsArray = @[@"Preferences",@"Log Out",@"Notification", @"Sound"];
 }
 
 - (void)didReceiveMemoryWarning
@@ -52,6 +52,18 @@
     cell.backgroundColor = [UIColor clearColor];
     cell.textLabel.textColor = [UIColor whiteColor];
     cell.textLabel.text = settingOptionsArray[indexPath.row];
+    [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+    if (indexPath.row > 1)
+    {
+        UISwitch *settingsSwitch = [[UISwitch alloc] init];
+        settingsSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:(indexPath.row == 2)?@"Notification":@"Sound"];
+        
+        settingsSwitch.tag = indexPath.row;
+        [settingsSwitch addTarget:self action:@selector(switchValueChanged:) forControlEvents:UIControlEventValueChanged];
+        cell.accessoryView = settingsSwitch;
+    }
+    else
+        cell.accessoryView = nil;
     
     return cell;
 }
@@ -79,6 +91,25 @@
         default:
             break;
     }
+}
+
+- (void)switchValueChanged:(UISwitch *)settingsSwitch
+{
+    if (settingsSwitch.tag == 2)
+    {
+        AFNHelper *afnhelper = [[AFNHelper alloc] init];
+        [afnhelper getDataFromPath:@"updateSendNotification" withParamData:[@{@"ent_user_fbid" : [FacebookUtility sharedObject].fbID, @"ent_send_notify" : [NSString stringWithFormat:@"%i",(int)settingsSwitch.on + 1]} mutableCopy] withBlock:^(id response, NSError *error) {
+            NSLog(@"Response  = %@",response);
+            
+        }];
+        
+        [[NSUserDefaults standardUserDefaults] setBool:settingsSwitch.on forKey:@"Notification"];
+    }
+    else
+    {
+        [[NSUserDefaults standardUserDefaults] setBool:settingsSwitch.on forKey:@"Sound"];
+    }
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)logout

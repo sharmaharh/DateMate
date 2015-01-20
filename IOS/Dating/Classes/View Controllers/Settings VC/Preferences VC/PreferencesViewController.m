@@ -43,8 +43,14 @@
     // Do any additional setup after loading the view.
     preferenceComponentsArray = @[@"Preferences",@"Interested In",@"About Me",@"Radius (In kms)",@"Age Range (In Years)"];
     
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
     preferencesArray = [NSMutableArray arrayWithArray:[appDelegate.userPreferencesDict[@"ent_pref_lifestyle"] componentsSeparatedByString:@","]];
-    currentPreferencesDict = appDelegate.userPreferencesDict;
+    currentPreferencesDict = [appDelegate.userPreferencesDict mutableCopy];
 }
 
 - (void)didReceiveMemoryWarning
@@ -107,7 +113,7 @@
     {
         textView.text = @"";
     }
-    [textView setTextColor:[UIColor blueColor]];
+    [textView setTextColor:[UIColor whiteColor]];
     [self.preferencesTableView setContentOffset:CGPointMake(self.preferencesTableView.contentOffset.x, self.preferencesTableView.contentOffset.y + textView.frame.size.height -[self calculateTextViewOffsetAccordingToKeyboard:textView]) animated:YES];
     
     return YES;
@@ -195,6 +201,7 @@
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.height, 44)];
+    [headerView setBackgroundColor:[UIColor colorWithRed:1 green:1 blue:1 alpha:0.4]];
     
     UILabel *headerLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, self.view.frame.size.width-10, 44)];
     [headerLabel setText:preferenceComponentsArray[section]];
@@ -210,7 +217,12 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return indexPath.section?60:330;
+    if (indexPath.row == 2)
+    {
+        return 0;
+    }
+    else
+        return indexPath.section?60:330;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -375,6 +387,8 @@
         }
         statusTextView.tag = 6;
         [statusTextView setDelegate:self];
+        [statusTextView setBackgroundColor:[UIColor clearColor]];
+        
         [aboutMeView addSubview:statusTextView];
     }
     
@@ -589,7 +603,7 @@
 {
     UIButton *other1Button = nil;
     UIButton *other2Button = nil;
-    [currentPreferencesDict setObject:[NSString stringWithFormat:@"%i",genderBtn.tag-2] forKey:@"ent_pref_sex"];
+    [currentPreferencesDict setObject:[NSString stringWithFormat:@"%li",(long)genderBtn.tag-2] forKey:@"ent_pref_sex"];
     if (genderBtn.tag == 3)
     {
         other1Button = (UIButton *)[[genderBtn superview] viewWithTag:4];

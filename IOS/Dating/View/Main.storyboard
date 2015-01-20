@@ -294,7 +294,7 @@
                                             <action selector="btnProfileDetailPressed:" destination="t1c-um-8J4" eventType="touchUpInside" id="MzZ-BQ-abc"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="WJg-Ll-NmV" userLabel="Label - Timer">
+                                    <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="WJg-Ll-NmV" userLabel="Label - Timer">
                                         <rect key="frame" x="14" y="16" width="42" height="21"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -322,7 +322,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="tLm-AY-BNK">
-                                                <rect key="frame" x="250" y="5" width="60" height="30"/>
+                                                <rect key="frame" x="240" y="5" width="70" height="30"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                                                 <state key="normal" title="Stare">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
