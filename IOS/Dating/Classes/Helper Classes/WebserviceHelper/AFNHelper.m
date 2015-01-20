@@ -146,9 +146,17 @@
     NSURL *baseURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@",API_URL]];
     client= [AFHTTPClient clientWithBaseURL:baseURL];
     
+    NSDictionary *param = @{@"ent_user_fbid" : dictParam[@"ent_user_fbid"], @"ent_image_flag" : dictParam[@"ent_image_flag"], @"ent_delete_flag" : dictParam[@"ent_delete_flag"], @"ent_image_name" : dictParam[@"ent_image_name"]};
     
-    NSMutableURLRequest *request = [client multipartFormRequestWithMethod:@"POST" path:path parameters:dictParam constructingBodyWithBlock: ^(id <AFMultipartFormData>formData) {
-        
+    NSMutableURLRequest *request = [client multipartFormRequestWithMethod:@"POST" path:path parameters:param constructingBodyWithBlock: ^(id <AFMultipartFormData>formData) {
+        for(UIImage *img in [dictParam objectForKey:@"ent_img_file"])
+        {
+            [formData appendPartWithFileData:UIImagePNGRepresentation(img) name:@"ent_img_file" fileName:@"myImage.png" mimeType:@"image/png"];
+        }
+        if ([dictParam objectForKey:@"ent_prof_file"])
+        {
+            [formData appendPartWithFileData:UIImagePNGRepresentation([dictParam objectForKey:@"ent_prof_file"]) name:@"ent_prof_file" fileName:@"profileImage.png" mimeType:@"image/png"];
+        }
     }];
     
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];

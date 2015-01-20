@@ -97,7 +97,7 @@
 
 - (void)displayTime
 {
-    if ([self.btnProfileImage currentImage])
+    if ([self.btnProfileImage currentImage]) 
     {
         [self.btnProfileImage setUserInteractionEnabled:YES];
         

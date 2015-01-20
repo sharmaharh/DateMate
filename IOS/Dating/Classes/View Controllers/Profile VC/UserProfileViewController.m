@@ -394,20 +394,20 @@
     
     if (ProfileImage)
     {
-        [requestDict setObject:UIImagePNGRepresentation(ProfileImage) forKey:@"ent_prof_file"];
+        [requestDict setObject:ProfileImage forKey:@"ent_prof_file"];
     }
     if ([editedArray count])
     {
         [editedArray removeObjectIdenticalTo:@""];
     }
-    [editedArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop)
-    {
-        if ([editedArray[idx] isKindOfClass:[UIImage class]])
-        {
-            [editedArray replaceObjectAtIndex:idx withObject:UIImagePNGRepresentation(editedArray[idx])];
-        }
-        
-    }];
+//    [editedArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop)
+//    {
+//        if ([editedArray[idx] isKindOfClass:[UIImage class]])
+//        {
+//            [editedArray replaceObjectAtIndex:idx withObject:UIImagePNGRepresentation(editedArray[idx])];
+//        }
+//        
+//    }];
     
     [requestDict setObject:editedArray forKey:@"ent_img_file"];
     [requestDict setObject:@"2" forKey:@"ent_image_flag"];
@@ -416,7 +416,6 @@
     
     AFNHelper *afnHelper = [AFNHelper new];
     [afnHelper getDataWithMultipartRequestFromPath:@"uploadImage" withParamDataImage:requestDict withBlock:^(id response, NSError *error) {
-        
     }];
 
 }
