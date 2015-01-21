@@ -72,6 +72,7 @@
 		3A88BE2B1A682AF50087BBC5 /* WebSocketFragment.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A88BE211A682AF50087BBC5 /* WebSocketFragment.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		3A88BE2C1A682AF50087BBC5 /* WebSocketMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A88BE231A682AF50087BBC5 /* WebSocketMessage.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		3A88BE301A682EB70087BBC5 /* MyWebSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A88BE2F1A682EB70087BBC5 /* MyWebSocket.m */; };
+		3A9340A91A7015F800475FF2 /* side_line_icons@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A9340A81A7015F800475FF2 /* side_line_icons@3x.png */; };
 		3A9D16051986A2E40049CE09 /* ChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A9D16041986A2E40049CE09 /* ChatViewController.m */; };
 		3A9D160B1986C2010049CE09 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A9D160A1986C2010049CE09 /* AVFoundation.framework */; };
 		3AA19C921987C94900AA6871 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AA19C911987C94900AA6871 /* MobileCoreServices.framework */; };
@@ -322,6 +323,7 @@
 		3A88BE231A682AF50087BBC5 /* WebSocketMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebSocketMessage.m; sourceTree = "<group>"; };
 		3A88BE2E1A682EB70087BBC5 /* MyWebSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyWebSocket.h; sourceTree = "<group>"; };
 		3A88BE2F1A682EB70087BBC5 /* MyWebSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyWebSocket.m; sourceTree = "<group>"; };
+		3A9340A81A7015F800475FF2 /* side_line_icons@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "side_line_icons@3x.png"; sourceTree = "<group>"; };
 		3A9D16031986A2E40049CE09 /* ChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatViewController.h; sourceTree = "<group>"; };
 		3A9D16041986A2E40049CE09 /* ChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatViewController.m; sourceTree = "<group>"; };
 		3A9D160A1986C2010049CE09 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -576,6 +578,7 @@
 				3A00F3991A5073FD0039CE33 /* app_background.png */,
 				3A00F39A1A5073FD0039CE33 /* app_background@3x.png */,
 				3A00F39B1A5073FD0039CE33 /* female_icon@3x.png */,
+				3A9340A81A7015F800475FF2 /* side_line_icons@3x.png */,
 				3A00F39C1A5073FD0039CE33 /* male_icon@3x.png */,
 				3AC67CD81A6293530030A4E8 /* back_icon.png */,
 				3AC67CD91A6293530030A4E8 /* back_icon@3x.png */,
@@ -1474,6 +1477,7 @@
 				3A00F3B21A5073FD0039CE33 /* app_background.png in Resources */,
 				3A00F3A81A5073FD0039CE33 /* zodiac_sagittarius@3x.png in Resources */,
 				3AA8EA571A43318100A7D772 /* adventurous@3x.png in Resources */,
+				3A9340A91A7015F800475FF2 /* side_line_icons@3x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -19,12 +19,44 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Dating/Classes/View Controllers/Profile VC/UserProfileViewController.m"
-            timestampString = "443458491.985902"
+            filePath = "Dating/Classes/Helper Classes/WebserviceHelper/AFNHelper.m"
+            timestampString = "443459809.776175"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "417"
-            endingLineNumber = "417"
+            startingLineNumber = "168"
+            endingLineNumber = "168"
+            landmarkName = "-getDataWithMultipartRequestFromPath:withParamDataImage:withBlock:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Dating/Classes/View Controllers/Settings VC/Preferences VC/PreferencesViewController.m"
+            timestampString = "443545339.897415"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "59"
+            endingLineNumber = "59"
+            landmarkName = "-didReceiveMemoryWarning"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Dating/Classes/View Controllers/Profile VC/UserProfileViewController.m"
+            timestampString = "443548913.287854"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "425"
+            endingLineNumber = "425"
             landmarkName = "-btnSaveProfilePressed:"
             landmarkType = "5">
          </BreakpointContent>
@@ -36,12 +68,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Dating/Classes/Helper Classes/WebserviceHelper/AFNHelper.m"
-            timestampString = "443459809.776175"
+            timestampString = "443549205.907191"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "168"
-            endingLineNumber = "168"
+            startingLineNumber = "161"
+            endingLineNumber = "161"
             landmarkName = "-getDataWithMultipartRequestFromPath:withParamDataImage:withBlock:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Dating/Classes/View Controllers/FindMatchVC/FindMatchViewController.m"
+            timestampString = "443556087.59775"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "590"
+            endingLineNumber = "590"
+            landmarkName = "-setUpcomingProfilesInFindMatchesList"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

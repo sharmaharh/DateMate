@@ -41,7 +41,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    preferenceComponentsArray = @[@"Preferences",@"Interested In",@"About Me",@"Radius (In kms)",@"Age Range (In Years)"];
+    preferenceComponentsArray = @[@"Preferences",@"Interested In",@"About Me",@"Radius (In kms)",@"Age Range (In Years)",@"Happy Going Famous"];
     
 }
 
@@ -217,9 +217,9 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row == 2)
+    if (indexPath.section == 5)
     {
-        return 0;
+        return 80;
     }
     else
         return indexPath.section?60:330;
@@ -262,11 +262,38 @@
             // Age Range
             [cell.contentView addSubview:[self addAgeSilder]];
             break;
+        
+        case 5:
+        {
+            // Want to be famous
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:nil];
+            cell.backgroundColor = [UIColor clearColor];
+            cell.textLabel.text = @"Happy Going Famous";
+            cell.textLabel.textColor = [UIColor whiteColor];
+            cell.detailTextLabel.textColor = [UIColor lightGrayColor];
+            [cell.textLabel setFont:[UIFont fontWithName:@"SegoeUI" size:16]];
+            cell.detailTextLabel.text = @"You could be lucky user to view yourself on All Yocty Users application splash screen. Do you want to be on their Welcome Screen?";
+            [cell.detailTextLabel setNumberOfLines:3];
+            [cell.detailTextLabel setFont:[UIFont fontWithName:@"SegoeUI" size:10]];
+            UISwitch *onOffSwitch = [[UISwitch alloc] init];
+            onOffSwitch.tag = 12;
+            onOffSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"Famous"];
+            [onOffSwitch addTarget:self action:@selector(splashOnOffValueChanged:) forControlEvents:UIControlEventValueChanged];
+            cell.accessoryView = onOffSwitch;
+        }
+            break;
             
         default:
             break;
     }
     return cell;
+}
+
+- (void)splashOnOffValueChanged:(UISwitch *)splashSwitch
+{
+    [currentPreferencesDict setObject:splashSwitch.on?@"1":@"2" forKey:@"ent_pref_show_photo"];
+    [[NSUserDefaults standardUserDefaults] setBool:splashSwitch.on forKey:@"Famous"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (UIView *)addUserPotraitsView

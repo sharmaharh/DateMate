@@ -113,9 +113,9 @@
         else if (self.lblTimer.text.intValue == 4)
         {
             [self.sfCountdownView start];
-            [self.lblTimer setHidden:YES];
+        
         }
-        [self.btnStare setTitle:[NSString stringWithFormat:@"Stare %i",[[self.lblTimer text] intValue]-1] forState:UIControlStateNormal];
+        
         [self.lblTimer setText:[NSString stringWithFormat:@"%i",[[self.lblTimer text] intValue]-1]];
     }
 
@@ -579,10 +579,14 @@
         [imageView setHidden:YES];
     }
     
+    [[self.upcomingProfilesView viewWithTag:104] setHidden:NO];
+    [[self.upcomingProfilesView viewWithTag:105] setHidden:NO];
+    
     for (NSInteger i = self.currentProfileIndex; i < MIN(matchedProfilesArray.count, self.currentProfileIndex+3); i++)
     {
         UIImageView *imageView = (UIImageView *)[self.upcomingProfilesView viewWithTag:i+100+1-self.currentProfileIndex];
         [self setImageOnImageView:imageView WithActivityIndicator:nil WithImageURL:[matchedProfilesArray[i][@"oPic"] firstObject][@"url"]];
+        
         
         if (i == self.currentProfileIndex)
         {

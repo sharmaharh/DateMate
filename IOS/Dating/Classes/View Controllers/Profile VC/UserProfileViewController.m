@@ -7,6 +7,7 @@
 //
 
 #import "UserProfileViewController.h"
+#import "RearMenuViewController.h"
 
 @interface UserProfileViewController ()
 {
@@ -416,6 +417,24 @@
     
     AFNHelper *afnHelper = [AFNHelper new];
     [afnHelper getDataWithMultipartRequestFromPath:@"uploadImage" withParamDataImage:requestDict withBlock:^(id response, NSError *error) {
+        
+        if(!error)
+        {
+            if (ProfileImage)
+            {
+                 RearMenuViewController *rearMenuViewController = (RearMenuViewController *)appDelegate.revealController.leftMenuViewController;
+                 rearMenuViewController.proflePicImageView.image = [Utils scaleImage:ProfileImage WithRespectToFrame:rearMenuViewController.proflePicImageView.frame];
+                NSMutableArray *reqImageArray = [[[NSUserDefaults standardUserDefaults] arrayForKey:@"ProfileImages"] mutableCopy];
+                if (response[@"picURL"])
+                {
+                    [reqImageArray replaceObjectAtIndex:0 withObject:response[@"picURL"]];
+                }
+                
+                [[NSUserDefaults standardUserDefaults] setObject:reqImageArray forKey:@"ProfileImages"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+            }
+        }
+        
     }];
 
 }
@@ -427,9 +446,10 @@
 {
     UIButton *btn = (UIButton *)[self.view viewWithTag:selectedButtonTag];
     
+    UIImage *editedImage = [UIImage imageWithData:UIImageJPEGRepresentation(info[UIImagePickerControllerEditedImage], 0.6)];
     if (selectedButtonTag == 1)
     {
-        ProfileImage = info[UIImagePickerControllerEditedImage];
+        ProfileImage = editedImage;
     }
     else
     {
@@ -440,10 +460,10 @@
         
         if (info[UIImagePickerControllerEditedImage])
         {
-            [editedArray replaceObjectAtIndex:selectedButtonTag-1 withObject:info[UIImagePickerControllerEditedImage]];
+            [editedArray replaceObjectAtIndex:selectedButtonTag-1 withObject:editedImage];
         }
     }
-    [btn setImage:info[UIImagePickerControllerEditedImage] forState:UIControlStateNormal];
+    [btn setImage:editedImage forState:UIControlStateNormal];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
