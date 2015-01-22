@@ -26,6 +26,7 @@ AppDelegate* appDelegate = nil;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    sleep(3);
     self.window=[[UIWindow alloc]initWithFrame:[[UIScreen mainScreen] bounds]];
     appDelegate = self;
     

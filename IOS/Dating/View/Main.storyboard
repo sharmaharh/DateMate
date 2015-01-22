@@ -324,7 +324,7 @@
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="tLm-AY-BNK">
                                                 <rect key="frame" x="240" y="5" width="70" height="30"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
-                                                <inset key="contentEdgeInsets" minX="-9" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                                <inset key="contentEdgeInsets" minX="-10" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                 <state key="normal" title="Stare">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -385,6 +385,27 @@
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.59999999999999998" colorSpace="calibratedWhite"/>
                             </view>
+                            <view contentMode="scaleToFill" id="4Jb-ED-tXb" userLabel="View - Tutorial">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="tutorial_Stare@3x.png" id="ezV-DC-3jg">
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    </imageView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="ddr-df-ouZ">
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="btnDIsmissTutorialPressed:" destination="t1c-um-8J4" eventType="touchUpInside" id="8nE-7d-pob"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -399,6 +420,7 @@
                         <outlet property="sfCountdownView" destination="BPA-a8-Zaf" id="5T0-W5-OGG"/>
                         <outlet property="upcomingProfilesView" destination="LtW-7S-TWK" id="gbn-7a-qGg"/>
                         <outlet property="viewRequestSent" destination="8PC-7d-9jP" id="htm-BI-nfH"/>
+                        <outlet property="viewTutorial" destination="4Jb-ED-tXb" id="wA9-UJ-06f"/>
                         <segue destination="JCQ-DA-XVW" kind="push" identifier="matchedProfileToProfileDetailIdentifier" id="bT4-yw-8tW"/>
                     </connections>
                 </viewController>
@@ -1542,6 +1564,7 @@
         <image name="request_sent_icon.png" width="184" height="200"/>
         <image name="reveal-icon.png" width="22" height="17"/>
         <image name="side_line_icons@3x.png" width="4" height="54"/>
+        <image name="tutorial_Stare@3x.png" width="1242" height="2208"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>

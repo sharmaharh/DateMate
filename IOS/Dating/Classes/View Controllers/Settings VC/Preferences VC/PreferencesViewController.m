@@ -124,12 +124,11 @@
     if(([text isEqualToString:@"\n"]))
     {
         [textView resignFirstResponder];
-        [self.preferencesTableView setContentOffset:CGPointMake(self.preferencesTableView.contentOffset.x, self.preferencesTableView.contentSize.height-self.preferencesTableView.frame.size.height) animated:YES];
         [currentPreferencesDict setObject:textView.text forKey:@"ent_pers_desc"];
         return YES;
     }
     
-    if (textView.text.length + [text length] > 140)
+    if (textView.text.length + [text length] > 160)
     {
         [Utils showOKAlertWithTitle:_Alert_Title message:@"Please enter status in less than 140 characters"];
         return NO;
@@ -148,7 +147,11 @@
     {
         textView.attributedText = [[NSAttributedString alloc] initWithString:TextView_PlaceHolder attributes:@{NSFontAttributeName : textView.font, NSForegroundColorAttributeName : [UIColor lightGrayColor]}];
     }
-    [self.preferencesTableView setContentOffset:CGPointMake(self.preferencesTableView.contentOffset.x, self.preferencesTableView.contentSize.height-self.preferencesTableView.frame.size.height) animated:YES];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.preferencesTableView reloadSections:[NSIndexSet indexSetWithIndex:2] withRowAnimation:UITableViewRowAnimationFade];
+    });
+    
     return YES;
 }
 
@@ -217,12 +220,11 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == 5)
+    if (indexPath.section == 2)
     {
-        return 80;
+        return MAX(80, [self heightOfStatusText:currentPreferencesDict[@"ent_pers_desc"]]);
     }
-    else
-        return indexPath.section?60:330;
+    return indexPath.section?80:330;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -318,9 +320,9 @@
     
     if (!maleFemaleView)
     {
-        maleFemaleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 60)];
+        maleFemaleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 80)];
         maleCheckBoxButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        maleCheckBoxButton.frame = CGRectMake(20, 15, 80, 30);
+        maleCheckBoxButton.frame = CGRectMake(20, 25, 80, 30);
         [maleCheckBoxButton setTitle:@"Male" forState:UIControlStateNormal];
         [maleCheckBoxButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
         [maleCheckBoxButton setTag:3];
@@ -328,7 +330,7 @@
         [maleCheckBoxButton.layer setCornerRadius:maleCheckBoxButton.frame.size.height/2];
         
         femaleCheckBoxButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        femaleCheckBoxButton.frame = CGRectMake(120, 15, 80, 30);
+        femaleCheckBoxButton.frame = CGRectMake(120, 25, 80, 30);
         [femaleCheckBoxButton setTitle:@"Female" forState:UIControlStateNormal];
         [femaleCheckBoxButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
         [femaleCheckBoxButton setTag:4];
@@ -336,7 +338,7 @@
         [femaleCheckBoxButton.layer setCornerRadius:femaleCheckBoxButton.frame.size.height/2];
         
         bothCheckBoxButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        bothCheckBoxButton.frame = CGRectMake(220, 15, 80, 30);
+        bothCheckBoxButton.frame = CGRectMake(220, 25, 80, 30);
         [bothCheckBoxButton setTitle:@"Both" forState:UIControlStateNormal];
         [bothCheckBoxButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
         [bothCheckBoxButton setTag:5];
@@ -403,9 +405,10 @@
 {
     if (!aboutMeView)
     {
-        aboutMeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 60)];
-        UITextView *statusTextView = [[UITextView alloc] initWithFrame:CGRectMake(10, 10, self.view.frame.size.width-20, 40)];
-        [statusTextView setTextColor:[UIColor blueColor]];
+        UITextView *statusTextView = [[UITextView alloc] initWithFrame:CGRectMake(10, 5, self.view.frame.size.width-20, MAX( 70, ([self heightOfStatusText:appDelegate.userPreferencesDict[@"ent_pers_desc"]] + 5)))];
+        aboutMeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, statusTextView.frame.size.height + 10)];
+        
+        [statusTextView setTextColor:[UIColor whiteColor]];
         [statusTextView setText:appDelegate.userPreferencesDict[@"ent_pers_desc"]];
         [statusTextView setFont:[UIFont fontWithName:@"SegoeUI" size:14]];
         if (!statusTextView.text.length)
@@ -420,6 +423,12 @@
     }
     
     return aboutMeView;
+}
+
+- (CGFloat)heightOfStatusText:(NSString *)str
+{
+    CGSize strSize = [str sizeWithFont:[UIFont fontWithName:@"SegoeUI" size:14] forWidth:(self.view.frame.size.width-20) lineBreakMode:NSLineBreakByWordWrapping];
+    return strSize.height;
 }
 
 - (UIView *)addNotificationOptionView
@@ -480,8 +489,8 @@
 {
     if (!ageView)
     {
-        ageView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 60)];
-        NMRangeSlider* rangeSlider = [[NMRangeSlider alloc] initWithFrame:CGRectMake(20, 25, self.view.frame.size.width-40, 30)];
+        ageView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 80)];
+        NMRangeSlider* rangeSlider = [[NMRangeSlider alloc] initWithFrame:CGRectMake(10, 35, self.view.frame.size.width-20, 30)];
         rangeSlider.maximumValue = 30;
         rangeSlider.minimumValue = 18;
         
@@ -490,14 +499,13 @@
         
         rangeSlider.tag = 9;
         [rangeSlider addTarget:self action:@selector(labelSliderChanged:) forControlEvents:UIControlEventValueChanged];
-        [self configureMetalThemeForSlider:rangeSlider];
         [ageView addSubview:rangeSlider];
         [rangeSlider setNeedsLayout];
         // Add Lower Label
         
         UILabel *lowerLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 12, 20, 12)];
         [lowerLabel setTextAlignment:NSTextAlignmentCenter];
-        [lowerLabel setFont:[UIFont fontWithName:@"SegoeUI" size:12]];
+        [lowerLabel setFont:[UIFont fontWithName:@"SegoeUI" size:14]];
         [lowerLabel setTextColor:[UIColor whiteColor]];
         lowerLabel.tag = 10;
         [lowerLabel setText:[NSString stringWithFormat:@"%i",(int)rangeSlider.lowerValue]];
@@ -507,7 +515,7 @@
         UILabel *upperLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width-30, 12, 20, 12)];
         upperLabel.tag = 11;
         [upperLabel setTextAlignment:NSTextAlignmentCenter];
-        [upperLabel setFont:[UIFont fontWithName:@"SegoeUI" size:12]];
+        [upperLabel setFont:[UIFont fontWithName:@"SegoeUI" size:14]];
         [upperLabel setTextColor:[UIColor whiteColor]];
         [upperLabel setText:[NSString stringWithFormat:@"%i",(int)rangeSlider.upperValue]];
         [ageView addSubview:lowerLabel];
@@ -523,42 +531,19 @@
     return ageView;
 }
 
-- (void) configureMetalThemeForSlider:(NMRangeSlider*) slider
-{
-    UIImage* image = nil;
-    
-    image = [UIImage imageNamed:@"slider-metal-trackBackground"];
-    image = [image resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 5.0, 0.0, 5.0)];
-    slider.trackBackgroundImage = nil;
-    
-    image = [UIImage imageNamed:@"slider-metal-track"];
-    image = [image resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 7.0, 0.0, 7.0)];
-    slider.trackImage = nil;
-    
-    image = [UIImage imageNamed:@"slider-metal-handle"];
-    image = [image imageWithAlignmentRectInsets:UIEdgeInsetsMake(-1, 2, 1, 2)];
-    slider.lowerHandleImageNormal = image;
-    slider.upperHandleImageNormal = image;
-    
-    image = [UIImage imageNamed:@"slider-metal-handle-highlighted"];
-    image = [image imageWithAlignmentRectInsets:UIEdgeInsetsMake(-1, 2, 1, 2)];
-    slider.lowerHandleImageHighlighted = image;
-    slider.upperHandleImageHighlighted = image;
-}
-
 - (UIView *)addRadiusSilder
 {
     if (!radiusView)
     {
-        radiusView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 60)];
-        UISlider *radiusSlider = [[UISlider alloc] initWithFrame:CGRectMake(10, 15, self.view.frame.size.width-20, 20)];
+        radiusView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 80)];
+        UISlider *radiusSlider = [[UISlider alloc] initWithFrame:CGRectMake(10, 45, self.view.frame.size.width-20, 20)];
         radiusSlider.tag = 7;
         radiusSlider.maximumValue = 1000;
         radiusSlider.minimumValue = 1;
         [radiusSlider addTarget:self action:@selector(radiusSliderValueChanged:) forControlEvents:UIControlEventValueChanged];
         radiusSlider.value = [appDelegate.userPreferencesDict[@"ent_pref_radius"] intValue];
         
-        UILabel *upperLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 40, 40, 20)];
+        UILabel *upperLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, 40, 20)];
         upperLabel.center = CGPointMake(radiusView.center.x, upperLabel.center.y);
         upperLabel.tag = 8;
         [upperLabel setTextAlignment:NSTextAlignmentCenter];

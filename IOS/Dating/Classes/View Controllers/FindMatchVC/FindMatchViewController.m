@@ -89,7 +89,7 @@
     [self setImageOnButton:self.btnProfileImage WithActivityIndicator:self.activityIndicator WithImageURL:[matchedProfilesArray[self.currentProfileIndex][@"oPic"] firstObject][@"url"]];
     [self setUpcomingProfilesInFindMatchesList];
     [self.lblTimer setHidden:NO];
-    self.lblTimer.text = @"10";
+    self.lblTimer.text = @"9";
     [self.profileTimer invalidate];
     
     self.profileTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(displayTime) userInfo:nil repeats:YES];
@@ -117,6 +117,16 @@
         }
         
         [self.lblTimer setText:[NSString stringWithFormat:@"%i",[[self.lblTimer text] intValue]-1]];
+        if ([self.lblTimer.text intValue])
+        {
+            [self.btnStare setHidden:NO];
+        }
+        else
+        {
+            [self.btnStare setHidden:YES];
+        }
+        
+        [self.lblTimer setHidden:![self.lblTimer.text intValue]];
     }
 
 }
