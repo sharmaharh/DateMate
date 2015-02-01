@@ -1,0 +1,21 @@
+//
+//  RecentChatsViewController.h
+//  Dating
+//
+//  Created by Harsh Sharma on 8/28/14.
+//  Copyright (c) 2014 IncredTechnologies. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+
+@interface RecentChatsViewController : UIViewController
+
+@property (assign, nonatomic) BOOL isFromPush;
+@property (weak, nonatomic) IBOutlet UITableView *tableViewRecentChats;
+- (IBAction)btnAllContactsPressed:(id)sender;
+
+- (void)getRecentChatUsers;
+- (void)connectToSocket;
+
+@property (strong, nonatomic) NSMutableArray *nameArray;
+@end
