@@ -32,6 +32,7 @@
     self.btnStare.layer.cornerRadius = self.btnStare.frame.size.height/2;
     self.btnStare.layer.borderColor = [UIColor whiteColor].CGColor;
     [self.btnStare setHidden:!self.isFromMatches];
+    [self.scrollViewProfile setDecelerationRate:UIScrollViewDecelerationRateFast];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -42,6 +43,10 @@
 - (void)setImagesOnScrollView
 {
     userProfileDict = self.matchedProfilesArray[self.currentProfileIndex];
+    
+    self.pageControlImages.currentPage = 0;
+    self.pageControlImages.numberOfPages = [userProfileDict[@"oPic"] count];
+    
     self.lblusername.text = userProfileDict[@"firstName"];
     self.lbluserAge.text = [userProfileDict[@"age"] length]?[userProfileDict[@"age"] stringByAppendingString:@"years"]:@"";
     [self.imgViewAstrology setImage:[UIImage imageNamed:[self astrologyIconAccordingToDateofBirth]]];
@@ -261,6 +266,7 @@
         [view removeFromSuperview];
     }
     [self.scrollViewImages setContentOffset:CGPointZero];
+    [self.scrollViewProfile setContentSize:CGSizeMake(0, 600)];
 }
 
 #pragma mark UICollectionView Delegate & Data Source
@@ -338,8 +344,8 @@
         {
             [view setHidden:YES];
         }
-        UILabel *errorLabel = (UILabel *)[self.view viewWithTag:100];
-        [errorLabel setHidden:NO];
+        UIView *errorView = (UIView *)[self.view viewWithTag:100];
+        [errorView setHidden:NO];
         
     }
 }
@@ -388,7 +394,7 @@
 {
     if (![Utils isInternetAvailable])
     {
-        [Utils showOKAlertWithTitle:@"Dating" message:@"No Internet Connection!"];
+        [Utils showOKAlertWithTitle:_Alert_Title message:NO_INERNET_MSG];
     }
     else
     {
@@ -452,6 +458,30 @@
     [self.navigationController popViewControllerAnimated:YES];
     
     [findMatchVC passProfileButtonPressed:nil];
+}
+
+#pragma mark UIScrollViewDelegate
+
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView
+{
+    NSInteger currentPageIndex = scrollView.contentOffset.x/scrollView.frame.size.width;
+    
+    self.pageControlImages.currentPage = currentPageIndex;
+    
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    NSInteger currentPageIndex = scrollView.contentOffset.x/scrollView.frame.size.width;
+    
+    self.pageControlImages.currentPage = currentPageIndex;
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    NSInteger currentPageIndex = scrollView.contentOffset.x/scrollView.frame.size.width;
+    
+    self.pageControlImages.currentPage = currentPageIndex;
 }
 
 @end

@@ -29,10 +29,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"FindMatchUpcoming"];
-    
-    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"FindMatchStare"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+   
     settingOptionsArray = @[@"Update Preferences",@"Notification", @"Sound"];
 }
 
@@ -111,75 +108,89 @@
 
 - (IBAction)logoutButtonPressed:(id)sender
 {
-#if TARGET_IPHONE_SIMULATOR
-    NSDictionary *reqDict = @{@"ent_sess_token": [[NSUserDefaults standardUserDefaults] objectForKey:@"token"],@"ent_dev_id":@"iPhone_Simulator"};
-#else
-    
-    NSDictionary *reqDict = @{@"ent_sess_token": [[NSUserDefaults standardUserDefaults] objectForKey:@"token"],@"ent_dev_id":[[NSUserDefaults standardUserDefaults] objectForKey:@"deviceToken"]};
-    
-#endif
-    
-    
-    AFNHelper *afnHelper = [AFNHelper new];
-    [afnHelper getDataFromPath:@"logout" withParamData:[reqDict mutableCopy] withBlock:^(id response, NSError *error) {
-        if (!error)
-        {
-            [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"fbID"];
-            [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"fbFullName"];
-            appDelegate.userPreferencesDict = [NSMutableDictionary dictionary];
-            [[NSUserDefaults standardUserDefaults] setObject:appDelegate.userPreferencesDict forKey:@"UserPreferences"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            [FacebookUtility sharedObject].fbID = @"";
-            appDelegate.frontNavigationController = [self.storyboard instantiateViewControllerWithIdentifier:@"FirstNavigationController"];
-            
-            appDelegate.window.rootViewController = appDelegate.frontNavigationController;
-            [appDelegate.window makeKeyAndVisible];
-        }
-        else
-        {
-            [Utils showOKAlertWithTitle:@"Dating" message:@"Unable to Logout, Please try Again."];
-        }
+    if (![Utils isInternetAvailable])
+    {
+        [Utils showOKAlertWithTitle:_Alert_Title message:NO_INERNET_MSG];
         
-    }];
-    
+    }
+    else
+    {
+#if TARGET_IPHONE_SIMULATOR
+        NSDictionary *reqDict = @{@"ent_sess_token": [[NSUserDefaults standardUserDefaults] objectForKey:@"token"],@"ent_dev_id":@"iPhone_Simulator"};
+#else
+        
+        NSDictionary *reqDict = @{@"ent_sess_token": [[NSUserDefaults standardUserDefaults] objectForKey:@"token"],@"ent_dev_id":[[NSUserDefaults standardUserDefaults] objectForKey:@"deviceToken"]};
+        
+#endif
+        
+        
+        AFNHelper *afnHelper = [AFNHelper new];
+        [afnHelper getDataFromPath:@"logout" withParamData:[reqDict mutableCopy] withBlock:^(id response, NSError *error) {
+            if (!error)
+            {
+                [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"fbID"];
+                [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"fbFullName"];
+                appDelegate.userPreferencesDict = [NSMutableDictionary dictionary];
+                [[NSUserDefaults standardUserDefaults] setObject:appDelegate.userPreferencesDict forKey:@"UserPreferences"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                [FacebookUtility sharedObject].fbID = @"";
+                [[FacebookUtility sharedObject] logOutFromFacebook];
+                appDelegate.frontNavigationController = [self.storyboard instantiateViewControllerWithIdentifier:@"FirstNavigationController"];
+                
+                appDelegate.window.rootViewController = appDelegate.frontNavigationController;
+                [appDelegate.window makeKeyAndVisible];
+            }
+            else
+            {
+                [Utils showOKAlertWithTitle:@"Dating" message:@"Unable to Logout, Please try Again."];
+            }
+            
+        }];
+    }
     
 }
 
 - (IBAction)deleteAccountButtonPressed:(id)sender
 {
+    if (![Utils isInternetAvailable])
+    {
+        [Utils showOKAlertWithTitle:_Alert_Title message:NO_INERNET_MSG];
+    }
+    else
+    {
 #if TARGET_IPHONE_SIMULATOR
-    NSDictionary *reqDict = @{@"ent_user_fbid": [FacebookUtility sharedObject].fbID};
+        NSDictionary *reqDict = @{@"ent_user_fbid": [FacebookUtility sharedObject].fbID};
 #else
-    
-    NSDictionary *reqDict = @{@"ent_user_fbid": [FacebookUtility sharedObject].fbID};
-    
-#endif
-    
-    
-    AFNHelper *afnHelper = [AFNHelper new];
-    [afnHelper getDataFromPath:@"deleteAccount" withParamData:[reqDict mutableCopy] withBlock:^(id response, NSError *error) {
-        if (!error)
-        {
-            [Utils showAlertView:_Alert_Title message:@"We hope you enjoyed it! Don't forget to come back again" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-            [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"fbID"];
-            [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"fbFullName"];
-            appDelegate.userPreferencesDict = [NSMutableDictionary dictionary];
-            [[NSUserDefaults standardUserDefaults] setObject:appDelegate.userPreferencesDict forKey:@"UserPreferences"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            [FacebookUtility sharedObject].fbID = @"";
-            appDelegate.frontNavigationController = [self.storyboard instantiateViewControllerWithIdentifier:@"FirstNavigationController"];
-            
-            appDelegate.window.rootViewController = appDelegate.frontNavigationController;
-            [appDelegate.window makeKeyAndVisible];
-        }
-        else
-        {
-            [Utils showOKAlertWithTitle:@"Dating" message:@"Unable to Logout, Please try Again."];
-        }
         
-    }];
-    
-    
+        NSDictionary *reqDict = @{@"ent_user_fbid": [FacebookUtility sharedObject].fbID};
+        
+#endif
+        
+        
+        AFNHelper *afnHelper = [AFNHelper new];
+        [afnHelper getDataFromPath:@"deleteAccount" withParamData:[reqDict mutableCopy] withBlock:^(id response, NSError *error) {
+            if (!error)
+            {
+                [Utils showAlertView:_Alert_Title message:@"We hope you enjoyed it! Don't forget to come back again" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+                [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"fbID"];
+                [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"fbFullName"];
+                appDelegate.userPreferencesDict = [NSMutableDictionary dictionary];
+                [[NSUserDefaults standardUserDefaults] setObject:appDelegate.userPreferencesDict forKey:@"UserPreferences"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                [FacebookUtility sharedObject].fbID = @"";
+                [[FacebookUtility sharedObject] logOutFromFacebook];
+                appDelegate.frontNavigationController = [self.storyboard instantiateViewControllerWithIdentifier:@"FirstNavigationController"];
+                
+                appDelegate.window.rootViewController = appDelegate.frontNavigationController;
+                [appDelegate.window makeKeyAndVisible];
+            }
+            else
+            {
+                [Utils showOKAlertWithTitle:@"Dating" message:@"Unable to Logout, Please try Again."];
+            }
+            
+        }];
+    }    
 }
 
 

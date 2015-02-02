@@ -237,17 +237,21 @@
     else
     {
         //Deal with Service
-        AFNHelper *afnHelper = [AFNHelper new];
-        [afnHelper getDataFromPath:@"getChatHistory" withParamData:[@{@"ent_user_fbid": [FacebookUtility sharedObject].fbID, @"ent_user_recever_fbid" : self.recieveFBID, @"ent_chat_page" : @"1"} mutableCopy] withBlock:^(id response, NSError *error) {
-            
-            if ([response[@"chat"] count])
-            {
-                totalChatCount = [response[@"chatTotalCount"] integerValue];
-                [self saveTotalCountofMessages];
-                [self filterChatHistoryList:response[@"chat"]];
-            }
-            [self disableChatAccordingToStatus];
-        }];
+        if ([Utils isInternetAvailable])
+        {
+            AFNHelper *afnHelper = [AFNHelper new];
+            [afnHelper getDataFromPath:@"getChatHistory" withParamData:[@{@"ent_user_fbid": [FacebookUtility sharedObject].fbID, @"ent_user_recever_fbid" : self.recieveFBID, @"ent_chat_page" : @"1"} mutableCopy] withBlock:^(id response, NSError *error) {
+                
+                if ([response[@"chat"] count])
+                {
+                    totalChatCount = [response[@"chatTotalCount"] integerValue];
+                    [self saveTotalCountofMessages];
+                    [self filterChatHistoryList:response[@"chat"]];
+                }
+                [self disableChatAccordingToStatus];
+            }];
+        }
+        
     }
 }
 
@@ -1079,7 +1083,7 @@
 {
     if (![Utils isInternetAvailable])
     {
-        [Utils showOKAlertWithTitle:@"Dating" message:@"No Internet Connection!"];
+        [Utils showOKAlertWithTitle:_Alert_Title message:NO_INERNET_MSG];
     }
     else
     {

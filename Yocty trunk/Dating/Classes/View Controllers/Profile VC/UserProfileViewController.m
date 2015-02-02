@@ -316,44 +316,51 @@
 
 - (IBAction)btnSaveProfilePressed:(id)sender
 {
-    NSMutableDictionary *requestDict = [NSMutableDictionary dictionary];
-    [requestDict setObject:[FacebookUtility sharedObject].fbID forKey:@"ent_user_fbid"];
-    
-    if (ProfileImage)
+    if (![Utils isInternetAvailable])
     {
-        [requestDict setObject:ProfileImage forKey:@"ent_prof_file"];
+        [Utils showOKAlertWithTitle:_Alert_Title message:NO_INERNET_MSG];
     }
-    if ([editedArray count])
+    else
     {
-        [editedArray removeObjectIdenticalTo:@""];
-    }
-    
-    [requestDict setObject:editedArray forKey:@"ent_img_file"];
-    [requestDict setObject:@"2" forKey:@"ent_image_flag"];
-    [requestDict setObject:[deletedImageUrlArray count]?@"1":@"0" forKey:@"ent_delete_flag"];
-    [requestDict setObject:[[deletedImageUrlArray componentsJoinedByString:@","] length]?[deletedImageUrlArray componentsJoinedByString:@","]:@"" forKey:@"ent_image_name"];
-    
-    AFNHelper *afnHelper = [AFNHelper new];
-    [afnHelper getDataWithMultipartRequestFromPath:@"uploadImage" withParamDataImage:requestDict withBlock:^(id response, NSError *error) {
+        NSMutableDictionary *requestDict = [NSMutableDictionary dictionary];
+        [requestDict setObject:[FacebookUtility sharedObject].fbID forKey:@"ent_user_fbid"];
         
-        if(!error)
+        if (ProfileImage)
         {
-            if (ProfileImage)
-            {
-                 RearMenuViewController *rearMenuViewController = (RearMenuViewController *)appDelegate.revealController.leftMenuViewController;
-                 rearMenuViewController.proflePicImageView.image = [Utils scaleImage:ProfileImage WithRespectToFrame:rearMenuViewController.proflePicImageView.frame];
-                NSMutableArray *reqImageArray = [[[NSUserDefaults standardUserDefaults] arrayForKey:@"ProfileImages"] mutableCopy];
-                if (response[@"picURL"])
-                {
-                    [reqImageArray replaceObjectAtIndex:0 withObject:response[@"picURL"]];
-                }
-                
-                [[NSUserDefaults standardUserDefaults] setObject:reqImageArray forKey:@"ProfileImages"];
-                [[NSUserDefaults standardUserDefaults] synchronize];
-            }
+            [requestDict setObject:ProfileImage forKey:@"ent_prof_file"];
+        }
+        if ([editedArray count])
+        {
+            [editedArray removeObjectIdenticalTo:@""];
         }
         
-    }];
+        [requestDict setObject:editedArray forKey:@"ent_img_file"];
+        [requestDict setObject:@"2" forKey:@"ent_image_flag"];
+        [requestDict setObject:[deletedImageUrlArray count]?@"1":@"0" forKey:@"ent_delete_flag"];
+        [requestDict setObject:[[deletedImageUrlArray componentsJoinedByString:@","] length]?[deletedImageUrlArray componentsJoinedByString:@","]:@"" forKey:@"ent_image_name"];
+        
+        AFNHelper *afnHelper = [AFNHelper new];
+        [afnHelper getDataWithMultipartRequestFromPath:@"uploadImage" withParamDataImage:requestDict withBlock:^(id response, NSError *error) {
+            
+            if(!error)
+            {
+                if (ProfileImage)
+                {
+                    RearMenuViewController *rearMenuViewController = (RearMenuViewController *)appDelegate.revealController.leftMenuViewController;
+                    rearMenuViewController.proflePicImageView.image = [Utils scaleImage:ProfileImage WithRespectToFrame:rearMenuViewController.proflePicImageView.frame];
+                    NSMutableArray *reqImageArray = [[[NSUserDefaults standardUserDefaults] arrayForKey:@"ProfileImages"] mutableCopy];
+                    if (response[@"picURL"])
+                    {
+                        [reqImageArray replaceObjectAtIndex:0 withObject:response[@"picURL"]];
+                    }
+                    
+                    [[NSUserDefaults standardUserDefaults] setObject:reqImageArray forKey:@"ProfileImages"];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
+                }
+            }
+            
+        }];
+    }
 
 }
 

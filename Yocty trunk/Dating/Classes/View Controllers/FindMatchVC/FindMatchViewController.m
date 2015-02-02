@@ -11,6 +11,7 @@
 #import "FullImageViewController.h"
 #import "UserProfileDetailViewController.h"
 #import "PBJHexagonFlowLayout.h"
+#import <Social/Social.h>
 
 @interface FindMatchViewController ()
 {
@@ -73,7 +74,7 @@
     self.profileNameLabel.text = [NSString stringWithFormat:@"%@,%@",profileDict[@"firstName"],profileDict[@"age"]];
     [self.btnProfileImage setImage:nil forState:UIControlStateNormal];
     
-    [self setImageOnButton:self.btnProfileImage WithActivityIndicator:self.activityIndicator WithImageURL:[matchedProfilesArray[self.currentProfileIndex][@"oPic"] firstObject][@"url"]];
+    [self setImageOnButton:self.btnProfileImage WithImageURL:[matchedProfilesArray[self.currentProfileIndex][@"oPic"] firstObject][@"url"]];
     [self setUpcomingProfilesInFindMatchesList];
     
     self.lblTimer.text = @"9";
@@ -108,6 +109,43 @@
 
 }
 
+- (IBAction)btnInviteSomebodyPressed:(id)sender
+{
+    [[Utils sharedInstance] openActionSheetWithTitle:@"Invite" buttons:@[@"Facebook",@"Twitter"] completion:^(UIActionSheet *actionSheet, NSInteger buttonIndex)
+    {
+        if (buttonIndex == 0)
+        {
+            //Facebook
+            if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook])
+            {
+                SLComposeViewController *fbComposer = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
+                [fbComposer setInitialText:@"Explore the world of Yocty in your hands. Download now"];
+                [fbComposer addImage:[UIImage imageNamed:@"app_logo"]];
+                [fbComposer addURL:[NSURL URLWithString:@""]];
+            }
+            else
+            {
+                [Utils showOKAlertWithTitle:_Alert_Title message:@"Please login to Facebook Account in Settings."];
+            }
+        }
+        else if(buttonIndex == 1)
+        {
+            if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
+            {
+                SLComposeViewController *twitterComposer = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
+                [twitterComposer setInitialText:@"Explore the world of Yocty in your hands. Download now"];
+                [twitterComposer addImage:[UIImage imageNamed:@"app_logo"]];
+                [twitterComposer addURL:[NSURL URLWithString:@""]];
+            }
+            else
+            {
+                [Utils showOKAlertWithTitle:_Alert_Title message:@"Please login to Twitter Account in Settings."];
+            }
+
+        }
+    }];
+}
+
 - (void) countdownFinished:(SFCountdownView *)view
 {
     NSLog(@"COUNTDOWN FINISHED METHOD");
@@ -117,13 +155,12 @@
     
 }
 
-- (void)setImageOnButton:(UIButton *)btn WithActivityIndicator:(UIActivityIndicatorView *)activityIndicator WithImageURL:(NSString *)ImageURL
+- (void)setImageOnButton:(UIButton *)btn WithImageURL:(NSString *)ImageURL
 {
     [btn.imageView setContentMode:UIViewContentModeCenter];
-    [activityIndicator startAnimating];
     
     [[HSImageDownloader sharedInstance] imageWithImageURL:ImageURL withFBID:matchedProfilesArray[self.currentProfileIndex][@"fbId"] withImageDownloadedBlock:^(UIImage *image, NSString *imgURL, NSError *error) {
-        [activityIndicator stopAnimating];
+        
         imageDownloadedCount ++;
         
         if (!error)
@@ -159,7 +196,6 @@
         {
             [imgView setImage:[UIImage imageNamed:@"Bubble-0"]];
         }
-        [self showImagesAfterAllDownloading];
         
         if (imageDownloadedCount == MIN(4, (matchedProfilesArray.count - self.currentProfileIndex + 1)))
         {
@@ -190,20 +226,19 @@
     
     if (![Utils isInternetAvailable])
     {
-        [Utils showOKAlertWithTitle:@"Dating" message:@"No Internet Connection!"];
+        [Utils showOKAlertWithTitle:_Alert_Title message:NO_INERNET_MSG];
     }
     else
     {
-        [self.activityIndicator setHidden:NO];
         [[Utils sharedInstance] startHSLoaderInView:self.view];
-        [self.activityIndicator startAnimating];
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+        
         AFNHelper *afnhelper = [AFNHelper new];
         [afnhelper getDataFromPath:@"findMatches" withParamData:[@{@"ent_user_fbid": [FacebookUtility sharedObject].fbID} mutableCopy] withBlock:^(id response, NSError *error)
          {
-             [self.activityIndicator stopAnimating];
-             [[Utils sharedInstance] stopHSLoader];
+             
              [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+             
              if (![[response objectForKey:@"errFlag"] boolValue])
              {
                  if ([[response objectForKey:@"matches"] isKindOfClass:[NSArray class]])
@@ -269,10 +304,12 @@
     }
     UILabel *errorMsgLabel = (UILabel *)[self.view viewWithTag:4];
     [errorMsgLabel setHidden:NO];
+    [[Utils sharedInstance] stopHSLoader];
 }
 
 - (void)showImagesAfterAllDownloading
 {
+    [[Utils sharedInstance] stopHSLoader];
     for (NSInteger i = self.currentProfileIndex; i < MIN(matchedProfilesArray.count, self.currentProfileIndex+3); i++)
     {
         UIImageView *imageView = (UIImageView *)[self.upcomingProfilesView viewWithTag:i+100+1-self.currentProfileIndex];
@@ -367,7 +404,7 @@
     
     if (![Utils isInternetAvailable])
     {
-        [Utils showOKAlertWithTitle:@"Dating" message:@"No Internet Connection!"];
+        [Utils showOKAlertWithTitle:_Alert_Title message:NO_INERNET_MSG];
     }
     else
     {

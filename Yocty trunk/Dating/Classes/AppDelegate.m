@@ -110,97 +110,12 @@ AppDelegate* appDelegate = nil;
         [self.frontNavigationController setNavigationBarHidden:YES];
         self.window.rootViewController = self.frontNavigationController;
         
-//        if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"LoginPersistingClass"] length])
-//        {
-//            self.frontNavigationController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"FirstNavigationController"];
-//            [self.frontNavigationController setNavigationBarHidden:YES];
-//            [self.frontNavigationController pushViewController:[mainStoryBoard instantiateViewControllerWithIdentifier:[[NSUserDefaults standardUserDefaults] objectForKey:@"LoginPersistingClass"]] animated:NO];
-//            [FacebookUtility sharedObject].fbID = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbID"];
-//            [FacebookUtility sharedObject].fbFullName = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbFullName"];
-//            self.window.rootViewController = self.frontNavigationController;
-//        }
-//        else
-//        {
-//            if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"fbID"] length])
-//            {
-//                // Find Match
-//                
-//                FindMatchViewController *findMatchViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"FindMatchViewController"];
-//                self.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:findMatchViewController];
-//                [self.frontNavigationController setNavigationBarHidden:YES];
-//                [FacebookUtility sharedObject].fbID = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbID"];
-//                [FacebookUtility sharedObject].fbFullName = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbFullName"];
-//                
-//                self.revealController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"ResideMenuViewController"];
-//                self.revealController.contentViewController = self.frontNavigationController;
-//                [self.window setRootViewController:self.revealController];
-//                
-//            }
-//            else
-//            {
-//                // Login
-//                self.frontNavigationController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"FirstNavigationController"];
-//                [self.frontNavigationController setNavigationBarHidden:YES];
-//                self.window.rootViewController = self.frontNavigationController;
-//            }
-//        }
-        
     }
     
     [self.window makeKeyAndVisible];
     
     return YES;
 }
-
-- (void)getSplashImages
-{
-    AFNHelper *afnHelper = [AFNHelper new];
-    [afnHelper getDataFromPath:@"splashImages" withParamData:nil withBlock:^(id response, NSError *error) {
-        
-        if ([[response objectForKey:@"Userphotos"] count])
-        {
-            NSArray *imageURLArray = [response objectForKey:@"Userphotos"];
-            
-            NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-            NSString *basePath = [paths objectAtIndex:0];
-            
-            basePath = [basePath stringByAppendingPathComponent:@"Splash_Images"];
-            
-            if ([[NSFileManager defaultManager] fileExistsAtPath:basePath])
-            {
-                [[NSFileManager defaultManager] removeItemAtPath:basePath error:nil];
-            }
-            
-            [[NSFileManager defaultManager] createDirectoryAtPath:basePath withIntermediateDirectories:YES attributes:nil error:nil];
-            
-            for (NSDictionary *dict in imageURLArray)
-            {
-                [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:dict[@"image_url"]]] queue:[NSOperationQueue currentQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-                    
-                    if (!connectionError)
-                    {
-                        UIImage *image = [UIImage imageWithData:data];
-                        
-                        if (image)
-                        {
-                            
-                            NSString *filePath = [basePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lu.png",[imageURLArray indexOfObject:dict]+1]];
-                            
-                            [[NSFileManager defaultManager] createFileAtPath:filePath contents:data attributes:nil];
-                            
-                            
-                        }
-                    }
-                    
-                    
-                }];
-            }
-        }
-        
-        
-    }];
-}
-
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication
          annotation:(id)annotation
 {

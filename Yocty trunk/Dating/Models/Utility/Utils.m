@@ -852,8 +852,13 @@
         self.hsProgressIndicator = [[HSProgressIndicator alloc] initWithFrame:view.bounds];
         [self.hsProgressIndicator customizeView];
     }
-    [self.hsProgressIndicator startLoading];
-    [view addSubview:self.hsProgressIndicator];
+    
+    if (!self.hsProgressIndicator.isAnimating)
+    {
+        [self.hsProgressIndicator startLoading];
+        [view addSubview:self.hsProgressIndicator];
+    }
+    
 }
 
 - (void)stopHSLoader

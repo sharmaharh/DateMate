@@ -52,21 +52,32 @@
 - (void)getPendingEmotionsNotifications
 {
     notificationsArray = [NSMutableArray array];
-    
-    AFNHelper *afnHelper = [AFNHelper new];
-    [afnHelper getDataFromPath:@"getProfileMatches" withParamData:[@{@"ent_user_fbid": [FacebookUtility sharedObject].fbID} mutableCopy] withBlock:^(id response, NSError *error)
+    if (![Utils isInternetAvailable])
     {
-        if ([response[@"likes"] count])
-        {
-            notificationsArray = [response[@"likes"] mutableCopy];
-            [self filterLikedByBothInNotificationsArray];
-            [self.tableViewPendingEmotions reloadData];
-        }
-        else
-        {
-            [Utils showOKAlertWithTitle:@"Dating" message:@"No Pending Notification found."];
-        }
-    }];
+        [Utils showOKAlertWithTitle:_Alert_Title message:NO_INERNET_MSG];
+    }
+    else
+    {
+        [[Utils sharedInstance] startHSLoaderInView:self.view];
+        
+        AFNHelper *afnHelper = [AFNHelper new];
+        [afnHelper getDataFromPath:@"getProfileMatches" withParamData:[@{@"ent_user_fbid": [FacebookUtility sharedObject].fbID} mutableCopy] withBlock:^(id response, NSError *error)
+         {
+             
+             if ([response[@"likes"] count])
+             {
+                 notificationsArray = [response[@"likes"] mutableCopy];
+                 [self filterLikedByBothInNotificationsArray];
+                 [self.tableViewPendingEmotions reloadData];
+             }
+             else
+             {
+                 [Utils showOKAlertWithTitle:_Alert_Title message:@"No Pending Notification found."];
+             }
+             [[Utils sharedInstance] stopHSLoader];
+         }];
+    }
+    
 }
 
 - (void)filterLikedByBothInNotificationsArray
@@ -261,7 +272,7 @@
 {
     if (![Utils isInternetAvailable])
     {
-        [Utils showOKAlertWithTitle:@"Dating" message:@"No Internet Connection!"];
+        [Utils showOKAlertWithTitle:_Alert_Title message:NO_INERNET_MSG];
     }
     else
     {

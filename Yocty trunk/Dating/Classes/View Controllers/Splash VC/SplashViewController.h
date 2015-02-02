@@ -10,6 +10,9 @@
 
 @interface SplashViewController : UIViewController
 
-@property (strong, nonatomic) IBOutlet UILabel *profileOfDayLabel;
+@property (strong, nonatomic) IBOutlet UIView *viewProfileOfDay;
 @property (strong, nonatomic) IBOutlet UIImageView *imageViewSplash;
+@property (strong, nonatomic) IBOutlet UILabel *labelUsername;
+@property (strong, nonatomic) IBOutlet UILabel *labelUserLocation;
+
 @end

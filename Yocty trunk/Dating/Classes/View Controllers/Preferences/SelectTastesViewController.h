@@ -12,10 +12,9 @@
 
 @property (strong, nonatomic) IBOutlet UICollectionView *collectionViewPreferences;
 @property (strong, nonatomic) NSMutableArray *preferencesArray;
-- (IBAction)btnProceedPressed:(id)sender;
 @property (strong, nonatomic) IBOutlet UIView *scrollIndicatorBG;
 @property (strong, nonatomic) IBOutlet UIButton *btnContinue;
-@property (strong, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
 
+- (IBAction)btnProceedPressed:(id)sender;
 
 @end

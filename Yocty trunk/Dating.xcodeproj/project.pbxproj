@@ -65,6 +65,8 @@
 		3A2DE8AB1983C7240035FA1B /* LogInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2DE8AA1983C7240035FA1B /* LogInViewController.m */; };
 		3A66C2C519C23AD800AA1718 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A66C2C419C23AD800AA1718 /* QuartzCore.framework */; };
 		3A6A592E1A5C38F500951DE9 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A6A592D1A5C38F500951DE9 /* CoreLocation.framework */; };
+		3A6CE9591A7FD92600E295F9 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A6CE9581A7FD92600E295F9 /* Social.framework */; };
+		3A6CE95B1A7FDBF200E295F9 /* app_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A6CE95A1A7FDBF200E295F9 /* app_logo.png */; };
 		3A6CFA891A2E1F8200842C48 /* SelectGenderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A6CFA881A2E1F8200842C48 /* SelectGenderViewController.m */; };
 		3A6CFA8C1A2E233300842C48 /* SelectTastesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A6CFA8B1A2E233300842C48 /* SelectTastesViewController.m */; };
 		3A6CFA8F1A2E29D200842C48 /* UserProfileDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A6CFA8E1A2E29D200842C48 /* UserProfileDetailViewController.m */; };
@@ -324,6 +326,8 @@
 		3A66C2C419C23AD800AA1718 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		3A6A592C1A5AEBED00951DE9 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		3A6A592D1A5C38F500951DE9 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		3A6CE9581A7FD92600E295F9 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		3A6CE95A1A7FDBF200E295F9 /* app_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = app_logo.png; sourceTree = "<group>"; };
 		3A6CFA871A2E1F8200842C48 /* SelectGenderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectGenderViewController.h; sourceTree = "<group>"; };
 		3A6CFA881A2E1F8200842C48 /* SelectGenderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectGenderViewController.m; sourceTree = "<group>"; };
 		3A6CFA8A1A2E233300842C48 /* SelectTastesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectTastesViewController.h; sourceTree = "<group>"; };
@@ -537,6 +541,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3A6CE9591A7FD92600E295F9 /* Social.framework in Frameworks */,
 				3A6A592E1A5C38F500951DE9 /* CoreLocation.framework in Frameworks */,
 				3AB5685C1A09496B0096D106 /* MediaPlayer.framework in Frameworks */,
 				3A66C2C519C23AD800AA1718 /* QuartzCore.framework in Frameworks */,
@@ -621,6 +626,7 @@
 				3A9340BF1A72EFF900475FF2 /* tutorial_Upcoming_Profile@3x.png */,
 				3A7871C51A7E78B700086108 /* bummer_icon.png */,
 				3A7871C61A7E78B700086108 /* bummer_icon@3x.png */,
+				3A6CE95A1A7FDBF200E295F9 /* app_logo.png */,
 			);
 			path = "Other Icons";
 			sourceTree = "<group>";
@@ -731,6 +737,7 @@
 		3A2DE8621983C0FD0035FA1B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3A6CE9581A7FD92600E295F9 /* Social.framework */,
 				3A6A592D1A5C38F500951DE9 /* CoreLocation.framework */,
 				3AB5685B1A09496B0096D106 /* MediaPlayer.framework */,
 				3A66C2C419C23AD800AA1718 /* QuartzCore.framework */,
@@ -1472,6 +1479,7 @@
 				3AAB18E91A2798C3008535F7 /* Bubble-10@2x.png in Resources */,
 				3AA8EA791A433E7000A7D772 /* niightowl@3x.png in Resources */,
 				3AC805B619AFC96D000C8E5B /* alert.mp3 in Resources */,
+				3A6CE95B1A7FDBF200E295F9 /* app_logo.png in Resources */,
 				3AD8BA181A7800CE00CAB6F3 /* HSProgressIndicator.xib in Resources */,
 				3A00F3A51A5073FD0039CE33 /* zodiac_leo@3x.png in Resources */,
 				3A9340B81A71552C00475FF2 /* slider-default7-trackBackground@2x.png in Resources */,

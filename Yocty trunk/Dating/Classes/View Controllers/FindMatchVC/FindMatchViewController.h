@@ -17,12 +17,12 @@
 - (void)passProfileButtonPressed:(id)sender;
 - (void)findMatchesList;
 - (void)displayTime;
+- (IBAction)btnInviteSomebodyPressed:(id)sender;
 
 @property (strong, nonatomic) NSTimer *profileTimer;
 @property (assign, nonatomic) NSInteger currentProfileIndex;
 
 @property (strong, nonatomic) IBOutlet UIButton *btnProfileImage;
-@property (strong, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (strong, nonatomic) IBOutlet UIButton *btnStare;
 
 @property (weak, nonatomic) IBOutlet UILabel *profileNameLabel;

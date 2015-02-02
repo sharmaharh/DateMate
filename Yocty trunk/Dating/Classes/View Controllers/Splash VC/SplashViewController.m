@@ -16,8 +16,21 @@
 
 @implementation SplashViewController
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
+    
+    // Do any additional setup after loading the view.
+    
+    [self showExistingSplashImage];
+    
+    [self moveToAppFlow];
+    
+    [self downloadLatestSplashImage];
+}
+
+- (void)showExistingSplashImage
+{
     NSString *filePath = [FileManager SplashImageFolderPath];
     
     if (![[NSFileManager defaultManager] fileExistsAtPath:filePath])
@@ -25,26 +38,34 @@
         [[NSFileManager defaultManager] createDirectoryAtPath:filePath withIntermediateDirectories:YES attributes:nil error:nil];
     }
     
+    [self.viewProfileOfDay setHidden:YES];
     NSArray *imagesArray = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:filePath error:nil];
     if([imagesArray count])
     {
         UIImage *splashImage = [UIImage imageWithContentsOfFile:[filePath stringByAppendingPathComponent:[imagesArray firstObject]]];
         if (splashImage)
         {
-            [self.profileOfDayLabel setHidden:NO];
+            [self.viewProfileOfDay setHidden:NO];
             [self.imageViewSplash.layer setCornerRadius:self.imageViewSplash.frame.size.height/2.0];
             [self.imageViewSplash.layer setBorderColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2].CGColor];
             [self.imageViewSplash.layer setBorderWidth:5.0];
-            [self.imageViewSplash setContentMode:UIViewContentModeCenter];
+            [self.imageViewSplash setClipsToBounds:YES];
+            [self.imageViewSplash setContentMode:UIViewContentModeScaleToFill];
             [self.imageViewSplash setImage:[Utils scaleImage:splashImage WithRespectToFrame:self.imageViewSplash.frame]];
+            self.labelUsername.text = [[NSUserDefaults standardUserDefaults] stringForKey:@"FamousUserName"];
+            self.labelUsername.text = [[NSUserDefaults standardUserDefaults] stringForKey:@"FamousUserLocation"];
         }
         else
         {
+            
             [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
         }
         
     }
-    
+}
+
+- (void)moveToAppFlow
+{
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         
         UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
@@ -86,7 +107,10 @@
         }
         
     });
-    
+}
+
+- (void)downloadLatestSplashImage
+{
     // Download Image
     if ([Utils isInternetAvailable])
     {
@@ -114,23 +138,11 @@
             }
         }];
     }
-    
-    // Do any additional setup after loading the view.
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

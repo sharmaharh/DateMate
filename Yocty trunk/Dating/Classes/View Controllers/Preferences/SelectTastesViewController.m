@@ -139,12 +139,13 @@
     
     if (![Utils isInternetAvailable])
     {
-        [Utils showOKAlertWithTitle:@"Dating" message:@"No Internet Connection!"];
+        [Utils showOKAlertWithTitle:_Alert_Title message:NO_INERNET_MSG];
+        return;
     }
     
     if (self.preferencesArray.count < 5)
     {
-        [Utils showOKAlertWithTitle:@"Dating" message:@"Please select atleast 5 preferences to proceed"];
+        [Utils showOKAlertWithTitle:_Alert_Title message:@"Please select atleast 5 preferences to proceed"];
         return;
     }
     NSMutableArray *reqPreferencesArray = [NSMutableArray arrayWithArray:self.preferencesArray];
@@ -153,13 +154,14 @@
         [reqPreferencesArray replaceObjectAtIndex:i withObject:[[User_Preferences_Dict allKeys] objectAtIndex:[[self.preferencesArray objectAtIndex:i] intValue]]];
     }
     [sender setEnabled:NO];
-    [self.activityIndicator startAnimating];
+    [[Utils sharedInstance] startHSLoaderInView:self.view];
+    
     [appDelegate.userPreferencesDict setObject:[reqPreferencesArray componentsJoinedByString:@","] forKey:@"ent_pref_lifestyle"];
     
     AFNHelper *afnhelper = [AFNHelper new];
     [afnhelper getDataFromPath:@"updatePreferences" withParamData:appDelegate.userPreferencesDict withBlock:^(id response, NSError *error) {
         [sender setEnabled:YES];
-        [self.activityIndicator stopAnimating];
+        [[Utils sharedInstance] stopHSLoader];
         if (!error)
         {
             [[NSUserDefaults standardUserDefaults] setObject:appDelegate.userPreferencesDict forKey:@"UserPreferences"];
@@ -180,9 +182,9 @@
             
         }
         else{
-            //                 [pi hideProgressIndicator];
-//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Failed" message:@"Please try again" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-//            [alert show];
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_Alert_Title message:@"Sorry, something we missed it, Please try again." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+            [alert show];
         }
         
         

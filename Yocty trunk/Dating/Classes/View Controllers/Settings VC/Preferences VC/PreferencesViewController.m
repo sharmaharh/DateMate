@@ -17,7 +17,6 @@
     NSArray *preferenceComponentsArray;
     NSMutableArray *preferencesArray;
     UIView *maleFemaleView;
-    UIView *notificationOnOffView;
     UIView *aboutMeView;
     UIView *radiusView;
     UIView *ageView;
@@ -80,7 +79,7 @@
     else
     {
 
-        
+        [[Utils sharedInstance] startHSLoaderInView:self.view];
         AFNHelper *afnhelper = [AFNHelper new];
         [afnhelper getDataFromPath:@"updatePreferences" withParamData:currentPreferencesDict withBlock:^(id response, NSError *error)
         {
@@ -88,6 +87,9 @@
             FindMatchViewController *findMatchViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FindMatchViewController"];
             UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:findMatchViewController];
             [navigationController setNavigationBarHidden:YES];
+            
+            [[Utils sharedInstance] stopHSLoader];
+            
             [appDelegate.revealController setContentViewController:navigationController animated:YES];
             
             NSLog(@"%@",response);
@@ -431,60 +433,6 @@
     return strSize.height;
 }
 
-- (UIView *)addNotificationOptionView
-{
-    UIButton *notificationOnButton = nil;
-    UIButton *notificationOffButton = nil;
-    
-    if (!notificationOnOffView)
-    {
-        notificationOnOffView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 60)];
-        notificationOnButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        notificationOnButton.frame = CGRectMake(20, 15, 40, 30);
-        [notificationOnButton setTitle:@"On" forState:UIControlStateNormal];
-        [notificationOnButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-        [notificationOnButton setTag:5];
-        [notificationOnButton.layer setBorderWidth:1.0];
-        [notificationOnButton.layer setCornerRadius:notificationOnButton.frame.size.height/2];
-        
-        notificationOffButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        notificationOffButton.frame = CGRectMake(80, 15, 40, 30);
-        [notificationOffButton setTitle:@"Off" forState:UIControlStateNormal];
-        [notificationOffButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-        [notificationOffButton setTag:6];
-        [notificationOffButton.layer setBorderWidth:1.0];
-        [notificationOffButton.layer setCornerRadius:notificationOffButton.frame.size.height/2];
-        [notificationOffButton addTarget:self action:@selector(notificationOnOffOptionPressed:) forControlEvents:UIControlEventTouchUpInside];
-        [notificationOnButton addTarget:self action:@selector(notificationOnOffOptionPressed:) forControlEvents:UIControlEventTouchUpInside];
-        [notificationOnOffView addSubview:notificationOffButton];
-        [notificationOnOffView addSubview:notificationOnButton];
-    }
-    else
-    {
-        notificationOnButton = (UIButton *)[notificationOnOffView viewWithTag:5];
-        notificationOffButton = (UIButton *)[notificationOnOffView viewWithTag:6];
-    }
-    
-
-    if([[NSUserDefaults standardUserDefaults] boolForKey:@"Notifications"])
-    {
-        [notificationOnButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [notificationOnButton.layer setBorderColor:[UIColor whiteColor].CGColor];
-        [notificationOffButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-        [notificationOffButton.layer setBorderColor:[UIColor lightGrayColor].CGColor];
-        
-    }
-    else
-    {
-        [notificationOnButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-        [notificationOnButton.layer setBorderColor:[UIColor lightGrayColor].CGColor];
-        [notificationOffButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [notificationOffButton.layer setBorderColor:[UIColor whiteColor].CGColor];
-    }
-    
-    return notificationOnOffView;
-}
-
 - (UIView *)addAgeSilder
 {
     if (!ageView)
@@ -641,17 +589,6 @@
     [other2Button setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
     [other2Button.layer setBorderColor:[UIColor lightGrayColor].CGColor];
     
-}
-
-- (void)notificationOnOffOptionPressed:(UIButton *)notificationBtn
-{
-    UIButton *otherBtn = (UIButton *)((notificationBtn.tag == 5) ? [[notificationBtn superview] viewWithTag:6] : [[notificationBtn superview] viewWithTag:5]);
-    [currentPreferencesDict setObject:[NSString stringWithFormat:@"%li",(long)notificationBtn.tag-5] forKey:@"ent_send_notify"];
-    [notificationBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [otherBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-    
-    [otherBtn.layer setBorderColor:[UIColor lightGrayColor].CGColor];
-    [notificationBtn.layer setBorderColor:[UIColor whiteColor].CGColor];
 }
 
 - (void)soundOnOffOptionPressed:(UIButton *)soundBtn
