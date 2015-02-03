@@ -52,6 +52,7 @@
 - (void)getPendingEmotionsNotifications
 {
     notificationsArray = [NSMutableArray array];
+    [[self.view viewWithTag:4] setHidden:YES];
     if (![Utils isInternetAvailable])
     {
         [Utils showOKAlertWithTitle:_Alert_Title message:NO_INERNET_MSG];
@@ -72,7 +73,7 @@
              }
              else
              {
-                 [Utils showOKAlertWithTitle:_Alert_Title message:@"No Pending Notification found."];
+                 [self showError];
              }
              [[Utils sharedInstance] stopHSLoader];
          }];
@@ -191,81 +192,24 @@
 - (void)setImageOnImageView:(UIImageView *)profileImageView WithActivityIndicator:(UIActivityIndicatorView *)activityIndicator onIndexPath:(NSIndexPath *)indexPath
 {
     NSString *ImageURL = notificationsArray[indexPath.row][@"pPic"];
-    if (!ImageURL || !ImageURL.length) {
-        return;
-    }
-    __block NSString *bigImageURLString = ImageURL;
     
-    NSString *dirPath = [FileManager ProfileImageFolderPathWithFBID:notificationsArray[indexPath.row][@"fbId"]];
-    NSString *filePath = [dirPath stringByAppendingPathComponent:[ImageURL lastPathComponent]];
+    [profileImageView setContentMode:UIViewContentModeCenter];
+    [activityIndicator startAnimating];
     
-    BOOL doesExist = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
-    
-    if (doesExist)
-    {
-        UIImage *image = [UIImage imageWithContentsOfFile:filePath];
-        if (image)
+    [[HSImageDownloader sharedInstance] imageWithImageURL:ImageURL withFBID:notificationsArray[indexPath.row][@"fbId"] withImageDownloadedBlock:^(UIImage *image, NSString *imgURL, NSError *error) {
+        [activityIndicator stopAnimating];
+        
+        if (!error)
         {
-            [profileImageView setImage:[UIImage imageWithData:[NSData dataWithContentsOfFile:filePath]]];
-            [activityIndicator stopAnimating];
+            [profileImageView setImage:[Utils scaleImage:image WithRespectToFrame:profileImageView.frame]];
         }
         else
         {
-            [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
-            [self setImageOnImageView:profileImageView WithActivityIndicator:activityIndicator onIndexPath:indexPath];
+            [profileImageView setImage:[UIImage imageNamed:@"Bubble-0"]];
         }
         
-    }
-    else
-    {
-        dispatch_async(dispatch_queue_create("ProfilePics", nil), ^{
-            
-            
-            __block NSData *imageData = nil;
-            [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:bigImageURLString]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *res, NSData *data, NSError *error)
-             {
-                 if (!error)
-                 {
-                     imageData = data;
-                     UIImage *image = nil;
-                     data = nil;
-                     image = [UIImage imageWithData:imageData];
-                     if (image == nil)
-                     {
-                         image = [UIImage imageNamed:@"Bubble-0"];
-                     }
-                     
-                     [profileImageView setImage:image];
-                     
-                     [activityIndicator stopAnimating];
-                     
-                     // Write Image in Document Directory
-                     int64_t delayInSeconds = 0.4;
-                     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-                     
-                     
-                     dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^(void){
-                         if (![[NSFileManager defaultManager] fileExistsAtPath:filePath])
-                         {
-                             if (![[NSFileManager defaultManager] fileExistsAtPath:dirPath])
-                             {
-                                 [[NSFileManager defaultManager] createDirectoryAtPath:dirPath withIntermediateDirectories:YES attributes:nil error:nil];
-                             }
-                             
-                             [[NSFileManager defaultManager] createFileAtPath:filePath contents:imageData attributes:nil];
-                             imageData = nil;
-                         }
-                     });
-                 }
-                 
-             }];
-            
-            bigImageURLString = nil;
-            
-            
-        });
-    }
-    
+    }];
+
 }
 
 - (void)stareBackButtonPressed:(UIButton *)stareBtn
@@ -328,10 +272,18 @@
              else
              {
                  [Utils showOKAlertWithTitle:_Alert_Title message:@"Error Occured, Please Try Again"];
+                 
              }
              
          }];
     }
+}
+
+- (void)showError
+{
+    UIView *errorMsgView = (UIView *)[self.view viewWithTag:4];
+    [errorMsgView setHidden:NO];
+    [[Utils sharedInstance] stopHSLoader];
 }
 
 -(void)dealloc

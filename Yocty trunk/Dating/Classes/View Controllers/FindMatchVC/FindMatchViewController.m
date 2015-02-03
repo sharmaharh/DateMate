@@ -230,7 +230,10 @@
     }
     else
     {
-        [[Utils sharedInstance] startHSLoaderInView:self.view];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [[Utils sharedInstance] startHSLoaderInView:self.view];
+        });
+        
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         
         AFNHelper *afnhelper = [AFNHelper new];
@@ -302,14 +305,14 @@
     {
         [[self.view viewWithTag:i] setHidden:YES];
     }
-    UILabel *errorMsgLabel = (UILabel *)[self.view viewWithTag:4];
-    [errorMsgLabel setHidden:NO];
+    UIView *errorMsgView = (UIView *)[self.view viewWithTag:4];
+    [errorMsgView setHidden:NO];
     [[Utils sharedInstance] stopHSLoader];
 }
 
 - (void)showImagesAfterAllDownloading
 {
-    [[Utils sharedInstance] stopHSLoader];
+    
     for (NSInteger i = self.currentProfileIndex; i < MIN(matchedProfilesArray.count, self.currentProfileIndex+3); i++)
     {
         UIImageView *imageView = (UIImageView *)[self.upcomingProfilesView viewWithTag:i+100+1-self.currentProfileIndex];
@@ -330,6 +333,7 @@
     [self.viewUserDetails setHidden:NO];
     [self.lblTimer setHidden:NO];
     
+    [[Utils sharedInstance] stopHSLoader];
 }
 
 - (void)hideViewWhileTranstioning
@@ -340,8 +344,8 @@
         [imageView setHidden:YES];
     }
     [[self.view viewWithTag:1] setHidden:YES];
-    UILabel *errorMsgLabel = (UILabel *)[self.view viewWithTag:4];
-    [errorMsgLabel setHidden:YES];
+    UIView *errorMsgView = (UIView *)[self.view viewWithTag:4];
+    [errorMsgView setHidden:YES];
     [self.viewUserDetails setHidden:YES];
     [self.lblTimer setHidden:YES];
     

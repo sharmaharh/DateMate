@@ -211,9 +211,9 @@
                     
             UIImage *tempbuttonImage = tempbutton.currentImage;
             
-            [button1 setImage:tempbuttonImage forState:UIControlStateNormal];
+            [button1 setImage:[Utils scaleImage:tempbuttonImage WithRespectToFrame:button1.frame] forState:UIControlStateNormal];
             [button1.layer setBorderColor:[UIColor whiteColor].CGColor];
-            [pannedButton setImage:intersectedButtonImage forState:UIControlStateNormal];
+            [pannedButton setImage:[Utils scaleImage:intersectedButtonImage WithRespectToFrame:pannedButton.frame] forState:UIControlStateNormal];
             
             [self.imagesArray exchangeObjectAtIndex:pannedButton.tag-1 withObjectAtIndex:0];
         }
@@ -322,6 +322,7 @@
     }
     else
     {
+        [[Utils sharedInstance] startHSLoaderInView:self.view];
         NSMutableDictionary *requestDict = [NSMutableDictionary dictionary];
         [requestDict setObject:[FacebookUtility sharedObject].fbID forKey:@"ent_user_fbid"];
         
@@ -329,6 +330,7 @@
         {
             [requestDict setObject:ProfileImage forKey:@"ent_prof_file"];
         }
+        NSArray *localEditedArray = [editedArray copy];
         if ([editedArray count])
         {
             [editedArray removeObjectIdenticalTo:@""];
@@ -341,9 +343,28 @@
         
         AFNHelper *afnHelper = [AFNHelper new];
         [afnHelper getDataWithMultipartRequestFromPath:@"uploadImage" withParamDataImage:requestDict withBlock:^(id response, NSError *error) {
-            
+            [[Utils sharedInstance] stopHSLoader];
             if(!error)
             {
+                /*
+                 response: {
+                 errFlag = 0;
+                 errMsg = "Image upload completed successfully.";
+                 errNum = 18;
+                 images =     (
+                 {
+                 flag = 1;
+                 url = "http://69.195.70.43/playground/ws/pics/1422984760myImage0.png";
+                 },
+                 {
+                 flag = 1;
+                 url = "http://69.195.70.43/playground/ws/pics/1422984760myImage1.png";
+                 }
+                 );
+                 picURL = "http://69.195.70.43/playground/ws/pics/1422984760profileImage.png";
+                 profFlag = 1;
+                 }*/
+                
                 if (ProfileImage)
                 {
                     RearMenuViewController *rearMenuViewController = (RearMenuViewController *)appDelegate.revealController.leftMenuViewController;
@@ -353,7 +374,16 @@
                     {
                         [reqImageArray replaceObjectAtIndex:0 withObject:response[@"picURL"]];
                     }
-                    
+                    if ([response[@"images"] count])
+                    {
+                        for (int i = 0 ; i < [response[@"images"] count]; i++)
+                        {
+                            if (![localEditedArray[i] isKindOfClass:[NSString class]])
+                            {
+                                [reqImageArray replaceObjectAtIndex:i+1 withObject:response[@"images"][i][@"url"]];
+                            }
+                        }
+                    }
                     [[NSUserDefaults standardUserDefaults] setObject:reqImageArray forKey:@"ProfileImages"];
                     [[NSUserDefaults standardUserDefaults] synchronize];
                 }
@@ -371,7 +401,7 @@
 {
     UIButton *btn = (UIButton *)[self.view viewWithTag:selectedButtonTag];
     
-    UIImage *editedImage = [UIImage imageWithData:UIImageJPEGRepresentation(info[UIImagePickerControllerEditedImage], 0.6)];
+    UIImage *editedImage = [UIImage imageWithData:UIImageJPEGRepresentation(info[UIImagePickerControllerEditedImage], 0.3)];
     if (selectedButtonTag == 1)
     {
         ProfileImage = editedImage;
@@ -388,7 +418,7 @@
             [editedArray replaceObjectAtIndex:selectedButtonTag-2 withObject:editedImage];
         }
     }
-    [btn setImage:editedImage forState:UIControlStateNormal];
+    [btn setImage:[Utils scaleImage:editedImage WithRespectToFrame:btn.frame] forState:UIControlStateNormal];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

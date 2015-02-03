@@ -83,12 +83,12 @@
         AFNHelper *afnhelper = [AFNHelper new];
         [afnhelper getDataFromPath:@"updatePreferences" withParamData:currentPreferencesDict withBlock:^(id response, NSError *error)
         {
+            [[Utils sharedInstance] stopHSLoader];
+            
             appDelegate.userPreferencesDict = currentPreferencesDict;
             FindMatchViewController *findMatchViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FindMatchViewController"];
             UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:findMatchViewController];
             [navigationController setNavigationBarHidden:YES];
-            
-            [[Utils sharedInstance] stopHSLoader];
             
             [appDelegate.revealController setContentViewController:navigationController animated:YES];
             

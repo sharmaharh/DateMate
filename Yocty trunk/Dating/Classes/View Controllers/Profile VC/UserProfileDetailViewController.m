@@ -10,6 +10,7 @@
 #import "RecentChatsViewController.h"
 #import "FindMatchViewController.h"
 #import "PBJHexagonFlowLayout.h"
+#import "FullImageViewController.h"
 
 @interface UserProfileDetailViewController ()
 {
@@ -31,6 +32,18 @@
     self.btnStare.layer.borderWidth = 1.0f;
     self.btnStare.layer.cornerRadius = self.btnStare.frame.size.height/2;
     self.btnStare.layer.borderColor = [UIColor whiteColor].CGColor;
+    if (self.isFromMatches)
+    {
+        [self.btnStare setHidden:NO];
+        [self.lblusername setTextAlignment:NSTextAlignmentRight];
+        [self.lbluserAge setTextAlignment:NSTextAlignmentRight];
+        CGRect userNameFrame = self.lblusername.frame;
+        userNameFrame.size.width = userNameFrame.size.width + (self.view.frame.size.width - 20 - (userNameFrame.origin.x+userNameFrame.size.width));
+        CGRect userAgeFrame = self.lbluserAge.frame;
+        userAgeFrame.size.width = userNameFrame.size.width;
+        self.lbluserAge.frame = userAgeFrame;
+        self.lblusername.frame = userNameFrame;
+    }
     [self.btnStare setHidden:!self.isFromMatches];
     [self.scrollViewProfile setDecelerationRate:UIScrollViewDecelerationRateFast];
 }
@@ -70,38 +83,74 @@
     
     for (int i = 0; i < [userProfileDict[@"oPic"] count]; i++)
     {
-        UIImageView *profileImage = [[UIImageView alloc] initWithFrame:CGRectMake(i*self.scrollViewImages.frame.size.width, 0, self.scrollViewImages.frame.size.width, self.scrollViewImages.frame.size.height)];
-        [profileImage setContentMode:UIViewContentModeCenter];
-        
+        UIButton *profileBtn = [[UIButton alloc] initWithFrame:CGRectMake(i*self.scrollViewImages.frame.size.width, 0, self.scrollViewImages.frame.size.width, self.scrollViewImages.frame.size.height)];
+        [profileBtn.imageView setContentMode:UIViewContentModeCenter];
+        profileBtn.tag = i+100;
+        [profileBtn setHidden:YES];
+        [profileBtn addTarget:self action:@selector(showFullPicture:) forControlEvents:UIControlEventTouchUpInside];
         UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-        activityIndicator.center = profileImage.center;
+        activityIndicator.center = profileBtn.center;
         [activityIndicator setHidesWhenStopped:YES];
 //        __weak UIImageView *weakImageView = profileImage;
-        [self setImageOnImageView:profileImage WithImageURL:userProfileDict[@"oPic"][i][@"url"] WithActivityIndicator:activityIndicator];
+        [self setImageOnImageView:profileBtn WithImageURL:userProfileDict[@"oPic"][i][@"url"] WithActivityIndicator:activityIndicator];
         
-        [profileImage setClipsToBounds:YES];
-        [self.scrollViewImages addSubview:profileImage];
+        [profileBtn.imageView setClipsToBounds:YES];
+        [self.scrollViewImages addSubview:profileBtn];
         [self.scrollViewImages addSubview:activityIndicator];
     }
     
     self.scrollViewImages.contentSize = CGSizeMake(self.scrollViewImages.frame.size.width * [userProfileDict[@"oPic"] count], 0);
+    
+    CGRect statusFrame = self.lblUserStatus.frame;
+    statusFrame.size.height = [self heightOfUserDescText:userProfileDict[@"persDesc"]];
+    self.lblUserStatus.frame = statusFrame;
+    
+    CGRect infoFrame = self.viewUserInfo.frame;
+    infoFrame.size.height = statusFrame.origin.y+statusFrame.size.height+5;
+    self.lblUserStatus.frame = infoFrame;
+    
+    CGRect collectionFrame = self.collectionViewPreferences.frame;
+    collectionFrame.origin.y = collectionFrame.origin.y + statusFrame.size.height;
+    self.collectionViewPreferences.frame = collectionFrame;
+    
+    self.scrollViewProfile.contentSize = CGSizeMake(0, collectionFrame.origin.y + collectionFrame.size.height);
+    
 }
 
-- (void)setImageOnImageView:(UIImageView *)imgView WithImageURL:(NSString *)ImageURL WithActivityIndicator:(UIActivityIndicatorView *)activityIndicator
+- (void)showFullPicture:(UIButton *)btn
 {
-    [imgView setContentMode:UIViewContentModeCenter];
+    FullImageViewController *fullImageViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FullImageViewController"];
+    fullImageViewController.currentPhotoIndex = btn.tag-100;
+    fullImageViewController.arrPhotoGallery = userProfileDict[@"oPic"];
+    fullImageViewController.fbID = userProfileDict[@"fbId"];
+    [self presentViewController:fullImageViewController animated:YES completion:nil];
+}
+
+- (CGFloat)heightOfUserDescText:(NSString *)desc
+{
+    if ([desc length])
+    {
+        CGSize size = [desc sizeWithFont:[UIFont systemFontOfSize:15] constrainedToSize:CGSizeMake(self.lblUserStatus.frame.size.width, MAXFLOAT) lineBreakMode:NSLineBreakByWordWrapping];
+        return size.height+10;
+    }
+    return 0;
+}
+
+- (void)setImageOnImageView:(UIButton *)btn WithImageURL:(NSString *)ImageURL WithActivityIndicator:(UIActivityIndicatorView *)activityIndicator
+{
+    [btn.imageView setContentMode:UIViewContentModeCenter];
     [activityIndicator startAnimating];
     
     [[HSImageDownloader sharedInstance] imageWithImageURL:ImageURL withFBID:self.matchedProfilesArray[self.currentProfileIndex][@"fbId"] withImageDownloadedBlock:^(UIImage *image, NSString *imgURL, NSError *error) {
         [activityIndicator stopAnimating];
-        [imgView setHidden:NO];
+        [btn setHidden:NO];
         if (!error)
         {
-            [imgView setImage:[Utils scaleImage:image WithRespectToFrame:imgView.frame]];
+            [btn setImage:[Utils scaleImage:image WithRespectToFrame:btn.frame] forState:UIControlStateNormal];
         }
         else
         {
-            [imgView setImage:[UIImage imageNamed:@"Bubble-0"]];
+            [btn setImage:[UIImage imageNamed:@"Bubble-0"] forState:UIControlStateNormal];
         }
     }];
     
@@ -266,7 +315,7 @@
         [view removeFromSuperview];
     }
     [self.scrollViewImages setContentOffset:CGPointZero];
-    [self.scrollViewProfile setContentSize:CGSizeMake(0, 600)];
+    
 }
 
 #pragma mark UICollectionView Delegate & Data Source

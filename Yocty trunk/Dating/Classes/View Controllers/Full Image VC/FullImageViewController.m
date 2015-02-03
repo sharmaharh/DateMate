@@ -88,172 +88,23 @@
 
 - (void)setImageOnImageView:(UIImageView *)imageView WithActivityIndicator:(UIActivityIndicatorView *)activityIndicator WithImageURL:(NSString *)ImageURL
 {
-    if (!ImageURL || !ImageURL.length) {
-        return;
-    }
-    __block NSString *bigImageURLString = ImageURL;
-    //    BOOL doesExist = [arrFilePath containsObject:filePath];
+    [imageView setContentMode:UIViewContentModeCenter];
+    [activityIndicator startAnimating];
     
-    NSString *dirPath = nil;
-    
-    if ([self.fbID length])
-    {
-        dirPath = [self ProfileImageFolderPathWithFBID:self.fbID];
-    }
-    else
-    {
-        dirPath = [self AttachmentsFolderPath];
-    }
-    
-    NSString *filePath = [dirPath stringByAppendingPathComponent:[ImageURL lastPathComponent]];
-    
-    BOOL doesExist = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
-    
-    if (doesExist)
-    {
-        UIImage *image = [UIImage imageWithContentsOfFile:filePath];
-        if (image)
+    [[HSImageDownloader sharedInstance] imageWithImageURL:ImageURL withFBID:self.fbID withImageDownloadedBlock:^(UIImage *image, NSString *imgURL, NSError *error) {
+        [activityIndicator stopAnimating];
+        
+        if (!error)
         {
-            [imageView setImage:[UIImage imageWithData:[NSData dataWithContentsOfFile:filePath]]];
-            [self adjustPhotoIndexLabelAccordingtoImageView:imageView];
-            [activityIndicator stopAnimating];
+            [imageView setImage:[Utils scaleImage:image WithRespectToFrame:imageView.frame]];
         }
         else
         {
-            [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
-            [self setImageOnImageView:imageView WithActivityIndicator:activityIndicator WithImageURL:ImageURL];
+            [imageView setImage:[UIImage imageNamed:@"Bubble-0"]];
         }
         
-    }
-    else
-    {
-        dispatch_async(dispatch_queue_create("ProfilePics", nil), ^{
-            
-            
-            __block NSData *imageData = nil;
-            [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:bigImageURLString]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *res, NSData *data, NSError *error)
-            {
-                if (!error)
-                {
-                    imageData = data;
-                    UIImage *image = nil;
-                    data = nil;
-                    image = [UIImage imageWithData:imageData];
-                    if (image == nil)
-                    {
-                        image = [UIImage imageNamed:@"Bubble-0"];
-                    }
-                    
-                    [imageView setImage:image];
-                    [self adjustPhotoIndexLabelAccordingtoImageView:imageView];
-                    [activityIndicator stopAnimating];
-                    
-                    // Write Image in Document Directory
-                    int64_t delayInSeconds = 0.4;
-                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-                    
-                    
-                    dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^(void){
-                        if (![[NSFileManager defaultManager] fileExistsAtPath:filePath])
-                        {
-                            if (![[NSFileManager defaultManager] fileExistsAtPath:dirPath])
-                            {
-                                [[NSFileManager defaultManager] createDirectoryAtPath:dirPath withIntermediateDirectories:YES attributes:nil error:nil];
-                            }
-                            
-                            [[NSFileManager defaultManager] createFileAtPath:filePath contents:imageData attributes:nil];
-                            imageData = nil;
-                        }
-                    });
-                }
-            }];
-            
-            bigImageURLString = nil;
-            
-            
-        });
-    }
+    }];
     
-}
-
-- (void)setLazyLoadingWith:(NSString*)imgURLString FilePath:(NSString*)filePath ImageView:(UIImageView*)newsThumbnailimageView CollectionView:(UICollectionView *)collectionView IndexPath:(NSIndexPath*)indexPath withActivityLoader:(UIActivityIndicatorView *)activityIndicator
-{
-    if (!imgURLString || !imgURLString.length) {
-        return;
-    }
-    __block NSString *bigImageURLString = imgURLString;
-    //    BOOL doesExist = [arrFilePath containsObject:filePath];
-    BOOL doesExist = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
-    
-    if (doesExist)
-    {
-        newsThumbnailimageView.image = [UIImage imageWithData:[NSData dataWithContentsOfFile:filePath]];
-        [self adjustPhotoIndexLabelAccordingtoImageView:newsThumbnailimageView];
-        
-        [activityIndicator stopAnimating];
-    }
-    else
-    {
-        dispatch_async(dispatch_queue_create("News", nil), ^{
-            
-            
-            __block NSData *imageData = nil;
-            [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:bigImageURLString]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *res, NSData *data, NSError *error) {
-                UICollectionViewCell *cellToUpdate = [collectionView cellForItemAtIndexPath:indexPath]; // create a copy of the cell to avoid keeping a strong pointer to "cell" since that one may have been reused by the time the block is ready to update it.
-                imageData = data;
-                UIImage *image = nil;
-                data = nil;
-                image = [UIImage imageWithData:imageData];
-                if (image == nil)
-                {
-                    image = [UIImage imageNamed:@"Bubble-0"];
-                }
-                if (cellToUpdate != nil){
-                    /*
-                     UIImageView *newNewsThumbnailimageView = (UIImageView *)[cellToUpdate.contentView viewWithTag:1];
-                     [newNewsThumbnailimageView setImage:image];
-                     */
-                    [newsThumbnailimageView setImage:image];
-                    [self adjustPhotoIndexLabelAccordingtoImageView:newsThumbnailimageView];
-                    [activityIndicator stopAnimating];
-                    [cellToUpdate setNeedsLayout];
-                }
-                
-                // Write Image in Document Directory
-                int64_t delayInSeconds = 0.4;
-                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-                
-                
-                dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^(void){
-                    if (![[NSFileManager defaultManager] fileExistsAtPath:filePath])
-                    {
-//                        if (![[NSFileManager defaultManager] fileExistsAtPath:Category_NewsDetailsFullSizePhotos_FilePath([Shared shared].currentCategoryURLString,self.storyID)])
-//                        {
-//                            [[NSFileManager defaultManager] createDirectoryAtPath:Category_NewsDetailsFullSizePhotos_FilePath([Shared shared].currentCategoryURLString,self.storyID) withIntermediateDirectories:YES attributes:nil error:nil];
-//                        }
-//                        //                            [self AddFilePath:indexPath.row];
-//                        [[NSFileManager defaultManager] createFileAtPath:filePath contents:imageData attributes:nil];
-                        imageData = nil;
-                    }
-                });
-                
-            }];
-            
-            bigImageURLString = nil;
-            
-            
-        });
-    }
-}
-
-- (NSString *)ProfileImageFolderPathWithFBID:(NSString *)fbID
-{
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *basePath = [paths objectAtIndex:0];
-    
-    basePath = [basePath stringByAppendingPathComponent:@"Profile_Images"];
-    basePath = [basePath stringByAppendingPathComponent:fbID];
-    return basePath;
 }
 
 - (NSString *)AttachmentsFolderPath
