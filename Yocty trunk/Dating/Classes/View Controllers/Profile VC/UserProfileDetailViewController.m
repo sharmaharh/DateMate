@@ -32,7 +32,7 @@
     self.btnStare.layer.borderWidth = 1.0f;
     self.btnStare.layer.cornerRadius = self.btnStare.frame.size.height/2;
     self.btnStare.layer.borderColor = [UIColor whiteColor].CGColor;
-    if (self.isFromMatches)
+    if (!self.isFromMatches)
     {
         [self.btnStare setHidden:NO];
         [self.lblusername setTextAlignment:NSTextAlignmentRight];
@@ -110,7 +110,7 @@
     self.lblUserStatus.frame = infoFrame;
     
     CGRect collectionFrame = self.collectionViewPreferences.frame;
-    collectionFrame.origin.y = collectionFrame.origin.y + statusFrame.size.height;
+    collectionFrame.origin.y = infoFrame.origin.y + infoFrame.size.height + 5;
     self.collectionViewPreferences.frame = collectionFrame;
     
     self.scrollViewProfile.contentSize = CGSizeMake(0, collectionFrame.origin.y + collectionFrame.size.height);

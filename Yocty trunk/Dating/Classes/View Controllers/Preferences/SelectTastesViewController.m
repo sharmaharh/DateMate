@@ -169,16 +169,19 @@
             [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"LoginPersistingClass"];
             [[NSUserDefaults standardUserDefaults] synchronize];
             
-            FindMatchViewController *findMatchViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FindMatchViewController"];
-            appDelegate.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:findMatchViewController];
-            [appDelegate.frontNavigationController setNavigationBarHidden:YES];
-
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                FindMatchViewController *findMatchViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FindMatchViewController"];
+                appDelegate.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:findMatchViewController];
+                [appDelegate.frontNavigationController setNavigationBarHidden:YES];
+                
+                
+                appDelegate.revealController = [self.storyboard instantiateViewControllerWithIdentifier:@"ResideMenuViewController"];
+                appDelegate.revealController.contentViewController = appDelegate.frontNavigationController;
+                [appDelegate.window setRootViewController:appDelegate.revealController];
+                
+                [appDelegate.window makeKeyAndVisible];
+            });
             
-            appDelegate.revealController = [self.storyboard instantiateViewControllerWithIdentifier:@"ResideMenuViewController"];
-            appDelegate.revealController.contentViewController = appDelegate.frontNavigationController;
-            [appDelegate.window setRootViewController:appDelegate.revealController];
-            
-            [appDelegate.window makeKeyAndVisible];
             
         }
         else{

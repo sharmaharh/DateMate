@@ -58,7 +58,7 @@
     scrollView.contentSize = CGSizeZero;
     scrollView.zoomScale = 1.0;
     [scrollView setFrame:(CGRect){0,0,cell.frame.size.width,cell.frame.size.height}];
-    [scrollView setBackgroundColor:[UIColor greenColor]];
+    
     scrollView.delegate = self;
     
     UIImageView *imageView = (UIImageView *)[scrollView viewWithTag:2];
@@ -74,21 +74,21 @@
         [activityIndicator startAnimating];
     }
     
-    NSString *bigImageURLString = [self.arrPhotoGallery[indexPath.row] objectForKey:@"pImg"];
+    NSString *bigImageURLString = [self.arrPhotoGallery[indexPath.row] objectForKey:@"url"];
     
     
     [self setImageOnImageView:imageView WithActivityIndicator:activityIndicator WithImageURL:bigImageURLString];
     
     UILabel *photoIndexLabel = (UILabel *)[cell.contentView viewWithTag:4];
-    [photoIndexLabel setText:[NSString stringWithFormat:@"%i of %i",indexPath.row+1,self.arrPhotoGallery.count]];
-    
+    [photoIndexLabel setText:[NSString stringWithFormat:@"%li of %lu",indexPath.row+1,(unsigned long)self.arrPhotoGallery.count]];
+    [self adjustPhotoIndexLabelAccordingtoImageView:imageView];
     
     return cell;
 }
 
 - (void)setImageOnImageView:(UIImageView *)imageView WithActivityIndicator:(UIActivityIndicatorView *)activityIndicator WithImageURL:(NSString *)ImageURL
 {
-    [imageView setContentMode:UIViewContentModeCenter];
+    [imageView setContentMode:UIViewContentModeScaleAspectFit];
     [activityIndicator startAnimating];
     
     [[HSImageDownloader sharedInstance] imageWithImageURL:ImageURL withFBID:self.fbID withImageDownloadedBlock:^(UIImage *image, NSString *imgURL, NSError *error) {
@@ -138,7 +138,7 @@
     
     //Adding gesture recognizer
     [imageView addGestureRecognizer:doubleTap];
-    [imageView addGestureRecognizer:singleTap];
+    [[imageView superview] addGestureRecognizer:singleTap];
 }
 
 -(CGSize)imageSizeAfterAspectFit:(UIImageView*)imgview
