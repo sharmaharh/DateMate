@@ -28,6 +28,7 @@ AppDelegate* appDelegate = nil;
 {
     self.window=[[UIWindow alloc]initWithFrame:[[UIScreen mainScreen] bounds]];
     appDelegate = self;
+    [self initializeApplicationAtFirstRun];
     
     appDelegate.userPreferencesDict = [NSMutableDictionary dictionary];
     if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"UserPreferences"] count])
@@ -116,6 +117,24 @@ AppDelegate* appDelegate = nil;
     
     return YES;
 }
+
+- (void)initializeApplicationAtFirstRun
+{
+    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"Notification"])
+    {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"Notification"];
+    }
+    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"Sound"])
+    {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"Sound"];
+    }
+    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"Famous"])
+    {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"Famous"];
+    }
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication
          annotation:(id)annotation
 {

@@ -91,19 +91,43 @@
 {
     if (settingsSwitch.tag == 1)
     {
-        AFNHelper *afnhelper = [[AFNHelper alloc] init];
-        [afnhelper getDataFromPath:@"updateSendNotification" withParamData:[@{@"ent_user_fbid" : [FacebookUtility sharedObject].fbID, @"ent_send_notify" : [NSString stringWithFormat:@"%i",(int)settingsSwitch.on + 1]} mutableCopy] withBlock:^(id response, NSError *error) {
-            NSLog(@"Response  = %@",response);
-            
-        }];
+        if (![Utils isInternetAvailable])
+        {
+            [Utils showOKAlertWithTitle:_Alert_Title message:NO_INERNET_MSG];
+        }
+        else
+        {
+            AFNHelper *afnhelper = [[AFNHelper alloc] init];
+            [[Utils sharedInstance] startHSLoaderInView:self.view];
+            [afnhelper getDataFromPath:@"updateSendNotification" withParamData:[@{@"ent_user_fbid" : [FacebookUtility sharedObject].fbID, @"ent_send_notify" : [NSString stringWithFormat:@"%i",(int)settingsSwitch.on + 1]} mutableCopy] withBlock:^(id response, NSError *error) {
+                [[Utils sharedInstance] stopHSLoader];
+                NSLog(@"Notification Response  = %@",response);
+                [[NSUserDefaults standardUserDefaults] setBool:settingsSwitch.on forKey:@"Notification"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+            }];
+        }
         
-        [[NSUserDefaults standardUserDefaults] setBool:settingsSwitch.on forKey:@"Notification"];
     }
     else
     {
-        [[NSUserDefaults standardUserDefaults] setBool:settingsSwitch.on forKey:@"Sound"];
+        if (![Utils isInternetAvailable])
+        {
+            [Utils showOKAlertWithTitle:_Alert_Title message:NO_INERNET_MSG];
+        }
+        else
+        {
+            AFNHelper *afnhelper = [[AFNHelper alloc] init];
+            [[Utils sharedInstance] startHSLoaderInView:self.view];
+            [afnhelper getDataFromPath:@"updateSendNotification" withParamData:[@{@"ent_user_fbid" : [FacebookUtility sharedObject].fbID, @"ent_sound_notify" : [NSString stringWithFormat:@"%i",(int)settingsSwitch.on + 1]} mutableCopy] withBlock:^(id response, NSError *error) {
+                [[Utils sharedInstance] stopHSLoader];
+                NSLog(@"Sound Response  = %@",response);
+                [[NSUserDefaults standardUserDefaults] setBool:settingsSwitch.on forKey:@"Sound"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+            }];
+        }
+        
     }
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    
 }
 
 - (IBAction)logoutButtonPressed:(id)sender
@@ -135,9 +159,11 @@
                 [[NSUserDefaults standardUserDefaults] synchronize];
                 [FacebookUtility sharedObject].fbID = @"";
                 [[FacebookUtility sharedObject] logOutFromFacebook];
-                appDelegate.frontNavigationController = [self.storyboard instantiateViewControllerWithIdentifier:@"FirstNavigationController"];
                 
+                appDelegate.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:[self.storyboard instantiateViewControllerWithIdentifier:@"LogInViewController"]];
+                [appDelegate.frontNavigationController setNavigationBarHidden:YES];
                 appDelegate.window.rootViewController = appDelegate.frontNavigationController;
+
                 [appDelegate.window makeKeyAndVisible];
             }
             else
@@ -179,9 +205,10 @@
                 [[NSUserDefaults standardUserDefaults] synchronize];
                 [FacebookUtility sharedObject].fbID = @"";
                 [[FacebookUtility sharedObject] logOutFromFacebook];
-                appDelegate.frontNavigationController = [self.storyboard instantiateViewControllerWithIdentifier:@"FirstNavigationController"];
-                
+                appDelegate.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:[self.storyboard instantiateViewControllerWithIdentifier:@"LogInViewController"]];
+                [appDelegate.frontNavigationController setNavigationBarHidden:YES];
                 appDelegate.window.rootViewController = appDelegate.frontNavigationController;
+                
                 [appDelegate.window makeKeyAndVisible];
             }
             else
