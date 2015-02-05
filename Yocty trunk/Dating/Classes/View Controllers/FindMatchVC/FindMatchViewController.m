@@ -252,7 +252,7 @@
                          [self clubProfileImageInMainArray];
                          self.currentProfileIndex = 0;
                          [self setProfileOnLayout];
-                        
+                         [self downloadNextProfileImages];
                      }
                      else
                      {
@@ -312,7 +312,6 @@
 
 - (void)showImagesAfterAllDownloading
 {
-    
     for (NSInteger i = self.currentProfileIndex; i < MIN(matchedProfilesArray.count, self.currentProfileIndex+3); i++)
     {
         UIImageView *imageView = (UIImageView *)[self.upcomingProfilesView viewWithTag:i+100+1-self.currentProfileIndex];
@@ -336,16 +335,19 @@
     [[Utils sharedInstance] stopHSLoader];
 }
 
+
 - (void)hideViewWhileTranstioning
 {
+    UIView *errorMsgView = (UIView *)[self.view viewWithTag:4];
+    [errorMsgView setHidden:YES];
+    
     for (NSInteger i = self.currentProfileIndex; i < MIN(matchedProfilesArray.count, self.currentProfileIndex+3); i++)
     {
         UIImageView *imageView = (UIImageView *)[self.upcomingProfilesView viewWithTag:i+100+1-self.currentProfileIndex];
         [imageView setHidden:YES];
     }
     [[self.view viewWithTag:1] setHidden:YES];
-    UIView *errorMsgView = (UIView *)[self.view viewWithTag:4];
-    [errorMsgView setHidden:YES];
+    
     [self.viewUserDetails setHidden:YES];
     [self.lblTimer setHidden:YES];
     
@@ -398,6 +400,24 @@
             [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
         }
     }
+    
+}
+
+- (void)downloadNextProfileImages
+{
+    if ((self.currentProfileIndex + 4) < [matchedProfilesArray count])
+    {
+        NSInteger startingIndex = self.currentProfileIndex + 4;
+        
+        for (int i = startingIndex ; i < [matchedProfilesArray count]; i++)
+        {
+            
+            [[HSImageDownloader sharedInstance] imageWithImageURL:[matchedProfilesArray[i][@"oPic"] firstObject][@"url"] withFBID:matchedProfilesArray[i][@"fbId"] withImageDownloadedBlock:^(UIImage *image, NSString *imgURL, NSError *error) {
+                NSLog(@"Profile Image at Index downloaded = %i",i);
+            }];
+        }
+    }
+    
     
 }
 
