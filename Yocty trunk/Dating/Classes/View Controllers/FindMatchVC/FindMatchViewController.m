@@ -329,6 +329,7 @@
     [[self.view viewWithTag:1] setHidden:NO];
     [[self.view viewWithTag:2] setHidden:NO];
     [[self.view viewWithTag:3] setHidden:NO];
+    [[self.view viewWithTag:4] setHidden:YES];
     [self.viewUserDetails setHidden:NO];
     [self.lblTimer setHidden:NO];
     
@@ -405,11 +406,12 @@
 
 - (void)downloadNextProfileImages
 {
+    
     if ((self.currentProfileIndex + 4) < [matchedProfilesArray count])
     {
         NSInteger startingIndex = self.currentProfileIndex + 4;
         
-        for (int i = startingIndex ; i < [matchedProfilesArray count]; i++)
+        for (NSInteger i = startingIndex ; i < [matchedProfilesArray count]; i++)
         {
             
             [[HSImageDownloader sharedInstance] imageWithImageURL:[matchedProfilesArray[i][@"oPic"] firstObject][@"url"] withFBID:matchedProfilesArray[i][@"fbId"] withImageDownloadedBlock:^(UIImage *image, NSString *imgURL, NSError *error) {

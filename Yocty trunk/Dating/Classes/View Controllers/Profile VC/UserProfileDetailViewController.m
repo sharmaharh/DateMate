@@ -102,12 +102,16 @@
     self.scrollViewImages.contentSize = CGSizeMake(self.scrollViewImages.frame.size.width * [userProfileDict[@"oPic"] count], 0);
     
     CGRect statusFrame = self.lblUserStatus.frame;
-    statusFrame.size.height = [self heightOfUserDescText:userProfileDict[@"persDesc"]];
+    
+    NSString *strDesc = [userProfileDict[@"persDesc"] stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
+    strDesc = [strDesc stringByReplacingOccurrencesOfString:@"\r" withString:@" "];
+    statusFrame.size.height = [self heightOfUserDescText:strDesc];
     self.lblUserStatus.frame = statusFrame;
+    self.lblUserStatus.text = strDesc;
     
     CGRect infoFrame = self.viewUserInfo.frame;
     infoFrame.size.height = statusFrame.origin.y+statusFrame.size.height+5;
-    self.lblUserStatus.frame = infoFrame;
+    self.viewUserInfo.frame = infoFrame;
     
     CGRect collectionFrame = self.collectionViewPreferences.frame;
     collectionFrame.origin.y = infoFrame.origin.y + infoFrame.size.height + 5;
@@ -130,7 +134,7 @@
 {
     if ([desc length])
     {
-        CGSize size = [desc sizeWithFont:[UIFont systemFontOfSize:15] constrainedToSize:CGSizeMake(self.lblUserStatus.frame.size.width, MAXFLOAT) lineBreakMode:NSLineBreakByWordWrapping];
+        CGSize size = [desc boundingRectWithSize:CGSizeMake(self.lblUserStatus.frame.size.width, MAXFLOAT) options:NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]} context:nil].size;
         return size.height+10;
     }
     return 0;

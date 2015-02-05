@@ -186,11 +186,11 @@
     
     if (imgWidth >= imageRect.size.width && imgHeight < imageRect.size.height)
     {
-        scaleFactor = imageRect.size.height/imgHeight;
+        scaleFactor = imgHeight/imageRect.size.height;
     }
     else if (imgWidth < imageRect.size.width && imgHeight >= imageRect.size.height)
     {
-        scaleFactor = imageRect.size.width/imgWidth;
+        scaleFactor = imgWidth/imageRect.size.width;
     }
     else
     {

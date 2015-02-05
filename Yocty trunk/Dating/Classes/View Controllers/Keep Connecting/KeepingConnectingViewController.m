@@ -221,10 +221,15 @@
     else
     {
         AFNHelper *afnhelper = [AFNHelper new];
+        
+        [[Utils sharedInstance] startHSLoaderInView:self.view];
+        
         NSMutableDictionary *requestDic = [NSMutableDictionary dictionaryWithObjects:@[[FacebookUtility sharedObject].fbID,notificationsArray[[stareBtn.accessibilityIdentifier intValue]][@"fbId"],@"1"] forKeys:@[@"ent_user_fbid",@"ent_invitee_fbid",@"ent_user_action"]];
         
         [afnhelper getDataFromPath:@"inviteAction" withParamData:requestDic withBlock:^(id response, NSError *error)
          {
+             [[Utils sharedInstance] stopHSLoader];
+             
              if (!error)
              {
                  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
