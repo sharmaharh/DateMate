@@ -72,13 +72,16 @@
     [self hideViewWhileTranstioning];
     NSDictionary *profileDict = matchedProfilesArray[self.currentProfileIndex];
     self.profileNameLabel.text = [NSString stringWithFormat:@"%@,%@",profileDict[@"firstName"],profileDict[@"age"]];
-    [self.btnProfileImage setImage:nil forState:UIControlStateNormal];
     
     [self setImageOnButton:self.btnProfileImage WithImageURL:[matchedProfilesArray[self.currentProfileIndex][@"oPic"] firstObject][@"url"]];
     [self setUpcomingProfilesInFindMatchesList];
     
     self.lblTimer.text = @"9";
-    [self.profileTimer invalidate];
+    
+    if ([self.profileTimer isValid])
+    {
+        [self.profileTimer invalidate];
+    }
     
     self.profileTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(displayTime) userInfo:nil repeats:YES];
 }
