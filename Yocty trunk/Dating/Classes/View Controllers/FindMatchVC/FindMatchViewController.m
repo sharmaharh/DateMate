@@ -111,7 +111,7 @@
 
 - (IBAction)btnInviteSomebodyPressed:(id)sender
 {
-    [[Utils sharedInstance] openActionSheetWithTitle:@"Invite" buttons:@[@"Facebook",@"Twitter"] completion:^(UIActionSheet *actionSheet, NSInteger buttonIndex)
+    [[Utils sharedInstance] openActionSheetWithTitle:@"Invite" buttons:@[@"Facebook",@"Twitter",@"WhatsApp"] completion:^(UIActionSheet *actionSheet, NSInteger buttonIndex)
     {
         if (buttonIndex == 0)
         {
@@ -142,6 +142,18 @@
                 [Utils showOKAlertWithTitle:_Alert_Title message:@"Please login to Twitter Account in Settings."];
             }
 
+        }
+        else if (buttonIndex == 2)
+        {
+            NSString * msg = @"Explore the world of Yocty in your hands. Download now";
+            NSString * urlWhats = [NSString stringWithFormat:@"whatsapp://send?text=%@",msg];
+            NSURL * whatsappURL = [NSURL URLWithString:[urlWhats stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+            if ([[UIApplication sharedApplication] canOpenURL: whatsappURL]) {
+                [[UIApplication sharedApplication] openURL: whatsappURL];
+            } else {
+                UIAlertView * alert = [[UIAlertView alloc] initWithTitle:_Alert_Title message:@"WhatsApp not installed." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+            }
         }
     }];
 }
@@ -415,7 +427,7 @@
         {
             
             [[HSImageDownloader sharedInstance] imageWithImageURL:[matchedProfilesArray[i][@"oPic"] firstObject][@"url"] withFBID:matchedProfilesArray[i][@"fbId"] withImageDownloadedBlock:^(UIImage *image, NSString *imgURL, NSError *error) {
-                NSLog(@"Profile Image at Index downloaded = %i",i);
+                NSLog(@"Profile Image at Index downloaded = %li",(long)i);
             }];
         }
     }
@@ -479,8 +491,6 @@
                              });
                          });
                      }
-                     
-                     
                  }
                  
                  

@@ -656,7 +656,7 @@
     preferenceName.numberOfLines = 2;
     NSString* string = [User_Preferences_Dict allKeys][indexPath.row];
     NSMutableParagraphStyle *style  = [[NSMutableParagraphStyle alloc] init];
-    CGSize strSize = [string boundingRectWithSize:CGSizeMake(100, MAXFLOAT) options:NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName : [UIFont fontWithName:@"SegoeUI" size:14]} context:nil].size;
+    CGSize strSize = [string boundingRectWithSize:CGSizeMake(100, MAXFLOAT) options:NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName : [UIFont fontWithName:@"SegoeUI" size:14]?[UIFont fontWithName:@"SegoeUI" size:14]:[UIFont systemFontOfSize:14]} context:nil].size;
 
     style.minimumLineHeight = 12.0f;
     style.maximumLineHeight = 12.0f;

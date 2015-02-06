@@ -40,9 +40,9 @@ AppDelegate* appDelegate = nil;
     if ([application respondsToSelector:@selector(isRegisteredForRemoteNotifications)])
     {
         // iOS 8 Notifications
-        [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
-        
-        [application registerForRemoteNotifications];
+//        [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
+//        
+//        [application registerForRemoteNotifications];
     }
     else
     {

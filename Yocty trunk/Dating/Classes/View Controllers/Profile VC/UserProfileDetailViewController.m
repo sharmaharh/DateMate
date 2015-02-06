@@ -103,9 +103,11 @@
     
     CGRect statusFrame = self.lblUserStatus.frame;
     
-    NSString *strDesc = [userProfileDict[@"persDesc"] stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
-    strDesc = [strDesc stringByReplacingOccurrencesOfString:@"\r" withString:@" "];
+    NSString *strDesc = userProfileDict[@"persDesc"];
+//    [userProfileDict[@"persDesc"] stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
+//    strDesc = [strDesc stringByReplacingOccurrencesOfString:@"\r" withString:@" "];
     statusFrame.size.height = [self heightOfUserDescText:strDesc];
+    self.lblUserStatus.numberOfLines = 0;
     self.lblUserStatus.frame = statusFrame;
     self.lblUserStatus.text = strDesc;
     
@@ -134,8 +136,9 @@
 {
     if ([desc length])
     {
-        CGSize size = [desc boundingRectWithSize:CGSizeMake(self.lblUserStatus.frame.size.width, MAXFLOAT) options:NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]} context:nil].size;
-        return size.height+10;
+        CGSize size = [desc boundingRectWithSize:CGSizeMake(self.lblUserStatus.frame.size.width, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil].size;
+        
+        return size.height+5;
     }
     return 0;
 }
@@ -346,7 +349,7 @@
     preferenceName.numberOfLines = 2;
     
     NSMutableParagraphStyle *style  = [[NSMutableParagraphStyle alloc] init];
-    CGSize strSize = [string boundingRectWithSize:CGSizeMake(100, MAXFLOAT) options:NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName : [UIFont fontWithName:@"SegoeUI" size:14]} context:nil].size;
+    CGSize strSize = [string boundingRectWithSize:CGSizeMake(100, MAXFLOAT) options:NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName : [UIFont fontWithName:@"SegoeUI" size:14]?[UIFont fontWithName:@"SegoeUI" size:14]:[UIFont systemFontOfSize:14]} context:nil].size;
     style.minimumLineHeight = 12.0f;
     style.maximumLineHeight = 12.0f;
     style.lineSpacing = 0;
