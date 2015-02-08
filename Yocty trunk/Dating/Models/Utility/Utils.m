@@ -823,7 +823,7 @@
     [self.locationManager startUpdatingLocation];
     
     if(IS_OS_8_OR_LATER) {
-//        [self.locationManager requestWhenInUseAuthorization];
+        [self.locationManager requestWhenInUseAuthorization];
     }
     
     if(![CLLocationManager locationServicesEnabled])

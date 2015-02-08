@@ -10,7 +10,7 @@
 
 @interface UserProfileDetailViewController : UIViewController
 
-@property (strong, nonatomic) NSArray *matchedProfilesArray;
+@property (strong, nonatomic) NSMutableArray *matchedProfilesArray;
 @property (assign, nonatomic) NSInteger currentProfileIndex;
 
 @property (strong, nonatomic) IBOutlet UIScrollView *scrollViewProfile;
@@ -25,6 +25,7 @@
 @property (strong, nonatomic) IBOutlet UILabel *lbluserAge;
 @property (strong, nonatomic) IBOutlet UILabel *lblAstrologyName;
 @property (strong, nonatomic) IBOutlet UILabel *lblUserStatus;
+@property (strong, nonatomic) IBOutlet UILabel *lblHeadingUserStatus;
 
 
 - (IBAction)btnBackPressed:(id)sender;

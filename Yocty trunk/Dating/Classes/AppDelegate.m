@@ -40,9 +40,9 @@ AppDelegate* appDelegate = nil;
     if ([application respondsToSelector:@selector(isRegisteredForRemoteNotifications)])
     {
         // iOS 8 Notifications
-//        [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
-//        
-//        [application registerForRemoteNotifications];
+        [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
+        
+        [application registerForRemoteNotifications];
     }
     else
     {
@@ -67,11 +67,12 @@ AppDelegate* appDelegate = nil;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
             
-            if ([serverNotif[@"aps"][@"alert"] isEqualToString:@"1"])
+            if ([serverNotif[@"aps"][@"nt"] isEqualToString:@"1"])
             {
 
                 KeepingConnectingViewController *keepConnectingViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"KeepingConnectingViewController"];
                 self.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:keepConnectingViewController];
+                [self.frontNavigationController setNavigationBarHidden:YES animated:YES];
                 [FacebookUtility sharedObject].fbID = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbID"];
                 [FacebookUtility sharedObject].fbFullName = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbFullName"];
                 
@@ -85,7 +86,7 @@ AppDelegate* appDelegate = nil;
                 RecentChatsViewController *recentChatViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecentChatsViewController"];
                 recentChatViewController.isFromPush = YES;
                 self.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:recentChatViewController];
-                
+                [self.frontNavigationController setNavigationBarHidden:YES animated:YES];
                 [FacebookUtility sharedObject].fbID = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbID"];
                 [FacebookUtility sharedObject].fbFullName = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbFullName"];
                 
@@ -94,11 +95,11 @@ AppDelegate* appDelegate = nil;
                 [self.window setRootViewController:self.revealController];
                 
                 
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    NSDictionary *messageDict = @{msg_text: serverNotif[@"aps"][@"alert"], msg_Date: serverNotif[@"aps"][msg_Date], msg_ID: serverNotif[@"aps"][msg_ID], msg_Reciver_ID: [FacebookUtility sharedObject].fbID, msg_Sender_ID: serverNotif[@"aps"][@"sFid"],msg_Sender_Name: serverNotif[@"aps"][msg_Sender_Name],msg_Media_Section: serverNotif[@"aps"][@"mt"]};
-                    [[ChatViewController sharedChatInstance] recieveMessage:serverNotif[@"aps"]];
-                    [[ChatViewController sharedChatInstance] addMessageToDatabase:[Message messageWithDictionary:messageDict]];
-                });
+//                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//                    NSDictionary *messageDict = @{msg_text: serverNotif[@"aps"][@"alert"], msg_Date: serverNotif[@"aps"][msg_Date], msg_ID: serverNotif[@"aps"][msg_ID], msg_Reciver_ID: [FacebookUtility sharedObject].fbID, msg_Sender_ID: serverNotif[@"aps"][@"sFid"],msg_Sender_Name: serverNotif[@"aps"][msg_Sender_Name],msg_Media_Section: serverNotif[@"aps"][@"mt"]};
+//                    [[ChatViewController sharedChatInstance] recieveMessage:serverNotif[@"aps"]];
+//                    [[ChatViewController sharedChatInstance] addMessageToDatabase:[Message messageWithDictionary:messageDict]];
+//                });
             }
             
             
@@ -151,16 +152,23 @@ AppDelegate* appDelegate = nil;
 {
     self.isAppinBackground = YES;
     
-    [[MyWebSocket sharedInstance] logOutUser];
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
-    [[MyWebSocket sharedInstance] connectSocketWithBlock:^(BOOL connected, NSError *error) {
+    if ([[FacebookUtility sharedObject].fbID length])
+    {
+        if ([[MyWebSocket sharedInstance].webSocket readyState] == SR_CLOSED)
+        {
+            [[MyWebSocket sharedInstance] connectSocketWithBlock:^(BOOL connected, NSError *error) {
+                
+            }];
+        }
         
-    }];
+    }
+    
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 
@@ -171,7 +179,8 @@ AppDelegate* appDelegate = nil;
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
-    [[MyWebSocket sharedInstance] logOutUser];
+    [[[MyWebSocket sharedInstance] webSocket] close];
+    [[MyWebSocket sharedInstance] logOutUserShouldClose:YES];
     
     self.isAppinBackground = NO;
     
@@ -211,7 +220,7 @@ AppDelegate* appDelegate = nil;
 
 - (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error
 {
-    [Utils showOKAlertWithTitle:@"DateMate" message:error.localizedDescription];
+    [Utils showOKAlertWithTitle:_Alert_Title message:error.localizedDescription];
 }
 
 - (void)application:(UIApplication*)application didReceiveRemoteNotification:(NSDictionary *)userInfo
@@ -219,6 +228,8 @@ AppDelegate* appDelegate = nil;
     NSLog(@"Server Notification = %@",userInfo);
     
     UINavigationController *frontNavigationController = (id)self.revealController.contentViewController;
+    [frontNavigationController setNavigationBarHidden:YES animated:YES];
+    
     [UIApplication sharedApplication].applicationIconBadgeNumber -= 1;
     
     if ([userInfo[@"aps"][@"nt"] isEqualToString:@"2"])
@@ -233,17 +244,17 @@ AppDelegate* appDelegate = nil;
             msgType = [NSString stringWithFormat:@"%i",[userInfo[@"aps"][@"msgtype"] intValue]-1];
         }
         NSDictionary *messageDict = @{msg_text: userInfo[@"aps"][@"alert"], msg_Date: userInfo[@"aps"][msg_Date], msg_ID: userInfo[@"aps"][msg_ID], msg_Reciver_ID: [FacebookUtility sharedObject].fbID, msg_Sender_ID: userInfo[@"aps"][@"sFid"],msg_Sender_Name: userInfo[@"aps"][msg_Sender_Name],msg_Media_Section:msgType};
-        if ([frontNavigationController.topViewController isKindOfClass:[ChatViewController class]])
-        {
-            ChatViewController *chatViewController = (ChatViewController *)frontNavigationController.topViewController;
-            if ([chatViewController.recieveFBID isEqualToString:userInfo[@"aps"][@"sFid"]])
-            {
-                [chatViewController recieveMessage:messageDict];
-            }
-           
-            [chatViewController addMessageToDatabase:[Message messageWithDictionary:messageDict]];
-        }
-        else if (self.isAppinBackground)
+//        if ([frontNavigationController.topViewController isKindOfClass:[ChatViewController class]])
+//        {
+//            ChatViewController *chatViewController = (ChatViewController *)frontNavigationController.topViewController;
+//            if ([chatViewController.recieveFBID isEqualToString:userInfo[@"aps"][@"sFid"]])
+//            {
+//                [chatViewController recieveMessage:messageDict];
+//            }
+//           
+//            [chatViewController addMessageToDatabase:[Message messageWithDictionary:messageDict]];
+//        }
+        if (self.isAppinBackground)
         {
             self.isAppinBackground = NO;
             if ([frontNavigationController.topViewController isKindOfClass:[RecentChatsViewController class]])
@@ -261,31 +272,31 @@ AppDelegate* appDelegate = nil;
                 
                 [appDelegate.revealController setContentViewController:frontNavigationController animated:YES];
                 
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    
-                    [[ChatViewController sharedChatInstance] recieveMessage:userInfo[@"aps"]];
-                    [[ChatViewController sharedChatInstance] addMessageToDatabase:[Message messageWithDictionary:messageDict]];
-                });
+//                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//                    
+//                    [[ChatViewController sharedChatInstance] recieveMessage:userInfo[@"aps"]];
+//                    [[ChatViewController sharedChatInstance] addMessageToDatabase:[Message messageWithDictionary:messageDict]];
+//                });
             }
         }
         else
         {
             
-            [[ChatViewController sharedChatInstance] addMessageToDatabase:[Message messageWithDictionary:messageDict]];
-            // Update Badge Counter
+//            [[ChatViewController sharedChatInstance] addMessageToDatabase:[Message messageWithDictionary:messageDict]];
+//            // Update Badge Counter
+//            
+//            if (![frontNavigationController.topViewController isKindOfClass:[ChatViewController class]])
+//            {
+//                [self updateBadgeCounterWithInfo:userInfo[@"aps"]];
+//                
+//            }
             
-            if (![frontNavigationController.topViewController isKindOfClass:[ChatViewController class]])
-            {
-                [self updateBadgeCounterWithInfo:userInfo[@"aps"]];
-                
-            }
-            
-            if ([frontNavigationController.topViewController isKindOfClass:[RecentChatsViewController class]])
-            {
-                RecentChatsViewController *recentChatViewController = (RecentChatsViewController *)frontNavigationController.topViewController;
-                
-                [recentChatViewController getRecentChatUsers];
-            }            
+//            if ([frontNavigationController.topViewController isKindOfClass:[RecentChatsViewController class]])
+//            {
+//                RecentChatsViewController *recentChatViewController = (RecentChatsViewController *)frontNavigationController.topViewController;
+//                
+//                [recentChatViewController getRecentChatUsers];
+//            }            
         }
     }
     
@@ -294,7 +305,7 @@ AppDelegate* appDelegate = nil;
         
         if ([frontNavigationController.topViewController isKindOfClass:[KeepingConnectingViewController class]])
         {
-            [Utils showOKAlertWithTitle:@"Dating" message:userInfo[@"aps"][@"alert"]];
+            [Utils showOKAlertWithTitle:_Alert_Title message:userInfo[@"aps"][@"alert"]];
             
         }
         else
@@ -302,6 +313,7 @@ AppDelegate* appDelegate = nil;
             UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
             KeepingConnectingViewController *keepConnectingViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"KeepingConnectingViewController"];
             UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:keepConnectingViewController];
+            [navigationController setNavigationBarHidden:YES];
             [appDelegate.revealController setContentViewController:navigationController animated:YES];
             
         }

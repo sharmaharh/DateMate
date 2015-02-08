@@ -136,11 +136,22 @@ typedef void(^ImageDownlodedBlock)(UIImage *image, NSString *imgURL ,NSError *er
                  }
                  else
                  {
-                     [self.imageQueueDict removeObjectForKey:res.URL.absoluteString];
-                     for (ImageDownlodedBlock block in callingsArray)
-                     {
-                         block(nil, nil, error);
+                     @try {
+                         if ([res.URL.absoluteString length])
+                         {
+                             [self.imageQueueDict removeObjectForKey:res.URL.absoluteString];
+                         }
+                         
+                         for (ImageDownlodedBlock block in callingsArray)
+                         {
+                             block(nil, nil, error);
+                         }
                      }
+                     @catch (NSException *exception) {
+                         
+                     }
+                     
+                     
                  }
                  
              }];

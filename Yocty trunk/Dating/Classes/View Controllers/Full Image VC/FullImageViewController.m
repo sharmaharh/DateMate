@@ -38,6 +38,7 @@
 }
 
 #pragma mark --UIcollectionViewDelegate
+
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
     return self.arrPhotoGallery.count;
@@ -50,7 +51,6 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    // if (collectionView == self.collViewDetail) {
     
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"GalleryCell" forIndexPath:indexPath];
     cell.frame = CGRectMake(cell.frame.origin.x, cell.frame.origin.y, self.view.frame.size.width, self.view.frame.size.height);
@@ -75,12 +75,11 @@
     }
     
     NSString *bigImageURLString = [self.arrPhotoGallery[indexPath.row] objectForKey:@"url"];
-    
-    
+        
     [self setImageOnImageView:imageView WithActivityIndicator:activityIndicator WithImageURL:bigImageURLString];
     
     UILabel *photoIndexLabel = (UILabel *)[cell.contentView viewWithTag:4];
-    [photoIndexLabel setText:[NSString stringWithFormat:@"%li of %lu",indexPath.row+1,(unsigned long)self.arrPhotoGallery.count]];
+    [photoIndexLabel setText:[NSString stringWithFormat:@"%li of %lu",(long)indexPath.row+1,(unsigned long)self.arrPhotoGallery.count]];
     [self adjustPhotoIndexLabelAccordingtoImageView:imageView];
     
     return cell;

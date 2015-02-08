@@ -168,16 +168,19 @@
     }
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     [cell setUserInteractionEnabled:NO];
+    [[Utils sharedInstance] startHSLoaderInView:self.view];
     
     AFNHelper *afnHelper = [AFNHelper new];
     [afnHelper getDataFromPath:@"getProfile" withParamData:[@{@"ent_user_fbid": notificationsArray[indexPath.row][@"fbId"]} mutableCopy] withBlock:^(id response, NSError *error)
      {
          [cell setUserInteractionEnabled:YES];
+         [[Utils sharedInstance] stopHSLoader];
          
          if ([response[@"matches"] count])
          {
              UserProfileDetailViewController *userProfileDetailViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"UserProfileDetailViewController"];
-             userProfileDetailViewController.matchedProfilesArray = response[@"matches"];
+             userProfileDetailViewController.matchedProfilesArray = [response[@"matches"] mutableCopy];
+             [self clubProfileImageInMainArray:userProfileDetailViewController.matchedProfilesArray];
              userProfileDetailViewController.currentProfileIndex = 0;
              userProfileDetailViewController.isFromMatches = NO;
              [self.navigationController pushViewController:userProfileDetailViewController animated:YES];
@@ -187,6 +190,19 @@
              [Utils showOKAlertWithTitle:_Alert_Title message:@"Unable to fetch profile info."];
          }
      }];
+}
+
+- (void)clubProfileImageInMainArray:(NSMutableArray *)matchedProfilesArray
+{
+    NSMutableArray *matchedProfileCopy = [matchedProfilesArray mutableCopy];
+    for (NSDictionary *dict in matchedProfileCopy)
+    {
+        NSMutableDictionary *tempDict = [dict mutableCopy];
+        NSMutableArray *tempArray = [[tempDict objectForKey:@"oPic"] mutableCopy];
+        [tempArray insertObject:@{@"url" : tempDict[@"pPic"]} atIndex:0];
+        [tempDict setObject:tempArray forKey:@"oPic"];
+        [matchedProfilesArray replaceObjectAtIndex:[matchedProfilesArray indexOfObject:dict] withObject:tempDict];
+    }
 }
 
 - (void)setImageOnImageView:(UIImageView *)profileImageView WithActivityIndicator:(UIActivityIndicatorView *)activityIndicator onIndexPath:(NSIndexPath *)indexPath

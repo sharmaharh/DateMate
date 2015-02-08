@@ -104,15 +104,16 @@
     CGRect statusFrame = self.lblUserStatus.frame;
     
     NSString *strDesc = userProfileDict[@"persDesc"];
-//    [userProfileDict[@"persDesc"] stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
-//    strDesc = [strDesc stringByReplacingOccurrencesOfString:@"\r" withString:@" "];
+    
     statusFrame.size.height = [self heightOfUserDescText:strDesc];
+    statusFrame.origin.y = self.lblHeadingUserStatus.frame.origin.y + self.lblHeadingUserStatus.frame.size.height + 5;
     self.lblUserStatus.numberOfLines = 0;
     self.lblUserStatus.frame = statusFrame;
     self.lblUserStatus.text = strDesc;
     
     CGRect infoFrame = self.viewUserInfo.frame;
     infoFrame.size.height = statusFrame.origin.y+statusFrame.size.height+5;
+    infoFrame.origin.y = self.scrollViewImages.frame.origin.y + self.scrollViewImages.frame.size.height + 10;
     self.viewUserInfo.frame = infoFrame;
     
     CGRect collectionFrame = self.collectionViewPreferences.frame;
@@ -140,6 +141,8 @@
         
         return size.height+5;
     }
+    
+    [self.lblHeadingUserStatus setFrame:CGRectMake(self.lblHeadingUserStatus.frame.origin.x, self.lblHeadingUserStatus.frame.origin.y, self.lblHeadingUserStatus.frame.size.width, 0)];
     return 0;
 }
 
@@ -473,6 +476,8 @@
                               UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
                               RecentChatsViewController *recentChatViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecentChatsViewController"];
                               appDelegate.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:recentChatViewController];
+                              [appDelegate.frontNavigationController setNavigationBarHidden:YES animated:YES];
+                              
                               recentChatViewController.isFromPush = NO;
                               [appDelegate.revealController setContentViewController:appDelegate.frontNavigationController animated:NO];
                               ChatViewController *chatViewConrtroller = [ChatViewController sharedChatInstance];
@@ -500,7 +505,7 @@
              }
              else
              {
-                 [Utils showOKAlertWithTitle:@"Dating" message:@"Error Occured, Please Try Again"];
+                 [Utils showOKAlertWithTitle:_Alert_Title message:@"Error Occured, Please Try Again"];
              }
              
          }];

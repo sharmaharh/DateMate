@@ -24,6 +24,8 @@
 
 @property (strong, nonatomic) IBOutlet UIButton *btnProfileImage;
 @property (strong, nonatomic) IBOutlet UIButton *btnStare;
+@property (strong, nonatomic) IBOutlet UIButton *btnInviteSomebody;
+@property (strong, nonatomic) IBOutlet UILabel *bummerDetailTextLabel;
 
 @property (weak, nonatomic) IBOutlet UILabel *profileNameLabel;
 @property (strong, nonatomic) IBOutlet UILabel *lblTimer;

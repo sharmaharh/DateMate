@@ -27,7 +27,7 @@
 
 - (IBAction)genderOptionPressed:(UIButton *)sender
 {
-    [appDelegate.userPreferencesDict setObject:[NSString stringWithFormat:@"%i",sender.tag] forKey:@"ent_pref_sex"];
+    [appDelegate.userPreferencesDict setObject:[NSString stringWithFormat:@"%li",(long)sender.tag] forKey:@"ent_pref_sex"];
     [self performSegueWithIdentifier:@"selectGenderToSetPreferencesIdentifier" sender:nil];
 }
 

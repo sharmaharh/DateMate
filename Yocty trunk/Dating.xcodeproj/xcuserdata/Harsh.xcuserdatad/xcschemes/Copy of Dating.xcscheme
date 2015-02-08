@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "3A2DE85F1983C0FD0035FA1B"
-               BuildableName = "Date Countdown.app"
-               BlueprintName = "Date Countdown"
+               BuildableName = "Yocty.app"
+               BlueprintName = "Yocty"
                ReferencedContainer = "container:Dating.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -43,8 +43,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3A2DE85F1983C0FD0035FA1B"
-            BuildableName = "Date Countdown.app"
-            BlueprintName = "Date Countdown"
+            BuildableName = "Yocty.app"
+            BlueprintName = "Yocty"
             ReferencedContainer = "container:Dating.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -63,8 +63,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3A2DE85F1983C0FD0035FA1B"
-            BuildableName = "Date Countdown.app"
-            BlueprintName = "Date Countdown"
+            BuildableName = "Yocty.app"
+            BlueprintName = "Yocty"
             ReferencedContainer = "container:Dating.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -81,8 +81,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3A2DE85F1983C0FD0035FA1B"
-            BuildableName = "Date Countdown.app"
-            BlueprintName = "Date Countdown"
+            BuildableName = "Yocty.app"
+            BlueprintName = "Yocty"
             ReferencedContainer = "container:Dating.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

@@ -239,7 +239,7 @@ NSString *const PARAM_ENT_STATUS=@"ent_status";
                  else if (FB_ISSESSIONOPENWITHSTATE(status))
                  {
                      _fbAccesToken = session.accessTokenData.accessToken;
-                     FBRequestConnection *newConnection = [[FBRequestConnection alloc] init];
+                     FBRequestConnection *newConnection = [[FBRequestConnection alloc] initWithTimeout:20];
                      FBRequest *request = [FBRequest requestWithGraphPath:@"me" parameters:[NSDictionary dictionaryWithObjectsAndKeys:params,@"fields", nil] HTTPMethod:@"GET"];
                      FBRequestHandler handler = ^(FBRequestConnection *connection, id result, NSError *error)
                      {
@@ -254,7 +254,7 @@ NSString *const PARAM_ENT_STATUS=@"ent_status";
         }
         else
         {
-            FBRequestConnection *newConnection = [[FBRequestConnection alloc] init];
+            FBRequestConnection *newConnection = [[FBRequestConnection alloc] initWithTimeout:20];
             FBRequest *request = [FBRequest requestWithGraphPath:@"me" parameters:[NSDictionary dictionaryWithObjectsAndKeys:params,@"fields", nil] HTTPMethod:@"GET"];
             FBRequestHandler handler = ^(FBRequestConnection *connection, id result, NSError *error)
             {
@@ -276,7 +276,7 @@ NSString *const PARAM_ENT_STATUS=@"ent_status";
              else if (FB_ISSESSIONOPENWITHSTATE(status))
              {
                  [FBSession setActiveSession:session];
-                 FBRequestConnection *newConnection = [[FBRequestConnection alloc] init];
+                 FBRequestConnection *newConnection = [[FBRequestConnection alloc] initWithTimeout:20];
                  FBRequest *request = [FBRequest requestWithGraphPath:@"me" parameters:[NSDictionary dictionaryWithObjectsAndKeys:params,@"fields", nil] HTTPMethod:@"GET"];
                  FBRequestHandler handler = ^(FBRequestConnection *connection, id result, NSError *error)
                  {

@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "WebSocket.h"
+#import "SRWebSocket.h"
 #import "ChatViewController.h"
 
 //=========Headers of Bytes==============
@@ -27,28 +27,19 @@
 #define kAttachment @"attachment"
 //=========================================
 
-@protocol MyWebSocketDelegate <NSObject>
-
-@optional
-- (void)didReceiveDataFromOpponent:(NSMutableDictionary *)data;
-- (void)didReceiveTextFromOpponent:(NSString *)message;
-@end
-
 @class ChatViewController;
 
-@interface MyWebSocket : NSObject <WebSocketDelegate>
+@interface MyWebSocket : NSObject <SRWebSocketDelegate>
 {
 
 }
 
-@property (nonatomic, retain) WebSocket* webSocket;
-@property(nonatomic, strong) id<MyWebSocketDelegate> webSocketDelegate;
+@property (nonatomic, retain) SRWebSocket* webSocket;
 
 + (MyWebSocket *)sharedInstance;
 - (void)connectSocketWithBlock:(void(^)(BOOL connected,NSError *error))block;
-- (void)sendData:(NSDictionary *)dataDict acknowledge:(void(^)(NSDictionary *data, NSError *error))block;
 - (void)sendDictionary:(NSDictionary *)dict acknowledge:(void(^)(NSString *data, NSError *error))block;
 - (void)sendText:(NSDictionary *)message acknowledge:(void(^)(NSDictionary *message, NSError *error))block;
-- (void)logOutUser;
+- (void)logOutUserShouldClose:(BOOL)shouldClose;
 
 @end

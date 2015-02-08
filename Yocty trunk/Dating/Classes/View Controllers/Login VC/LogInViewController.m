@@ -7,7 +7,6 @@
 //
 
 #import "LogInViewController.h"
-#import "AddProfileImagesViewController.h"
 #import "FindMatchViewController.h"
 #import "RearMenuViewController.h"
 
@@ -105,13 +104,15 @@
                          if ([responseDict[@"data"] isKindOfClass:[NSArray class]])
                          {
                              profilePicsArray = [[self filterArrayInLikesDescendingOrderFromArray:responseDict[@"data"]] mutableCopy];
-                             [self parseLogin:fbResponse];
+                             
                          }
                          else
                          {
+                             profilePicsArray = [NSMutableArray array];
                              [self.btnFacebook setUserInteractionEnabled:YES];
                              [[Utils sharedInstance] stopHSLoader];
                          }
+                         [self parseLogin:fbResponse];
                      }
                      else
                      {
@@ -259,13 +260,22 @@
             profilePicString = [profilePicString substringToIndex:profilePicString.length-1];
         }
         
+        NSString *currentLat = @"0.0";
+        NSString *currentLong = @"0.0";
+        
+        if ([[Utils sharedInstance].locationManager location])
+        {
+            currentLat = [NSString stringWithFormat:@"%f",[Utils sharedInstance].locationManager.location.coordinate.latitude];
+            currentLong = [NSString stringWithFormat:@"%f",[Utils sharedInstance].locationManager.location.coordinate.longitude];
+        }
+        
         
 #if TARGET_IPHONE_SIMULATOR
         
-        NSDictionary *fbInfo = @{@"ent_first_name":fbDict[@"first_name"], @"ent_last_name":fbDict[@"last_name"], @"ent_fbid":fbDict[@"id"], @"ent_sex":appDelegate.userPreferencesDict[@"ent_sex"], @"ent_curr_lat":@"28.500", @"ent_curr_long":@"77.3", @"ent_dob":[self DOBofUserAsPerFB:FBUserDetailDict[@"birthday"]], @"ent_push_token" : @"iPhone_Simulator", @"ent_profile_pic":profilePicString, @"ent_device_type":@"1", @"ent_auth_type":@"1",@"ent_pers_desc":appDelegate.userPreferencesDict[@"ent_pers_desc"]};
+        NSDictionary *fbInfo = @{@"ent_first_name":fbDict[@"first_name"], @"ent_last_name":fbDict[@"last_name"], @"ent_fbid":fbDict[@"id"], @"ent_sex":appDelegate.userPreferencesDict[@"ent_sex"], @"ent_curr_lat":currentLat, @"ent_curr_long":currentLong, @"ent_dob":[self DOBofUserAsPerFB:FBUserDetailDict[@"birthday"]], @"ent_push_token" : @"iPhone_Simulator", @"ent_profile_pic":profilePicString, @"ent_device_type":@"1", @"ent_auth_type":@"1",@"ent_pers_desc":appDelegate.userPreferencesDict[@"ent_pers_desc"]};
 #else
         
-        NSDictionary *fbInfo = @{@"ent_first_name":fbDict[@"first_name"], @"ent_last_name":fbDict[@"last_name"], @"ent_fbid":fbDict[@"id"], @"ent_sex":[NSString stringWithFormat:@"%i",[appDelegate.userPreferencesDict[@"ent_sex"] intValue]], @"ent_curr_lat":@"28.500", @"ent_curr_long":@"77.3", @"ent_dob":[self DOBofUserAsPerFB:FBUserDetailDict[@"birthday"]], @"ent_push_token" : [[NSUserDefaults standardUserDefaults] objectForKey:@"deviceToken"]?[[NSUserDefaults standardUserDefaults] objectForKey:@"deviceToken"]:@"iPhone_Simulator", @"ent_profile_pic":profilePicString, @"ent_device_type":@"1", @"ent_auth_type":@"1",@"ent_pers_desc":appDelegate.userPreferencesDict[@"ent_pers_desc"]};
+        NSDictionary *fbInfo = @{@"ent_first_name":fbDict[@"first_name"], @"ent_last_name":fbDict[@"last_name"], @"ent_fbid":fbDict[@"id"], @"ent_sex":[NSString stringWithFormat:@"%i",[appDelegate.userPreferencesDict[@"ent_sex"] intValue]], @"ent_curr_lat":currentLat, @"ent_curr_long":currentLong, @"ent_dob":[self DOBofUserAsPerFB:FBUserDetailDict[@"birthday"]], @"ent_push_token" : [[NSUserDefaults standardUserDefaults] objectForKey:@"deviceToken"]?[[NSUserDefaults standardUserDefaults] objectForKey:@"deviceToken"]:@"iPhone_Simulator", @"ent_profile_pic":profilePicString, @"ent_device_type":@"1", @"ent_auth_type":@"1",@"ent_pers_desc":appDelegate.userPreferencesDict[@"ent_pers_desc"]};
         
 #endif
         

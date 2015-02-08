@@ -11,6 +11,7 @@
 #import "STBubbleTableViewCell.h"
 #import "Message.h"
 #import "MyWebSocket.h"
+#import "SRWebSocket.h"
 #import <MediaPlayer/MediaPlayer.h>
 
 @interface ChatViewController : UIViewController <UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, STBubbleTableViewCellDataSource, STBubbleTableViewCellDelegate,AttachmentHelperDelegate>
@@ -28,6 +29,7 @@
 @property (strong, nonatomic) NSString *chatFlag_Mine_State;
 
 @property (assign, nonatomic) AttachmentType attachmentType;
+@property (strong, nonatomic) SRWebSocket *webSocket;
 
 + (id)sharedChatInstance;
 

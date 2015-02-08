@@ -30,7 +30,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
    
-    settingOptionsArray = @[@"Update Preferences",@"Notification", @"Sound"];
+    settingOptionsArray = @[@"Preferences",@"Notification", @"Sound"];
 }
 
 - (void)didReceiveMemoryWarning
@@ -147,6 +147,7 @@
         
 #endif
         
+        [[Utils sharedInstance] startHSLoaderInView:self.view];
         
         AFNHelper *afnHelper = [AFNHelper new];
         [afnHelper getDataFromPath:@"logout" withParamData:[reqDict mutableCopy] withBlock:^(id response, NSError *error) {
@@ -159,6 +160,8 @@
                 [[NSUserDefaults standardUserDefaults] synchronize];
                 [FacebookUtility sharedObject].fbID = @"";
                 [[FacebookUtility sharedObject] logOutFromFacebook];
+                
+                [[Utils sharedInstance] stopHSLoader];
                 
                 appDelegate.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:[self.storyboard instantiateViewControllerWithIdentifier:@"LogInViewController"]];
                 [appDelegate.frontNavigationController setNavigationBarHidden:YES];
@@ -184,19 +187,17 @@
     }
     else
     {
-#if TARGET_IPHONE_SIMULATOR
-        NSDictionary *reqDict = @{@"ent_user_fbid": [FacebookUtility sharedObject].fbID};
-#else
-        
+
         NSDictionary *reqDict = @{@"ent_user_fbid": [FacebookUtility sharedObject].fbID};
         
-#endif
-        
+        [[Utils sharedInstance] startHSLoaderInView:self.view];
         
         AFNHelper *afnHelper = [AFNHelper new];
         [afnHelper getDataFromPath:@"deleteAccount" withParamData:[reqDict mutableCopy] withBlock:^(id response, NSError *error) {
             if (!error)
             {
+                [[Utils sharedInstance] stopHSLoader];
+                
                 [Utils showAlertView:_Alert_Title message:@"We hope you enjoyed it! Don't forget to come back again" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
                 [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"fbID"];
                 [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"fbFullName"];

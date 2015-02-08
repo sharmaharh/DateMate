@@ -15,6 +15,8 @@
 {
     NSArray *arrOptions;
     NSArray *arrImages;
+    NSArray *arrSelectedImages;
+    NSInteger lastSelectedIndex;
 }
 @end
 
@@ -33,13 +35,16 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    arrImages = @[@"profile_icon",@"message_icon",@"preference_icon",@"pendingrequest_icon",@"setting_icon",];
-    arrOptions = @[@"Profile", @"Keep Connecting", @"Pending Emotions", @"Chats", @"Settings"];
+    arrImages = @[@"profile_icon",@"keep_connecting_icon",@"pendingrequest_icon",@"message_icon",@"setting_icon",];
+    arrSelectedImages = @[@"profile_icon_selected",@"keep_connecting_icon_selected",@"pendingrequest_icon_selected",@"message_icon_selected",@"setting_icon_selected",];
+    arrOptions = @[@"Profile", @"Keep Connecting", @"Pending Emotions", @"Messages", @"Settings"];
     
     NSString *imgURLString = [[[NSUserDefaults standardUserDefaults] arrayForKey:@"ProfileImages"] firstObject];
-    
+    lastSelectedIndex = 1;
     [self setImageOnButton:self.proflePicImageView WithImageURL:imgURLString];
-    [self.lblUsername setText:[FacebookUtility sharedObject].fbFullName];
+    
+    [self.lblUsername setText:[[FacebookUtility sharedObject].fbFullName substringToIndex:[[FacebookUtility sharedObject].fbFullName rangeOfString:@" "].location]];
+    
     [Utils configureLayerForHexagonWithView:self.proflePicImageView withBorderColor:[UIColor colorWithRed:1 green:1 blue:1 alpha:0.6] WithCornerRadius:20 WithLineWidth:3 withPathColor:[UIColor clearColor]];
 }
 
@@ -88,9 +93,10 @@
     {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
     }
+    [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     cell.backgroundColor = [UIColor clearColor];
-    cell.imageView.image = [UIImage imageNamed:arrImages[indexPath.row]];
-    cell.textLabel.textColor = [UIColor whiteColor];
+    cell.imageView.image = [UIImage imageNamed:(lastSelectedIndex == indexPath.row)?arrSelectedImages[indexPath.row]:arrImages[indexPath.row]];
+    cell.textLabel.textColor = (lastSelectedIndex == indexPath.row)?[UIColor colorWithRed:0 green:175.0f/255.0f blue:240.0f/255.0f alpha:1] :[UIColor whiteColor];
     cell.textLabel.text = arrOptions[indexPath.row];
     return cell;
 }
@@ -99,11 +105,17 @@
 {
     
     // We know the frontViewController is a NavigationController
+    UITableViewCell *lastIndexcell = [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:lastSelectedIndex inSection:0]];
+    lastIndexcell.textLabel.textColor = [UIColor whiteColor];
+    lastIndexcell.imageView.image = [UIImage imageNamed:arrImages[lastSelectedIndex]];
     
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    cell.textLabel.textColor = [UIColor colorWithRed:0 green:175.0f/255.0f blue:240.0f/255.0f alpha:1];
+    cell.imageView.image = [UIImage imageNamed:arrSelectedImages[indexPath.row]];
     UINavigationController *frontNavigationController = (id)appDelegate.revealController.contentViewController;  // <-- we know it is a NavigationController
     UIViewController *topController = frontNavigationController.topViewController;
     NSInteger row = indexPath.row;
-    
+    lastSelectedIndex = row;
 	// Here you'd implement some of your own logic... I simply take for granted that the first row (=0) corresponds to the "FrontViewController".
     
     switch (row) {
@@ -116,7 +128,7 @@
                 UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:userProfileViewController];
                 [navigationController setNavigationBarHidden:YES];
                 [appDelegate.revealController setContentViewController:navigationController animated:YES];
-                [[MyWebSocket sharedInstance] logOutUser];
+                [[MyWebSocket sharedInstance] logOutUserShouldClose:YES];
             }
             // Seems the user attempts to 'switch' to exactly the same controller he came from!
             
@@ -134,13 +146,13 @@
                 UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:findMatchViewController];
                 [navigationController setNavigationBarHidden:YES];
                 [appDelegate.revealController setContentViewController:navigationController animated:YES];
-                [[MyWebSocket sharedInstance] logOutUser];
+                [[MyWebSocket sharedInstance] logOutUserShouldClose:YES];
             }
             else
             {
                 FindMatchViewController *findMatchViewController =  (FindMatchViewController *)((UINavigationController *)appDelegate.revealController.contentViewController).topViewController;
                 [findMatchViewController findMatchesList];
-                [[MyWebSocket sharedInstance] logOutUser];
+                [[MyWebSocket sharedInstance] logOutUserShouldClose:YES];
             }
             // Seems the user attempts to 'switch' to exactly the same controller he came from!
 
@@ -157,7 +169,7 @@
                 UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:keepConnectingViewController];
                 [navigationController setNavigationBarHidden:YES];
                 [appDelegate.revealController setContentViewController:navigationController animated:YES];
-                [[MyWebSocket sharedInstance] logOutUser];
+                [[MyWebSocket sharedInstance] logOutUserShouldClose:YES];
             }
 
             // Seems the user attempts to 'switch' to exactly the same controller he came from!
@@ -187,7 +199,7 @@
                 UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:settingsViewController];
                 [navigationController setNavigationBarHidden:YES];
                 [appDelegate.revealController setContentViewController:navigationController animated:YES];
-                [[MyWebSocket sharedInstance] logOutUser];
+                [[MyWebSocket sharedInstance] logOutUserShouldClose:YES];
             }
 
             // Seems the user attempts to 'switch' to exactly the same controller he came from!

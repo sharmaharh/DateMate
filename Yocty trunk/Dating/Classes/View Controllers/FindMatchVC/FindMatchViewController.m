@@ -13,6 +13,13 @@
 #import "PBJHexagonFlowLayout.h"
 #import <Social/Social.h>
 
+//NSLog Management
+#ifdef _ENABLE_LOGGING
+#   define NSLog(fmt, ...) NSLog((@"\n%s : [Line - %d] \n" fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
+#else
+#   define NSLog(fmt, ...)
+#endif
+
 @interface FindMatchViewController ()
 {
     NSMutableArray *matchedProfilesArray;
@@ -69,11 +76,12 @@
 
 - (void)setProfileOnLayout
 {
-    [self hideViewWhileTranstioning];
+//    [self hideViewWhileTranstioning];
+    
     NSDictionary *profileDict = matchedProfilesArray[self.currentProfileIndex];
     self.profileNameLabel.text = [NSString stringWithFormat:@"%@,%@",profileDict[@"firstName"],profileDict[@"age"]];
     
-    [self setImageOnButton:self.btnProfileImage WithImageURL:[matchedProfilesArray[self.currentProfileIndex][@"oPic"] firstObject][@"url"]];
+    [self setImageOnButton:self.btnProfileImage WithImageURL:[profileDict[@"oPic"] firstObject][@"url"]];
     [self setUpcomingProfilesInFindMatchesList];
     
     self.lblTimer.text = @"9";
@@ -206,11 +214,15 @@
         if (!error)
         {
             [imgView setImage:[Utils scaleImage:image WithRespectToFrame:imgView.frame]];
+            [imgView setBackgroundColor:[UIColor clearColor]];
         }
         else
         {
-            [imgView setImage:[UIImage imageNamed:@"Bubble-0"]];
+            [imgView setImage:nil];
+            [imgView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Bubble-0"]]];
         }
+        
+        [imgView setHidden:YES];
         
         if (imageDownloadedCount == MIN(4, (matchedProfilesArray.count - self.currentProfileIndex + 1)))
         {
@@ -232,20 +244,23 @@
 
 - (void)findMatchesList
 {
+    self.currentProfileIndex = 0;
     [self resetView];
     [self hideViewWhileTranstioning];
     [self setUpCountdownView];
     
     matchedProfilesArray = [NSMutableArray array];
     
-    
     if (![Utils isInternetAvailable])
     {
         [Utils showOKAlertWithTitle:_Alert_Title message:NO_INERNET_MSG];
+        [self showErrorInProfileViewWithBummerMessage:NO_INERNET_MSG hideInvitation:YES];
     }
     else
     {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            UIView *errorMsgView = (UIView *)[self.view viewWithTag:4];
+            [errorMsgView setHidden:YES];
             [[Utils sharedInstance] startHSLoaderInView:self.view];
         });
         
@@ -265,25 +280,28 @@
                      if ([matchedProfilesArray count])
                      {
                          [self clubProfileImageInMainArray];
-                         self.currentProfileIndex = 0;
+                         
                          [self setProfileOnLayout];
                          [self downloadNextProfileImages];
                      }
                      else
                      {
-                         [self showErrorInProfileView];
+                         NSLog(@"Check");
+                         [self showErrorInProfileViewWithBummerMessage:@"You got no one new around you" hideInvitation:NO];
                      }
                      
                  }
                  else
                  {
                      matchedProfilesArray = [NSMutableArray array];
-                     [self showErrorInProfileView];
+                     NSLog(@"Check");
+                     [self showErrorInProfileViewWithBummerMessage:@"You got no one new around you" hideInvitation:NO];
                  }
              }
              else
              {
-                 [self showErrorInProfileView];
+                 NSLog(@"Check");
+                 [self showErrorInProfileViewWithBummerMessage:@"You got no one new around you" hideInvitation:NO];
              }
              
          }];
@@ -314,23 +332,49 @@
     [errorMsgLabel setHidden:YES];
 }
 
-- (void)showErrorInProfileView
+- (void)showErrorInProfileViewWithBummerMessage:(NSString *)message hideInvitation:(BOOL)shouldHide
 {
+    UIView *errorMsgView = (UIView *)[self.view viewWithTag:4];
+    [self.bummerDetailTextLabel setText:message];
+    [errorMsgView setHidden:NO];
+    
     for (int i = 1; i < 4 ; i++)
     {
         [[self.view viewWithTag:i] setHidden:YES];
     }
-    UIView *errorMsgView = (UIView *)[self.view viewWithTag:4];
-    [errorMsgView setHidden:NO];
+    
     [[Utils sharedInstance] stopHSLoader];
 }
 
 - (void)showImagesAfterAllDownloading
 {
-    for (NSInteger i = self.currentProfileIndex; i < MIN(matchedProfilesArray.count, self.currentProfileIndex+3); i++)
+    for (NSInteger i = 1; i < 4; i++)
     {
         UIImageView *imageView = (UIImageView *)[self.upcomingProfilesView viewWithTag:i+100+1-self.currentProfileIndex];
-        [imageView setHidden:NO];
+        [imageView setHidden:YES];
+    }
+    for (NSInteger i = self.currentProfileIndex; i < MIN(matchedProfilesArray.count, self.currentProfileIndex+3); i++)
+    {
+        
+        UIImageView *imageView = (UIImageView *)[self.upcomingProfilesView viewWithTag:i+100+1-self.currentProfileIndex];
+        if (imageView.image)
+        {
+            [imageView setHidden:NO];
+        }
+        else
+        {
+            [imageView setHidden:YES];
+        }
+        
+        if (i == self.currentProfileIndex)
+        {
+            [Utils configureLayerForHexagonWithView:imageView withBorderColor:[UIColor greenColor] WithCornerRadius:15 WithLineWidth:3 withPathColor:[UIColor clearColor]];
+        }
+        else
+        {
+            [Utils configureLayerForHexagonWithView:imageView withBorderColor:[UIColor lightGrayColor] WithCornerRadius:15  WithLineWidth:3 withPathColor:[UIColor clearColor]];
+        }
+        
     }
     [self.viewTutorial setHidden:[[NSUserDefaults standardUserDefaults] boolForKey:@"FindMatchStare"]];
     [self.viewTutorialTimer setHidden:[[NSUserDefaults standardUserDefaults] boolForKey:@"FindMatchStare"]];
@@ -385,7 +429,8 @@
     }
     else
     {
-        [self showErrorInProfileView];
+        NSLog(@"Check");
+        [self showErrorInProfileViewWithBummerMessage:@"You got no one new around you" hideInvitation:YES];
         self.lblTimer.text = @"";
     }
     [self.sfCountdownView stop];
@@ -540,25 +585,12 @@
 
 - (void)setUpcomingProfilesInFindMatchesList
 {
-    for (UIImageView *imageView in self.upcomingProfilesView.subviews)
-    {
-        [imageView setHidden:YES];
-    }
-    
+    // tag = i + 100 + 1 - currentIndex
+    // i = tag - 100 - 1 + currentIndex
     for (NSInteger i = self.currentProfileIndex; i < MIN(matchedProfilesArray.count, self.currentProfileIndex+3); i++)
     {
         UIImageView *imageView = (UIImageView *)[self.upcomingProfilesView viewWithTag:i+100+1-self.currentProfileIndex];
         [self setImageOnImageView:imageView WithActivityIndicator:nil WithImageURL:[matchedProfilesArray[i][@"oPic"] firstObject][@"url"] WithFBId:matchedProfilesArray[i][@"fbId"]];
-        
-        
-        if (i == self.currentProfileIndex)
-        {
-            [Utils configureLayerForHexagonWithView:imageView withBorderColor:[UIColor greenColor] WithCornerRadius:15 WithLineWidth:3 withPathColor:[UIColor clearColor]];
-        }
-        else
-        {
-            [Utils configureLayerForHexagonWithView:imageView withBorderColor:[UIColor lightGrayColor] WithCornerRadius:15  WithLineWidth:3 withPathColor:[UIColor clearColor]];
-        }
         
     }
 }

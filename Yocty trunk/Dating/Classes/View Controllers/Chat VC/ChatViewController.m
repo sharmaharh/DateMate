@@ -19,6 +19,7 @@
     NSInteger totalChatCount;
     BOOL isFirstTime;
     MPMoviePlayerViewController *moviePlayer;
+    
 }
 
 @end
@@ -41,7 +42,6 @@
     dispatch_once(&once, ^{
         UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
         sharedInstance = [mainStoryBoard instantiateViewControllerWithIdentifier:@"ChatViewController"];
-        
     });
     return sharedInstance;
 }
@@ -53,69 +53,7 @@
     isFirstTime = YES;
     self.tableViewChat.sectionFooterHeight = 0;
     totalChatCount = 0;
-    [[MyWebSocket sharedInstance] connectSocketWithBlock:^(BOOL connected, NSError *error) {
-        
-        [[MyWebSocket sharedInstance] sendText:@{@"type" : @"participate", @"userId" : [FacebookUtility sharedObject].fbID, @"roomId" : self.recieveFBID} acknowledge:^(NSDictionary *messageDict, NSError *error) {
-            if (!error)
-            {
-                if ([[messageDict allKeys] containsObject:@"type"] && [messageDict objectForKey:@"type"])
-                {
-                    if ([[messageDict objectForKey:@"type"] isEqualToString:@"message"])
-                    {
-                        NSLog(@"Message Recieved = %@",messageDict);
-                        
-                        if (!self.messages)
-                        {
-                            self.messages = [NSMutableArray array];
-                        }
-                        
-                        if ([messageDict[@"body"][@"chat"] count])
-                        {
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                [self recieveMessage:messageDict[@"body"][@"chat"]];
-                            });
-                            
-                            
-                        }
-                        
-                    }
-                    else if ([[messageDict objectForKey:@"type"] isEqualToString:@"mediaUpload"])
-                    {
-                        [self.tableViewChat reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[self.messages count]-1 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
-                        
-                        //                    if ([messageDict[@"body"][@"isUpload"] boolValue])
-                        //                    {
-                        //
-                        //                        [self.tableViewChat reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[self.messages count]-1 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
-                        //
-                        ////                        Message *msgToWatch = [[self.messages filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
-                        ////                            Message *msgObject=(Message *) evaluatedObject;
-                        ////                            return ([msgObject.messageID hasPrefix:messageDict[@"body"][msg_ID]]);
-                        ////                        }]] firstObject];
-                        ////
-                        ////                        if (msgToWatch)
-                        ////                        {
-                        ////                            NSInteger index = [self.messages indexOfObject:msgToWatch];
-                        ////                            if ([self.messages count] > index)
-                        ////                            {
-                        ////                                [self.tableViewChat reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
-                        ////                            }
-                        ////                            
-                        ////                        }
-                        //                    }
-                    }
-                }
-            }
-            
-        }];
-        
-    }];
-    
-    
-}
 
-- (void)connectToSocket
-{
     
 }
 
@@ -137,9 +75,81 @@
         
 //        [self getChatHistory];
     }
-    
+    [self connectToSocket];
 }
 
+- (void)connectToSocket
+{
+    [[MyWebSocket sharedInstance] connectSocketWithBlock:^(BOOL connected, NSError *error) {
+        
+        if (connected)
+        {
+            [[MyWebSocket sharedInstance] sendText:@{@"type" : @"participate", @"userId" : [FacebookUtility sharedObject].fbID, @"roomId" : self.recieveFBID} acknowledge:^(NSDictionary *messageDict, NSError *error) {
+                if (!error)
+                {
+                    if ([[messageDict allKeys] containsObject:@"type"] && [messageDict objectForKey:@"type"])
+                    {
+                        if ([[messageDict objectForKey:@"type"] isEqualToString:@"message"])
+                        {
+                            NSLog(@" Participate Message Recieved = %@",messageDict);
+                            
+                            if (!self.messages)
+                            {
+                                self.messages = [NSMutableArray array];
+                            }
+                            
+                            if ([messageDict[@"body"][@"chat"] count])
+                            {
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    if ([messageDict[@"body"][@"chat"] isKindOfClass:[NSArray class]])
+                                    {
+                                        [self recieveMessages:messageDict[@"body"][@"chat"]];
+                                    }
+                                    else
+                                    {
+                                        [self recieveMessage:messageDict[@"body"][@"chat"]];
+                                    }
+                                    
+                                    
+                                });
+                                
+                                
+                            }
+                            
+                        }
+                        else if ([[messageDict objectForKey:@"type"] isEqualToString:@"mediaUpload"])
+                        {
+                            //                        [self.tableViewChat reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[self.messages count]-1 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+                            
+                            //                    if ([messageDict[@"body"][@"isUpload"] boolValue])
+                            //                    {
+                            //
+                            //                        [self.tableViewChat reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[self.messages count]-1 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+                            //
+                            ////                        Message *msgToWatch = [[self.messages filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+                            ////                            Message *msgObject=(Message *) evaluatedObject;
+                            ////                            return ([msgObject.messageID hasPrefix:messageDict[@"body"][msg_ID]]);
+                            ////                        }]] firstObject];
+                            ////
+                            ////                        if (msgToWatch)
+                            ////                        {
+                            ////                            NSInteger index = [self.messages indexOfObject:msgToWatch];
+                            ////                            if ([self.messages count] > index)
+                            ////                            {
+                            ////                                [self.tableViewChat reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+                            ////                            }
+                            ////
+                            ////                        }
+                            //                    }
+                        }
+                    }
+                }
+                
+            }];
+        }
+        
+    }];
+}
 
 - (void)getUserStatus
 {
@@ -471,10 +481,10 @@
             
         }];
         
-        [afnHelper getDataFromPath:@"sendMessage" withParamData:reqDict withBlock:^(id response, NSError *error) {
-            
-            NSLog(@"Message Sent Response = %@",response);
-        }];
+//        [afnHelper getDataFromPath:@"sendMessage" withParamData:reqDict withBlock:^(id response, NSError *error) {
+//            
+//            NSLog(@"Message Sent Response = %@",response);
+//        }];
     }
     else
     {
@@ -514,28 +524,44 @@
 
 - (void)recieveMessage:(NSDictionary *)messageDict
 {
-    Message *message = [Message messageWithDictionary:messageDict];
+    [self makeMessageModel:messageDict];
+    
+    [self.tableViewChat insertRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:_messages.count - 1 inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
+    [self.tableViewChat scrollRectToVisible:self.tableViewChat.tableFooterView.frame animated:YES];
+    
+    totalChatCount ++;
+}
+
+- (void)recieveMessages:(NSArray *)messages
+{
+    for (NSDictionary *messageDict in messages)
+    {
+        [self makeMessageModel:messageDict];
+        
+    }
+    [self.tableViewChat reloadData];
+    [self.tableViewChat scrollRectToVisible:self.tableViewChat.tableFooterView.frame animated:YES];
+    
+    totalChatCount = totalChatCount + [messages count];
+}
+
+- (void)makeMessageModel:(NSDictionary *)msgDict
+{
+    Message *message = [Message messageWithDictionary:msgDict];
     
     if (message.attachmentType == 2 || message.attachmentType == 3 || message.attachmentType == 5)
     {
         message.attachmentURL = message.message;
     }
     
-    if ([[messageDict allKeys] containsObject:@"alert"])
+    if ([[msgDict allKeys] containsObject:@"alert"])
     {
         [self.messages addObject:message];
-        [self.tableViewChat reloadData];
     }
     else
     {
         [self.messages addObject:message];
-        [self.tableViewChat reloadData];
         
-    }
-    totalChatCount ++;
-    if (self.tableViewChat.contentSize.height > self.tableViewChat.frame.size.height)
-    {
-        [self.tableViewChat setContentOffset:CGPointMake(0, self.tableViewChat.contentSize.height-self.tableViewChat.frame.size.height) animated:YES];
     }
 }
 
@@ -967,11 +993,6 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self  name:MPMoviePlayerPlaybackDidFinishNotification object:moviePlayer.moviePlayer];
     moviePlayer = nil;
     
-//    int value = [[aNotification.userInfo valueForKey:MPMoviePlayerPlaybackDidFinishReasonUserInfoKey] intValue];
-//    if (value == MPMovieFinishReasonUserExited)
-//    {
-//        
-//    }
 }
 
 - (UIImage *)imageFromVideoWithURL:(NSString *)vidURL
@@ -1258,7 +1279,7 @@
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
     [UIView animateWithDuration:0.3 animations:^{
-        [self.tableViewChat setFrame:CGRectMake(0, 0, 320, self.view.frame.size.height-self.viewChatWindow.frame.size.height-216)];
+        [self.tableViewChat setFrame:CGRectMake(0, 64, 320, self.view.frame.size.height-self.viewChatWindow.frame.size.height-216-64)];
         if (self.tableViewChat.contentSize.height > self.tableViewChat.frame.size.height)
         {
             [self.tableViewChat setContentOffset:CGPointMake(0, self.tableViewChat.contentSize.height-self.tableViewChat.frame.size.height) animated:YES];
@@ -1277,7 +1298,7 @@
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
     [UIView animateWithDuration:0.16 animations:^{
-        [self.tableViewChat setFrame:CGRectMake(0, 0, 320, self.view.frame.size.height-44)];
+        [self.tableViewChat setFrame:CGRectMake(0, 64, 320, self.view.frame.size.height-44-64)];
         [self.viewChatWindow setTransform:CGAffineTransformMakeTranslation(0, 0)];
     }];
     
@@ -1286,7 +1307,7 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [UIView animateWithDuration:0.16 animations:^{
-        [self.tableViewChat setFrame:CGRectMake(0, 0, 320, self.view.frame.size.height-44)];
+        [self.tableViewChat setFrame:CGRectMake(0, 64, 320, self.view.frame.size.height-44-64)];
         [self.viewChatWindow setTransform:CGAffineTransformMakeTranslation(0, 0)];
         
     }];
@@ -1297,6 +1318,8 @@
 - (IBAction)btnBackPressed:(id)sender
 {
     [self.navigationController popToRootViewControllerAnimated:YES];
-    [[MyWebSocket sharedInstance] logOutUser];
+    [[MyWebSocket sharedInstance] logOutUserShouldClose:YES];
+    
 }
+
 @end

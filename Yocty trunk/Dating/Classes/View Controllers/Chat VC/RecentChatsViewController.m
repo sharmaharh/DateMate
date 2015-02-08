@@ -34,52 +34,24 @@
     // Do any additional setup after loading the view.
     self.nameArray = [NSMutableArray array];
    
-    [self getRecentChatUsers];
-    
-//    [self connectToSocket];
     
     if (self.isFromPush)
     {
-        [self.navigationController pushViewController:[ChatViewController sharedChatInstance] animated:YES];
+        ChatViewController *chatViewController = [ChatViewController sharedChatInstance];
+        chatViewController.userName = self.nameArray[selectedIndex][@"fName"];
+        chatViewController.recieveFBID = self.nameArray[selectedIndex][@"fbId"];
+        chatViewController.chatFlag = self.nameArray[selectedIndex][@"flag"];
+        chatViewController.chatFlag_State = self.nameArray[selectedIndex][@"flag_state"];
+        chatViewController.chatFlag_Initiate = self.nameArray[selectedIndex][@"flag_initiate"];
+        chatViewController.chatFlag_Mine = self.nameArray[selectedIndex][@"flag_mine"];
+        chatViewController.chatFlag_Mine_State = self.nameArray[selectedIndex][@"flag_mine_state"];
+        [self resetBadgeCounterWithInfo:self.nameArray[selectedIndex]];
+        
+        [self.navigationController pushViewController:chatViewController animated:YES];
         return;
     }
     
-}
-
-- (void)connectToSocket
-{
-    [[MyWebSocket sharedInstance] connectSocketWithBlock:^(BOOL connected, NSError *error) {
-        
-        
-        [[MyWebSocket sharedInstance] sendText:@{@"type" : @"login", @"userId" : [FacebookUtility sharedObject].fbID} acknowledge:^(NSDictionary *messageDict, NSError *error)
-         {
-             if (!error)
-             {
-                 if ([[messageDict allKeys] containsObject:@"type"] && [messageDict objectForKey:@"type"])
-                 {
-                     if ([[messageDict objectForKey:@"type"] isEqualToString:@"getProfileMatches"])
-                     {
-                         NSLog(@"Recent Chat response = %@",messageDict);
-                         if ([messageDict[@"body"][@"likes"] count])
-                         {
-                             self.nameArray = [messageDict[@"body"][@"likes"] mutableCopy];
-                             [self addRecentChatsToDatabase];
-                         }
-                         else
-                         {
-                             self.nameArray = [NSMutableArray array];
-                         }
-                         dispatch_async(dispatch_get_main_queue(), ^{
-                             [self.tableViewRecentChats reloadData];
-                         });
-                         
-                     }
-                 }
-             }
-             
-         }];
-        
-    }];
+    [self getRecentChatUsers];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -194,27 +166,8 @@
     }
     
     localpath = [localpath stringByAppendingPathComponent:[pPicURL lastPathComponent]];
-    [self downloadProfileImageToURLPath:localpath FromRemotePath:pPicURL];
-    return localpath;
-}
 
-- (void)downloadProfileImageToURLPath:(NSString *)localPath FromRemotePath:(NSString *)remotePath
-{
-    if ([Utils isInternetAvailable])
-    {
-        NSURLRequest *imageURLReq = [NSURLRequest requestWithURL:[NSURL URLWithString:remotePath] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:20];
-        
-        [NSURLConnection sendAsynchronousRequest:imageURLReq queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-            if (!connectionError)
-            {
-                UIImage *profileImage = [UIImage imageWithData:data];
-                if (profileImage)
-                {
-                    [[NSFileManager defaultManager] createFileAtPath:localPath contents:data attributes:nil];
-                }
-            }
-        }];
-    }
+    return localpath;
 }
 
 - (void)didReceiveMemoryWarning
@@ -254,12 +207,14 @@
     if (!cell)
     {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellIdentifier];
+        cell.backgroundColor = [UIColor clearColor];
     }
     
     cell.textLabel.text = self.nameArray[indexPath.row][@"fName"];
     cell.detailTextLabel.text = self.nameArray[indexPath.row][@"unread_count"];
     cell.imageView.image = [UIImage imageNamed:@"Bubble-1"];
     cell.imageView.clipsToBounds = YES;
+    [cell.imageView.layer setCornerRadius:30.0f];
     [self setImageOnTableViewCell:cell AtIndexPath:indexPath];
     return cell;
 }
@@ -268,9 +223,11 @@
 {
     NSDictionary *infoDict = self.nameArray[indexPath.row];
     [cell.imageView setContentMode:UIViewContentModeCenter];
+    
     if ([[infoDict allKeys] containsObject:@"pPic_Local"])
     {
         UIImage *cellImage = [UIImage imageWithContentsOfFile:infoDict[@"pPic_Local"]];
+        
         if (cellImage)
         {
             cell.imageView.image = cellImage;
@@ -306,7 +263,18 @@
     {
         selectedIndex = indexPath.row;
         
-        [self performSegueWithIdentifier:@"recentChatsToChatsIdentifier" sender:self];
+        ChatViewController *chatViewController = [ChatViewController sharedChatInstance];
+        chatViewController.userName = self.nameArray[selectedIndex][@"fName"];
+        chatViewController.recieveFBID = self.nameArray[selectedIndex][@"fbId"];
+        chatViewController.chatFlag = self.nameArray[selectedIndex][@"flag"];
+        chatViewController.chatFlag_State = self.nameArray[selectedIndex][@"flag_state"];
+        chatViewController.chatFlag_Initiate = self.nameArray[selectedIndex][@"flag_initiate"];
+        chatViewController.chatFlag_Mine = self.nameArray[selectedIndex][@"flag_mine"];
+        chatViewController.chatFlag_Mine_State = self.nameArray[selectedIndex][@"flag_mine_state"];
+        [self resetBadgeCounterWithInfo:self.nameArray[selectedIndex]];
+        [self.navigationController pushViewController:chatViewController animated:YES];
+        
+//        [self performSegueWithIdentifier:@"recentChatsToChatsIdentifier" sender:self];
     }
 }
 
@@ -343,8 +311,6 @@
         [appDelegate.managedObjectContext save:nil];
     }
 }
-
-
 /*
 #pragma mark - Navigation
 

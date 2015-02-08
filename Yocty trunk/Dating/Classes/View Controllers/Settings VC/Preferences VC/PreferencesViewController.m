@@ -58,17 +58,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
 - (IBAction)buttonSubmitPrefferencesPressed:(id)sender
 {
     
@@ -84,13 +73,7 @@
         [afnhelper getDataFromPath:@"updatePreferences" withParamData:currentPreferencesDict withBlock:^(id response, NSError *error)
         {
             [[Utils sharedInstance] stopHSLoader];
-            
-            appDelegate.userPreferencesDict = currentPreferencesDict;
-            FindMatchViewController *findMatchViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FindMatchViewController"];
-            UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:findMatchViewController];
-            [navigationController setNavigationBarHidden:YES];
-            
-            [appDelegate.revealController setContentViewController:navigationController animated:YES];
+            [self.navigationController popViewControllerAnimated:YES];
             
             NSLog(@"%@",response);
         }];
@@ -104,19 +87,12 @@
 
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView
 {
-//    UIToolbar* keyboardDoneButtonView = [[UIToolbar alloc] init];
-//    [keyboardDoneButtonView sizeToFit];
-//    UIBarButtonItem* doneButton = [[UIBarButtonItem alloc] initWithTitle:@"Done"
-//                                                                   style:UIBarButtonItemStyleBordered target:self
-//                                                                  action:@selector(doneClicked:)];
-//    [keyboardDoneButtonView setItems:[NSArray arrayWithObjects:doneButton, nil]];
-//    textView.inputAccessoryView = keyboardDoneButtonView;
     if ([textView.text isEqualToString:TextView_PlaceHolder])
     {
         textView.text = @"";
     }
     [textView setTextColor:[UIColor whiteColor]];
-    [self.preferencesTableView setContentOffset:CGPointMake(self.preferencesTableView.contentOffset.x, self.preferencesTableView.contentOffset.y + textView.frame.size.height -[self calculateTextViewOffsetAccordingToKeyboard:textView]) animated:YES];
+    [self.preferencesTableView setContentOffset:CGPointMake(self.preferencesTableView.contentOffset.x, self.preferencesTableView.contentOffset.y - [self calculateTextViewOffsetAccordingToKeyboard:textView]) animated:YES];
     
     return YES;
 }
@@ -157,18 +133,10 @@
     return YES;
 }
 
-//- (void)doneClicked:(id)sender
-//{
-//    [self.view endEditing:YES];
-//    [UIView animateWithDuration:0.3 animations:^{
-//        [self.view setTransform:CGAffineTransformMakeTranslation(0, 0)];
-//    }];
-//}
-
 - (CGFloat)calculateTextViewOffsetAccordingToKeyboard:(UITextView *)textView
 {
     CGRect newRect = [self.view convertRect:textView.frame fromView:[textView superview]];
-    CGFloat yDifference = 320 - newRect.origin.y;
+    CGFloat yDifference = self.view.frame.size.height - 260 - textView.frame.size.height - newRect.origin.y;
     return yDifference;
 }
 
@@ -213,9 +181,9 @@
     [headerLabel setTextColor:[UIColor whiteColor]];
     [headerLabel setFont:[UIFont fontWithName:@"SegoeUI" size:15]];
     
-    UILabel *underlineLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 43.5, self.view.frame.size.width, 0.5)];
-    [underlineLabel setBackgroundColor:[UIColor whiteColor]];
-    [headerView addSubview:underlineLabel];
+//    UILabel *underlineLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 43.5, self.view.frame.size.width, 0.5)];
+//    [underlineLabel setBackgroundColor:[UIColor whiteColor]];
+//    [headerView addSubview:underlineLabel];
     [headerView addSubview:headerLabel];
     return headerView;
 }
@@ -231,15 +199,18 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
-    cell.backgroundColor = [UIColor clearColor];
-    [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+    static NSString *cellIdentifier = @"preferencesCell";
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     
     for (UIView *view in cell.contentView.subviews)
     {
         [view removeFromSuperview];
     }
     
+    cell.textLabel.text = @"";
+    cell.detailTextLabel.text = @"";
+    cell.accessoryView = nil;
     switch (indexPath.section)
     {
         case 0:
@@ -270,15 +241,8 @@
         case 5:
         {
             // Want to be famous
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:nil];
-            cell.backgroundColor = [UIColor clearColor];
             cell.textLabel.text = @"Happy Going Famous";
-            cell.textLabel.textColor = [UIColor whiteColor];
-            cell.detailTextLabel.textColor = [UIColor lightGrayColor];
-            [cell.textLabel setFont:[UIFont fontWithName:@"SegoeUI" size:16]];
             cell.detailTextLabel.text = @"You could be lucky user to view yourself on All Yocty Users application splash screen. Do you want to be on their Welcome Screen?";
-            [cell.detailTextLabel setNumberOfLines:3];
-            [cell.detailTextLabel setFont:[UIFont fontWithName:@"SegoeUI" size:10]];
             UISwitch *onOffSwitch = [[UISwitch alloc] init];
             onOffSwitch.tag = 12;
             onOffSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"Famous"];
@@ -407,6 +371,10 @@
     if (!aboutMeView)
     {
         UITextView *statusTextView = [[UITextView alloc] initWithFrame:CGRectMake(10, 5, self.view.frame.size.width-20, MAX( 70, ([self heightOfStatusText:appDelegate.userPreferencesDict[@"ent_pers_desc"]] + 5)))];
+        statusTextView.layer.borderWidth = 0.5f;
+        statusTextView.layer.borderColor = [UIColor whiteColor].CGColor;
+        [statusTextView setReturnKeyType:UIReturnKeyDone];
+        
         aboutMeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, statusTextView.frame.size.height + 10)];
         
         [statusTextView setTextColor:[UIColor whiteColor]];
@@ -428,8 +396,14 @@
 
 - (CGFloat)heightOfStatusText:(NSString *)str
 {
-    CGSize strSize = [str sizeWithFont:[UIFont fontWithName:@"SegoeUI" size:14] forWidth:(self.view.frame.size.width-20) lineBreakMode:NSLineBreakByWordWrapping];
-    return strSize.height;
+    if ([str length])
+    {
+        CGSize size = [str boundingRectWithSize:CGSizeMake(self.view.frame.size.width-20, 150) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName:[UIFont fontWithName:@"SegoeUI" size:14]} context:nil].size;
+        
+        return MAX(50,size.height+5);
+    }
+    return 50.0f;
+
 }
 
 - (UIView *)addAgeSilder
@@ -501,60 +475,6 @@
         [radiusView addSubview:upperLabel];
     }
     return radiusView;
-}
-
-- (UIView *)addSoundOptionView
-{
-    UIButton *soundOnButton = nil;
-    UIButton *soundOffButton = nil;
-    
-    if (!soundOnOffView)
-    {
-        soundOnOffView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 60)];
-        soundOnButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        soundOnButton.frame = CGRectMake(20, 15, 40, 30);
-        [soundOnButton setTitle:@"On" forState:UIControlStateNormal];
-        [soundOnButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-        [soundOnButton setTag:7];
-        [soundOnButton.layer setBorderWidth:1.0];
-        [soundOnButton.layer setCornerRadius:soundOnButton.frame.size.height/2];
-        
-        soundOffButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        soundOffButton.frame = CGRectMake(80, 15, 40, 30);
-        [soundOffButton setTitle:@"Off" forState:UIControlStateNormal];
-        [soundOffButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-        [soundOffButton setTag:8];
-        [soundOffButton.layer setBorderWidth:1.0];
-        [soundOffButton.layer setCornerRadius:soundOffButton.frame.size.height/2];
-        [soundOffButton addTarget:self action:@selector(soundOnOffOptionPressed:) forControlEvents:UIControlEventTouchUpInside];
-        [soundOnButton addTarget:self action:@selector(soundOnOffOptionPressed:) forControlEvents:UIControlEventTouchUpInside];
-        [soundOnOffView addSubview:soundOffButton];
-        [soundOnOffView addSubview:soundOnButton];
-    }
-    else
-    {
-        soundOnButton = (UIButton *)[soundOnOffView viewWithTag:7];
-        soundOffButton = (UIButton *)[soundOnOffView viewWithTag:8];
-    }
-    
-    
-    if([[NSUserDefaults standardUserDefaults] boolForKey:@"Sounds"])
-    {
-        [soundOnButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [soundOnButton.layer setBorderColor:[UIColor whiteColor].CGColor];
-        [soundOffButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-        [soundOffButton.layer setBorderColor:[UIColor lightGrayColor].CGColor];
-        
-    }
-    else
-    {
-        [soundOnButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-        [soundOnButton.layer setBorderColor:[UIColor lightGrayColor].CGColor];
-        [soundOffButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [soundOffButton.layer setBorderColor:[UIColor whiteColor].CGColor];
-    }
-    
-    return soundOnOffView;
 }
 
 - (void)maleFemaleOptionPressed:(UIButton *)genderBtn
