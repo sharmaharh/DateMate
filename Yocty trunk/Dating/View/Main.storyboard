@@ -227,6 +227,17 @@
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="2wc-nJ-qc7">
+                                <rect key="frame" x="208" y="437" width="67" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Tutorial">
+                                    <color key="titleColor" red="0.0" green="0.68627450980000004" blue="0.94117647059999998" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <segue destination="WJZ-Y4-ltf" kind="modal" id="Vvy-vH-exI"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -236,7 +247,6 @@
                         <outlet property="btnFacebook" destination="3tW-4k-K8U" id="Uwk-A2-em6"/>
                         <outlet property="lblFacebookLogo" destination="zGq-M7-DXv" id="tyL-M6-nMg"/>
                         <segue destination="rMv-AJ-5oE" kind="push" identifier="loginToSelectGenderIdentifier" id="ha1-K4-DIW"/>
-                        <segue destination="WJZ-Y4-ltf" kind="modal" identifier="loginToTutorialIdentifier" id="tEP-mx-oMi"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3KG-pM-8KO" userLabel="First Responder" sceneMemberID="firstResponder"/>
