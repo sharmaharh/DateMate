@@ -234,6 +234,7 @@
 		AA3D7FBE19921AFD00C862CF /* Bubble-9@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = AA3D7FAA19921AFD00C862CF /* Bubble-9@2x.png */; };
 		AA3D7FC219921B5B00C862CF /* STBubbleTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3D7FC119921B5B00C862CF /* STBubbleTableViewCell.m */; };
 		AA3D7FC519921BE200C862CF /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3D7FC419921BE200C862CF /* Message.m */; };
+		AABA3A371A8A1E5900F6D5C5 /* AppTutorialViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AABA3A361A8A1E5900F6D5C5 /* AppTutorialViewController.m */; };
 		AACE994A19CABE8A00DEC9D6 /* ChatHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = AACE994719CABE8A00DEC9D6 /* ChatHistory.m */; };
 /* End PBXBuildFile section */
 
@@ -527,6 +528,8 @@
 		AA3D7FC119921B5B00C862CF /* STBubbleTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STBubbleTableViewCell.m; sourceTree = "<group>"; };
 		AA3D7FC319921BE200C862CF /* Message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Message.h; sourceTree = "<group>"; };
 		AA3D7FC419921BE200C862CF /* Message.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Message.m; sourceTree = "<group>"; };
+		AABA3A351A8A1E5900F6D5C5 /* AppTutorialViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppTutorialViewController.h; sourceTree = "<group>"; };
+		AABA3A361A8A1E5900F6D5C5 /* AppTutorialViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppTutorialViewController.m; sourceTree = "<group>"; };
 		AACE994619CABE8A00DEC9D6 /* ChatHistory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatHistory.h; sourceTree = "<group>"; };
 		AACE994719CABE8A00DEC9D6 /* ChatHistory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatHistory.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -834,6 +837,7 @@
 		3A2DE89B1983C4870035FA1B /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				AABA3A341A8A1E4800F6D5C5 /* App Tutorial VC */,
 				3AD8BA071A7687BB00CAB6F3 /* Splash VC */,
 				3A6CFA861A2E1F4F00842C48 /* Preferences */,
 				AA04BCA51A26F6720090EFD2 /* ReSideViewController */,
@@ -1292,6 +1296,15 @@
 			path = Dating/Classes/ThirdParty/STBubbleTableViewCell;
 			sourceTree = SOURCE_ROOT;
 		};
+		AABA3A341A8A1E4800F6D5C5 /* App Tutorial VC */ = {
+			isa = PBXGroup;
+			children = (
+				AABA3A351A8A1E5900F6D5C5 /* AppTutorialViewController.h */,
+				AABA3A361A8A1E5900F6D5C5 /* AppTutorialViewController.m */,
+			);
+			path = "App Tutorial VC";
+			sourceTree = "<group>";
+		};
 		AACE994519CABE8A00DEC9D6 /* DBModelClasses */ = {
 			isa = PBXGroup;
 			children = (
@@ -1567,6 +1580,7 @@
 				3A01EB0D1A7BDF75007FE4B7 /* AFNetworkActivityIndicatorManager.m in Sources */,
 				AA04BCA31A26F5FD0090EFD2 /* RESideMenu.m in Sources */,
 				3A9D16051986A2E40049CE09 /* ChatViewController.m in Sources */,
+				AABA3A371A8A1E5900F6D5C5 /* AppTutorialViewController.m in Sources */,
 				AA3D7FC219921B5B00C862CF /* STBubbleTableViewCell.m in Sources */,
 				3AA8EAE21A49CD3600A7D772 /* BRFlabbyTableViewCell.m in Sources */,
 				3A01EB0E1A7BDF75007FE4B7 /* AFPropertyListRequestOperation.m in Sources */,

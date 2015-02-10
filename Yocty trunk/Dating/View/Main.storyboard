@@ -1,37 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
-    <customFonts key="customFonts">
-        <mutableArray key="Mawns_Handwriting.ttf">
-            <string>MAWNSHandwriting</string>
-            <string>MAWNSHandwriting</string>
-            <string>MAWNSHandwriting</string>
-            <string>MAWNSHandwriting</string>
-            <string>MAWNSHandwriting</string>
-        </mutableArray>
-        <mutableArray key="SEGOEUI_0.TTF">
-            <string>SegoeUI</string>
-            <string>SegoeUI</string>
-            <string>SegoeUI</string>
-            <string>SegoeUI</string>
-            <string>SegoeUI</string>
-            <string>SegoeUI</string>
-            <string>SegoeUI</string>
-            <string>SegoeUI</string>
-            <string>SegoeUI</string>
-            <string>SegoeUI</string>
-            <string>SegoeUI</string>
-            <string>SegoeUI</string>
-            <string>SegoeUI</string>
-            <string>SegoeUI</string>
-            <string>SegoeUI</string>
-            <string>SegoeUI</string>
-        </mutableArray>
-    </customFonts>
     <scenes>
-        <!--Chats-->
+        <!--Recent Chats View Controller - Chats-->
         <scene sceneID="ccM-TY-wxT">
             <objects>
                 <viewController storyboardIdentifier="RecentChatsViewController" title="Chats" id="5eH-HO-H9Z" customClass="RecentChatsViewController" sceneMemberID="viewController">
@@ -263,6 +236,7 @@
                         <outlet property="btnFacebook" destination="3tW-4k-K8U" id="Uwk-A2-em6"/>
                         <outlet property="lblFacebookLogo" destination="zGq-M7-DXv" id="tyL-M6-nMg"/>
                         <segue destination="rMv-AJ-5oE" kind="push" identifier="loginToSelectGenderIdentifier" id="ha1-K4-DIW"/>
+                        <segue destination="WJZ-Y4-ltf" kind="modal" identifier="loginToTutorialIdentifier" id="tEP-mx-oMi"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3KG-pM-8KO" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -757,18 +731,21 @@
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="preferencesCell" textLabel="dsH-NE-IwZ" detailTextLabel="xAj-iq-IHu" style="IBUITableViewCellStyleSubtitle" id="wry-00-NbY">
-                                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="22" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="wry-00-NbY" id="Yll-74-9Zp">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="dsH-NE-IwZ">
+                                                    <rect key="frame" x="15" y="5" width="28" height="17"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="16"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Subtitle" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="xAj-iq-IHu">
+                                                    <rect key="frame" x="15" y="22" width="50" height="17"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="10"/>
                                                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -946,6 +923,53 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="j3U-RH-OOc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2600" y="832"/>
+        </scene>
+        <!--App Tutorial View Controller-->
+        <scene sceneID="oCO-SM-YeG">
+            <objects>
+                <viewController id="WJZ-Y4-ltf" customClass="AppTutorialViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="2aP-zM-NZg">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" image="app_background.png" id="aYX-Ct-29s">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            </imageView>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" id="KEC-XO-71e">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.40000000000000002" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <outlet property="delegate" destination="WJZ-Y4-ltf" id="b3l-rv-vgH"/>
+                                </connections>
+                            </scrollView>
+                            <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" id="UuT-e4-9hL">
+                                <rect key="frame" x="0.0" y="7" width="327" height="37"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </pageControl>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="zGV-eM-Ofd">
+                                <rect key="frame" x="256" y="11" width="52" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Skip">
+                                    <color key="titleColor" red="0.0" green="0.68627450980000004" blue="0.94117647059999998" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="btnSkipPressed:" destination="WJZ-Y4-ltf" eventType="touchUpInside" id="ezy-8W-ogL"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <connections>
+                        <outlet property="pageControlTutorial" destination="UuT-e4-9hL" id="yqR-AQ-rcv"/>
+                        <outlet property="scrollViewTutorial" destination="KEC-XO-71e" id="hJq-BL-xyN"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Lvx-oW-0lb" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1503" y="1482"/>
         </scene>
         <!--User Profile Detail View Controller-->
         <scene sceneID="7hG-fG-mDE">
@@ -1542,7 +1566,7 @@
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="UserQualityCell" id="PhQ-m1-Gby">
-                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                        <rect key="frame" x="20" y="0.0" width="100" height="100"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
