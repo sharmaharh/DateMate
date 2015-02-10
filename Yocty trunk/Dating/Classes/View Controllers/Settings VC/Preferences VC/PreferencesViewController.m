@@ -73,9 +73,10 @@
         [afnhelper getDataFromPath:@"updatePreferences" withParamData:currentPreferencesDict withBlock:^(id response, NSError *error)
         {
             [[Utils sharedInstance] stopHSLoader];
+            appDelegate.userPreferencesDict = nil;
+            appDelegate.userPreferencesDict = currentPreferencesDict;
             [self.navigationController popViewControllerAnimated:YES];
             
-            NSLog(@"%@",response);
         }];
     }
 

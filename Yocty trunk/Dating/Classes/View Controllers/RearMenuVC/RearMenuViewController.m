@@ -128,7 +128,7 @@
                 UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:userProfileViewController];
                 [navigationController setNavigationBarHidden:YES];
                 [appDelegate.revealController setContentViewController:navigationController animated:YES];
-                [[MyWebSocket sharedInstance] logOutUserShouldClose:YES];
+//                [[MyWebSocket sharedInstance] logOutUserShouldClose:YES];
             }
             // Seems the user attempts to 'switch' to exactly the same controller he came from!
             
@@ -146,13 +146,13 @@
                 UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:findMatchViewController];
                 [navigationController setNavigationBarHidden:YES];
                 [appDelegate.revealController setContentViewController:navigationController animated:YES];
-                [[MyWebSocket sharedInstance] logOutUserShouldClose:YES];
+//                [[MyWebSocket sharedInstance] logOutUserShouldClose:YES];
             }
             else
             {
                 FindMatchViewController *findMatchViewController =  (FindMatchViewController *)((UINavigationController *)appDelegate.revealController.contentViewController).topViewController;
                 [findMatchViewController findMatchesList];
-                [[MyWebSocket sharedInstance] logOutUserShouldClose:YES];
+//                [[MyWebSocket sharedInstance] logOutUserShouldClose:YES];
             }
             // Seems the user attempts to 'switch' to exactly the same controller he came from!
 
@@ -169,7 +169,7 @@
                 UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:keepConnectingViewController];
                 [navigationController setNavigationBarHidden:YES];
                 [appDelegate.revealController setContentViewController:navigationController animated:YES];
-                [[MyWebSocket sharedInstance] logOutUserShouldClose:YES];
+//                [[MyWebSocket sharedInstance] logOutUserShouldClose:YES];
             }
 
             // Seems the user attempts to 'switch' to exactly the same controller he came from!
@@ -199,7 +199,7 @@
                 UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:settingsViewController];
                 [navigationController setNavigationBarHidden:YES];
                 [appDelegate.revealController setContentViewController:navigationController animated:YES];
-                [[MyWebSocket sharedInstance] logOutUserShouldClose:YES];
+//                [[MyWebSocket sharedInstance] logOutUserShouldClose:YES];
             }
 
             // Seems the user attempts to 'switch' to exactly the same controller he came from!

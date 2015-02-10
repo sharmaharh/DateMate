@@ -33,29 +33,17 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.nameArray = [NSMutableArray array];
-   
-    
     if (self.isFromPush)
     {
-        ChatViewController *chatViewController = [ChatViewController sharedChatInstance];
-        chatViewController.userName = self.nameArray[selectedIndex][@"fName"];
-        chatViewController.recieveFBID = self.nameArray[selectedIndex][@"fbId"];
-        chatViewController.chatFlag = self.nameArray[selectedIndex][@"flag"];
-        chatViewController.chatFlag_State = self.nameArray[selectedIndex][@"flag_state"];
-        chatViewController.chatFlag_Initiate = self.nameArray[selectedIndex][@"flag_initiate"];
-        chatViewController.chatFlag_Mine = self.nameArray[selectedIndex][@"flag_mine"];
-        chatViewController.chatFlag_Mine_State = self.nameArray[selectedIndex][@"flag_mine_state"];
-        [self resetBadgeCounterWithInfo:self.nameArray[selectedIndex]];
-        
-        [self.navigationController pushViewController:chatViewController animated:YES];
+        [self.navigationController pushViewController:[ChatViewController sharedChatInstance] animated:YES];
         return;
     }
     
-    [self getRecentChatUsers];
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
+    [self getRecentChatUsers];
     [super viewWillAppear:animated];
 }
 
@@ -67,7 +55,7 @@
     [self.tableViewRecentChats reloadData];
     NSArray *results = [appDelegate.managedObjectContext executeFetchRequest:request error:&error];
     
-//    if ([results count] && ![Utils isInternetAvailable])
+    //    if ([results count] && ![Utils isInternetAvailable])
     if(0)
     {
         //Deal with Database
@@ -115,23 +103,31 @@
     else
     {
         //Deal with Service
-        
-        
-        AFNHelper *afnHelper = [AFNHelper new];
-        [afnHelper getDataFromPath:@"getProfileMatches" withParamData:[@{@"ent_user_fbid": [FacebookUtility sharedObject].fbID, @"ent_user_action" : @"5"} mutableCopy] withBlock:^(id response, NSError *error)
-         {
-             if ([response[@"likes"] count])
+        if (![Utils isInternetAvailable])
+        {
+            [Utils showOKAlertWithTitle:_Alert_Title message:NO_INERNET_MSG];
+        }
+        else
+        {
+            [[Utils sharedInstance] startHSLoaderInView:self.view];
+            AFNHelper *afnHelper = [AFNHelper new];
+            [afnHelper getDataFromPath:@"getProfileMatches" withParamData:[@{@"ent_user_fbid": [FacebookUtility sharedObject].fbID ,@"ent_user_action" : @"5"} mutableCopy] withBlock:^(id response, NSError *error)
              {
-                 self.nameArray = response[@"likes"];
-                 [self addRecentChatsToDatabase];
-             }
-             else
-             {
-                 self.nameArray = [NSMutableArray array];
-             }
-             [self.tableViewRecentChats reloadData];
-             
-         }];
+                 [[Utils sharedInstance] stopHSLoader];
+                 if ([response[@"likes"] count])
+                 {
+                     self.nameArray = response[@"likes"];
+                     [self addRecentChatsToDatabase];
+                 }
+                 else
+                 {
+                     self.nameArray = [NSMutableArray array];
+                 }
+                 [self.tableViewRecentChats reloadData];
+                 
+             }];
+        }
+        
     }
 }
 
@@ -166,8 +162,27 @@
     }
     
     localpath = [localpath stringByAppendingPathComponent:[pPicURL lastPathComponent]];
-
+    [self downloadProfileImageToURLPath:localpath FromRemotePath:pPicURL];
     return localpath;
+}
+
+- (void)downloadProfileImageToURLPath:(NSString *)localPath FromRemotePath:(NSString *)remotePath
+{
+    if ([Utils isInternetAvailable])
+    {
+        NSURLRequest *imageURLReq = [NSURLRequest requestWithURL:[NSURL URLWithString:remotePath] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:20];
+        
+        [NSURLConnection sendAsynchronousRequest:imageURLReq queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+            if (!connectionError)
+            {
+                UIImage *profileImage = [UIImage imageWithData:data];
+                if (profileImage)
+                {
+                    [[NSFileManager defaultManager] createFileAtPath:localPath contents:data attributes:nil];
+                }
+            }
+        }];
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -211,7 +226,8 @@
     }
     
     cell.textLabel.text = self.nameArray[indexPath.row][@"fName"];
-    cell.detailTextLabel.text = self.nameArray[indexPath.row][@"unread_count"];
+    cell.textLabel.textColor = [UIColor whiteColor];
+//    cell.detailTextLabel.text = self.nameArray[indexPath.row][@"unread_count"];
     cell.imageView.image = [UIImage imageNamed:@"Bubble-1"];
     cell.imageView.clipsToBounds = YES;
     [cell.imageView.layer setCornerRadius:30.0f];
@@ -256,25 +272,13 @@
     
 }
 
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([self.nameArray count]>indexPath.row)
     {
         selectedIndex = indexPath.row;
         
-        ChatViewController *chatViewController = [ChatViewController sharedChatInstance];
-        chatViewController.userName = self.nameArray[selectedIndex][@"fName"];
-        chatViewController.recieveFBID = self.nameArray[selectedIndex][@"fbId"];
-        chatViewController.chatFlag = self.nameArray[selectedIndex][@"flag"];
-        chatViewController.chatFlag_State = self.nameArray[selectedIndex][@"flag_state"];
-        chatViewController.chatFlag_Initiate = self.nameArray[selectedIndex][@"flag_initiate"];
-        chatViewController.chatFlag_Mine = self.nameArray[selectedIndex][@"flag_mine"];
-        chatViewController.chatFlag_Mine_State = self.nameArray[selectedIndex][@"flag_mine_state"];
-        [self resetBadgeCounterWithInfo:self.nameArray[selectedIndex]];
-        [self.navigationController pushViewController:chatViewController animated:YES];
-        
-//        [self performSegueWithIdentifier:@"recentChatsToChatsIdentifier" sender:self];
+        [self performSegueWithIdentifier:@"recentChatsToChatsIdentifier" sender:self];
     }
 }
 
@@ -292,7 +296,7 @@
         chatViewController.chatFlag_Mine_State = self.nameArray[selectedIndex][@"flag_mine_state"];
         [self resetBadgeCounterWithInfo:self.nameArray[selectedIndex]];
     }
-
+    
 }
 
 - (void)resetBadgeCounterWithInfo:(NSDictionary *)infoDict
@@ -311,17 +315,22 @@
         [appDelegate.managedObjectContext save:nil];
     }
 }
+
+
 /*
-#pragma mark - Navigation
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+ {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+- (IBAction)btnRevealPressed:(id)sender
 {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
 }
-*/
-
 - (IBAction)btnAllContactsPressed:(id)sender {
 }
 @end

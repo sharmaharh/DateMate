@@ -37,7 +37,14 @@
     // Do any additional setup after loading the view.
     reqImageArray = [NSMutableArray array];
     [self customizeLoginView];
+    
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
     [[Utils sharedInstance] startLocationManager];
+    
 }
 
 - (void)customizeLoginView

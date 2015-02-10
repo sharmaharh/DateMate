@@ -820,11 +820,13 @@
     self.locationManager.distanceFilter = kCLDistanceFilterNone; //whenever we move
     self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
     
+    if(IS_OS_8_OR_LATER) {
+        [self.locationManager requestAlwaysAuthorization];
+    }
+    
     [self.locationManager startUpdatingLocation];
     
-    if(IS_OS_8_OR_LATER) {
-        [self.locationManager requestWhenInUseAuthorization];
-    }
+    
     
     if(![CLLocationManager locationServicesEnabled])
     {

@@ -158,16 +158,16 @@ AppDelegate* appDelegate = nil;
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
-    if ([[FacebookUtility sharedObject].fbID length])
-    {
-        if ([[MyWebSocket sharedInstance].webSocket readyState] == SR_CLOSED)
-        {
-            [[MyWebSocket sharedInstance] connectSocketWithBlock:^(BOOL connected, NSError *error) {
-                
-            }];
-        }
-        
-    }
+//    if ([[FacebookUtility sharedObject].fbID length])
+//    {
+//        if ([[MyWebSocket sharedInstance].webSocket readyState] == SR_CLOSED)
+//        {
+//            [[MyWebSocket sharedInstance] connectSocketWithBlock:^(BOOL connected, NSError *error) {
+//                
+//            }];
+//        }
+//        
+//    }
     
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
@@ -179,8 +179,8 @@ AppDelegate* appDelegate = nil;
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
-    [[[MyWebSocket sharedInstance] webSocket] close];
-    [[MyWebSocket sharedInstance] logOutUserShouldClose:YES];
+//    [[[MyWebSocket sharedInstance] webSocket] close];
+//    [[MyWebSocket sharedInstance] logOutUserShouldClose:YES];
     
     self.isAppinBackground = NO;
     
@@ -244,16 +244,16 @@ AppDelegate* appDelegate = nil;
             msgType = [NSString stringWithFormat:@"%i",[userInfo[@"aps"][@"msgtype"] intValue]-1];
         }
         NSDictionary *messageDict = @{msg_text: userInfo[@"aps"][@"alert"], msg_Date: userInfo[@"aps"][msg_Date], msg_ID: userInfo[@"aps"][msg_ID], msg_Reciver_ID: [FacebookUtility sharedObject].fbID, msg_Sender_ID: userInfo[@"aps"][@"sFid"],msg_Sender_Name: userInfo[@"aps"][msg_Sender_Name],msg_Media_Section:msgType};
-//        if ([frontNavigationController.topViewController isKindOfClass:[ChatViewController class]])
-//        {
-//            ChatViewController *chatViewController = (ChatViewController *)frontNavigationController.topViewController;
-//            if ([chatViewController.recieveFBID isEqualToString:userInfo[@"aps"][@"sFid"]])
-//            {
-//                [chatViewController recieveMessage:messageDict];
-//            }
-//           
+        if ([frontNavigationController.topViewController isKindOfClass:[ChatViewController class]])
+        {
+            ChatViewController *chatViewController = (ChatViewController *)frontNavigationController.topViewController;
+            if ([chatViewController.recieveFBID isEqualToString:userInfo[@"aps"][@"sFid"]])
+            {
+                [chatViewController recieveMessage:messageDict];
+            }
+           
 //            [chatViewController addMessageToDatabase:[Message messageWithDictionary:messageDict]];
-//        }
+        }
         if (self.isAppinBackground)
         {
             self.isAppinBackground = NO;
