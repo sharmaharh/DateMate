@@ -561,7 +561,7 @@ NSString *const PARAM_ENT_STATUS=@"ent_status";
 
 -(void)getUserAlbumsWithCompletionBlock:(FBCompletionBlock)fbResult
 {
-    FBRequest* friendsRequest = [[FBRequest alloc]initWithSession:[FBSession activeSession] graphPath:[NSString stringWithFormat:@"me/albums/?fields=name"]];
+    FBRequest* friendsRequest = [[FBRequest alloc]initWithSession:[FBSession activeSession] graphPath:[NSString stringWithFormat:@"me/albums?fields=name"]];
     [friendsRequest startWithCompletionHandler: ^(FBRequestConnection *connection,
                                                   NSDictionary* result,
                                                   NSError *error)

@@ -33,18 +33,37 @@
 
 - (void)setImagesOnScrollView
 {
-    [self.pageControlTutorial setNumberOfPages:5];
+    [self.pageControlTutorial setNumberOfPages:4];
     self.pageControlTutorial.currentPage = 0;
+    NSArray *textArray = @[@"Keep Connecting!\n Profiles will switch as the countdown ends and won't come back.",      @"Explore: Tap on the image to view full profile. Timer pauses when you enter detail view.",
+                           @"Happy Going Famous: Feature on every Yocty users' splash screen as our algorithm chooses your profile for a day.",
+                           @"Pending Requests: See who's waiting to date you in the Pending Emotion section"];
     
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < 4; i++)
     {
-        UIImageView *imgView = [[UIImageView alloc] initWithFrame:CGRectMake(44, 5, self.view.frame.size.width, self.view.frame.size.height-64)];
-        [imgView setImage:[UIImage imageNamed:[NSString stringWithFormat:@"app_tutorial_%i",i]]];
+        CGRect imgRect = [self.viewPrototype viewWithTag:10].frame;
+        imgRect.origin.x = self.view.frame.size.width*i + imgRect.origin.x;
+        
+        UIImageView *imgView = [[UIImageView alloc] initWithFrame:imgRect];
+        [imgView setImage:[UIImage imageNamed:[NSString stringWithFormat:@"app_tutorial_%i",i+1]]];
         [imgView setContentMode:UIViewContentModeScaleAspectFit];
+        
+        CGRect lblRect = [self.viewPrototype viewWithTag:11].frame;
+        lblRect.origin.x = self.view.frame.size.width*i + imgRect.origin.x;
+        
+        UILabel *tutorialLabel = [[UILabel alloc] initWithFrame:lblRect];
+        [tutorialLabel setNumberOfLines:0];
+        tutorialLabel.font = ((UILabel *)[self.viewPrototype viewWithTag:11]).font;
+        tutorialLabel.textColor = [UIColor whiteColor];
+        [tutorialLabel setTextAlignment:NSTextAlignmentCenter];
+        [tutorialLabel setText:textArray[i]];
+        [tutorialLabel setAdjustsFontSizeToFitWidth:YES];
+        
         [self.scrollViewTutorial addSubview:imgView];
+        [self.scrollViewTutorial addSubview:tutorialLabel];
     }
     
-    [self.scrollViewTutorial setContentSize:CGSizeMake(self.view.frame.size.width * 5, 0)];
+    [self.scrollViewTutorial setContentSize:CGSizeMake(self.view.frame.size.width * 4, 0)];
 }
 
 - (void)didReceiveMemoryWarning
@@ -55,6 +74,11 @@
 
 - (IBAction)btnSkipPressed:(id)sender
 {
+    for (UIView *view in self.scrollViewTutorial.subviews)
+    {
+        [view removeFromSuperview];
+    }
+    self.scrollViewTutorial = nil;
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

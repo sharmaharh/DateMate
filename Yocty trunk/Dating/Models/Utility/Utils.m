@@ -815,28 +815,30 @@
 
 - (void)startLocationManager
 {
+    self.locationManager = nil;
+    
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
-    self.locationManager.distanceFilter = kCLDistanceFilterNone; //whenever we move
+    self.locationManager.distanceFilter = 1; //whenever we move
     self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
     
-    if(IS_OS_8_OR_LATER) {
-        [self.locationManager requestAlwaysAuthorization];
+    // Check for iOS 8. Without this guard the code will crash with "unknown selector" on iOS 7.
+    if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+        [self.locationManager requestWhenInUseAuthorization];
     }
-    
-    [self.locationManager startUpdatingLocation];
-    
-    
     
     if(![CLLocationManager locationServicesEnabled])
     {
         [Utils showOKAlertWithTitle:@"Location Services Disabled" message:@"Yocty requires your location. Please allow access from settings."];
     }
+    
+    [self.locationManager startUpdatingLocation];
 }
 
 - (void)stopUpdatingLocation
 {
     [self.locationManager stopUpdatingLocation];
+    self.locationManager.delegate = nil;
     self.locationManager = nil;
 }
 
@@ -845,6 +847,13 @@
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
     self.currentLocation = [locations firstObject];
+}
+
+- (void)locationManager:(CLLocationManager *)manager
+       didFailWithError:(NSError *)error
+{
+    NSLog(@"Error occured while tracking location = %@",[error localizedDescription]);
+    [self.locationManager startUpdatingLocation];
 }
 
 - (void)startHSLoaderInView:(UIView *)view

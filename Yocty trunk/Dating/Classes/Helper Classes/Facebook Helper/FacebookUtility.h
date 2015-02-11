@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 //#define FBID @"495752983893706"
-#define FBID @"495752983893706"
+#define FBID @"1673353432892201"
 
 extern NSString *const UD_FBACCESSTOKENDATA;//FBAccessTokenDataDictionary
 

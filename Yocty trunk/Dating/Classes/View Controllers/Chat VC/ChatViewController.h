@@ -29,7 +29,7 @@
 
 @property (assign, nonatomic) AttachmentType attachmentType;
 
-+ (id)sharedChatInstance;
++ (ChatViewController *)sharedChatInstance;
 
 - (IBAction)btnAttachmentPressed:(id)sender;
 - (IBAction)btnSendMessagePressed:(id)sender;

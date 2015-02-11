@@ -32,18 +32,24 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.nameArray = [NSMutableArray array];
+    
     if (self.isFromPush)
     {
+        [ChatViewController sharedChatInstance].userName = self.nameArray[0][@"sname"];
+        [ChatViewController sharedChatInstance].recieveFBID = self.nameArray[0][@"sfid"];
         [self.navigationController pushViewController:[ChatViewController sharedChatInstance] animated:YES];
         return;
     }
-    
+    self.nameArray = [NSMutableArray array];
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    [self getRecentChatUsers];
+    if (!self.isFromPush)
+    {
+        [self getRecentChatUsers];
+    }
+    
     [super viewWillAppear:animated];
 }
 
@@ -278,15 +284,7 @@
     {
         selectedIndex = indexPath.row;
         
-        [self performSegueWithIdentifier:@"recentChatsToChatsIdentifier" sender:self];
-    }
-}
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.identifier isEqualToString:@"recentChatsToChatsIdentifier"])
-    {
-        ChatViewController *chatViewController = [segue destinationViewController];
+        ChatViewController *chatViewController = [ChatViewController sharedChatInstance];
         chatViewController.userName = self.nameArray[selectedIndex][@"fName"];
         chatViewController.recieveFBID = self.nameArray[selectedIndex][@"fbId"];
         chatViewController.chatFlag = self.nameArray[selectedIndex][@"flag"];
@@ -294,6 +292,17 @@
         chatViewController.chatFlag_Initiate = self.nameArray[selectedIndex][@"flag_initiate"];
         chatViewController.chatFlag_Mine = self.nameArray[selectedIndex][@"flag_mine"];
         chatViewController.chatFlag_Mine_State = self.nameArray[selectedIndex][@"flag_mine_state"];
+        
+        [self.navigationController pushViewController:chatViewController animated:YES];
+        
+    }
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"recentChatsToChatsIdentifier"])
+    {
+        
         [self resetBadgeCounterWithInfo:self.nameArray[selectedIndex]];
     }
     
@@ -327,6 +336,12 @@
  // Pass the selected object to the new view controller.
  }
  */
+
+-(void)viewDidDisappear:(BOOL)animated
+{
+    self.isFromPush = NO;
+    [super viewDidDisappear:animated];
+}
 
 - (IBAction)btnRevealPressed:(id)sender
 {

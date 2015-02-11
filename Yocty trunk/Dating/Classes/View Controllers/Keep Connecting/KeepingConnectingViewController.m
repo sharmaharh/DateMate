@@ -264,6 +264,7 @@
                               UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
                               RecentChatsViewController *recentChatViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecentChatsViewController"];
                               appDelegate.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:recentChatViewController];
+                              [appDelegate.frontNavigationController setNavigationBarHidden:YES animated:YES];
                               recentChatViewController.isFromPush = NO;
                               [appDelegate.revealController setContentViewController:appDelegate.frontNavigationController animated:NO];
                               ChatViewController *chatViewConrtroller = [ChatViewController sharedChatInstance];

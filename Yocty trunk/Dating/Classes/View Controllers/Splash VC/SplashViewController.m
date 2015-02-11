@@ -53,7 +53,7 @@
             [self.imageViewSplash setContentMode:UIViewContentModeScaleToFill];
             [self.imageViewSplash setImage:[Utils scaleImage:splashImage WithRespectToFrame:self.imageViewSplash.frame]];
             self.labelUsername.text = [[NSUserDefaults standardUserDefaults] stringForKey:@"FamousUserName"];
-            self.labelUsername.text = [[NSUserDefaults standardUserDefaults] stringForKey:@"FamousUserLocation"];
+            self.labelUserLocation.text = [[NSUserDefaults standardUserDefaults] stringForKey:@"FamousUserLocation"];
         }
         else
         {
@@ -124,13 +124,27 @@
                     if ([response[@"Userphotos"] isKindOfClass:[NSArray class]])
                     {
                         NSArray *splashImagesArray = response[@"Userphotos"];
+                        if([response[@"Name"] length])
+                        {
+                            [[NSUserDefaults standardUserDefaults] setObject:response[@"Name"] forKey:@"FamousUserName"];
+                        }
+                        if([response[@"Country"] length])
+                        {
+                            [[NSUserDefaults standardUserDefaults] setObject:response[@"Country"] forKey:@"FamousUserLocation"];
+                        }
                         
+                        [[NSUserDefaults standardUserDefaults] synchronize];
+                    
                         if ([splashImagesArray count])
                         {
+                            
+                            
                             [[HSImageDownloader sharedInstance] imageWithImageURL:[splashImagesArray firstObject][@"image_url"] withFBID:nil withImageDownloadedBlock:^(UIImage *image, NSString *imgURL, NSError *error) {
                                 
                                 NSLog(@"Splash Downloaded");
                             }];
+                            
+                            
                         }
                     }
                     

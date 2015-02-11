@@ -26,6 +26,8 @@
 
 @implementation ChatViewController
 
+static ChatViewController *chatViewController = nil;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -35,13 +37,14 @@
     return self;
 }
 
-+ (id)sharedChatInstance
++ (ChatViewController *)sharedChatInstance
 {
     static dispatch_once_t once=0;
     static id sharedInstance;
     dispatch_once(&once, ^{
         UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
         sharedInstance = [mainStoryBoard instantiateViewControllerWithIdentifier:@"ChatViewController"];
+        chatViewController = sharedInstance;
     });
     return sharedInstance;
 }
@@ -52,15 +55,30 @@
     // Do any additional setup after loading the view.
     isFirstTime = YES;
     self.tableViewChat.sectionFooterHeight = 0;
+    self.viewChatWindow.layer.cornerRadius = self.viewChatWindow.frame.size.height/2;
+    
+    UITableViewController *tableViewController = [[UITableViewController alloc] init];
+    tableViewController.tableView = self.tableViewChat;
+    
     
     refreshControl = [[UIRefreshControl alloc] init];
     // Configure Refresh Control
+    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Loading Previous Messages" attributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
     [refreshControl addTarget:self action:@selector(loadMoreChats) forControlEvents:UIControlEventValueChanged];
     [refreshControl setTintColor:[UIColor whiteColor]];
-    // Configure View Controller
-    [self.tableViewChat addSubview:refreshControl];
+    tableViewController.refreshControl = refreshControl;
     
     totalChatCount = 0;
+    
+    if ([Utils isInternetAvailable])
+    {
+        [[Utils sharedInstance] startHSLoaderInView:[ChatViewController sharedChatInstance].view];
+        
+    }
+    else
+    {
+        [Utils showOKAlertWithTitle:_Alert_Title message:NO_INERNET_MSG];
+    }
 }
 
 - (void)loadMoreChats
@@ -82,22 +100,22 @@
             self.recieveFBID = @"";
         }
         
-        [self getUserStatus];
-
-        
+//        [self getUserStatus];        
         
     }
-    self.messages = [NSMutableArray array];
-    [self.tableViewChat reloadData];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardFrameDidChange:) name:UIKeyboardWillChangeFrameNotification object:nil];
+    self.attachmentType = kText;
+    NSLog(@"\n\n\n\n\n\n View Will Apppear \n\n\n\n\n\n");
+    [[NSNotificationCenter defaultCenter] addObserver:chatViewController selector:@selector(keyboardFrameDidChange:) name:UIKeyboardWillChangeFrameNotification object:nil];
     pageNo = 1;
+    
     [self getChatHistoryWithPageNo:pageNo];
     
 }
 
 -(void)viewDidDisappear:(BOOL)animated
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    NSLog(@"\n\n\n\n\n\n View Will DisApppear \n\n\n\n\n\n");
+    [self.textFieldMessage resignFirstResponder];
     [super viewDidDisappear:animated];
 }
 
@@ -116,7 +134,7 @@
     CGRect keyboardFrameEnd = [self.viewChatWindow convertRect:keyboardEndFrame toView:nil];
     CGRect keyboardFrameBegin = [self.viewChatWindow convertRect:keyboardBeginFrame toView:nil];
     
-    newFrame.origin.y -= (keyboardFrameBegin.origin.y - keyboardFrameEnd.origin.y);
+    newFrame.origin.y = (keyboardEndFrame.origin.y - self.viewChatWindow.frame.size.height);
     self.viewChatWindow.frame = newFrame;
     
     CGRect tableViewFrame = self.tableViewChat.frame;
@@ -240,8 +258,11 @@
         AFNHelper *afnHelper = [AFNHelper new];
         [afnHelper getDataFromPath:@"getChatHistory" withParamData:[@{@"ent_user_fbid": [FacebookUtility sharedObject].fbID, @"ent_user_recever_fbid" : self.recieveFBID, @"ent_chat_page" : [NSString stringWithFormat:@"%i",pageno]} mutableCopy] withBlock:^(id response, NSError *error) {
             [refreshControl endRefreshing];
+            [[Utils sharedInstance] stopHSLoader];
+            
             if ([response[@"chat"] count])
             {
+                
                 totalChatCount = [response[@"chatTotalCount"] integerValue];
                 [self saveTotalCountofMessages];
                 [self filterChatHistoryList:response[@"chat"]];
@@ -260,6 +281,11 @@
 - (void)filterChatHistoryList:(NSArray *)chatHistory
 {
     NSArray *sortedArray = [self filterArrayInChronologicalDescendingOrderFromArray:chatHistory];
+    
+    if (pageNo == 1)
+    {
+        self.messages = [NSMutableArray array];
+    }
     
     for (int i = 0; i < sortedArray.count; i++)
     {
@@ -282,14 +308,14 @@
 - (NSArray *)filterArrayInChronologicalDescendingOrderFromArray:(NSArray *)chatArray
 {
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"yyyy-MM-d h:m:s"];
+    [formatter setDateFormat:@"yyyy-MM-d H:m:s"];
     
     NSComparator myDateComparator = ^NSComparisonResult(NSDictionary *obj1,
                                                         NSDictionary *obj2) {
         NSDate *date1 = [formatter dateFromString:obj1[@"dt"]];
         NSDate *date2 = [formatter dateFromString:obj2[@"dt"]];
         
-        return [date2 compare:date1]; // sort in descending order
+        return [date1 compare:date2]; // sort in descending order
     };
     //    then simply sort the array by doing:
     return [chatArray sortedArrayUsingComparator:myDateComparator];
@@ -339,7 +365,7 @@
 - (IBAction)btnAttachmentPressed:(id)sender
 {
     [UIView animateWithDuration:0.16 animations:^{
-        [self.tableViewChat setFrame:CGRectMake(0, 0, 320, self.view.frame.size.height-44)];
+        [self.tableViewChat setFrame:CGRectMake(10, 0, 320, self.view.frame.size.height-44)];
         [self.viewChatWindow setTransform:CGAffineTransformMakeTranslation(0, 0)];
     }];
     [self.textFieldMessage resignFirstResponder];
@@ -351,7 +377,7 @@
 - (IBAction)btnSendMessagePressed:(id)sender
 {
     NSDateFormatter *dateFormatter = [NSDateFormatter new];
-    [dateFormatter setDateFormat:@"YYYY-MM-d h:m:s"];
+    [dateFormatter setDateFormat:@"YYYY-MM-d H:m:s"];
     
     NSDictionary *msgDict = [NSDictionary dictionary];
     
@@ -367,6 +393,7 @@
             else
             {
                 [Utils showOKAlertWithTitle:@"Message" message:@"Please Enter Message"];
+                return;
             }
         }
             break;
@@ -390,6 +417,10 @@
             break;
     }
     
+    if (!self.messages)
+    {
+        self.messages = [NSMutableArray array];
+    }
     
     [self.messages addObject:[Message messageWithDictionary:msgDict]];
     totalChatCount ++;
@@ -417,6 +448,8 @@
      }
      );
      */
+    
+    return;
     
     int minNum = MIN([self.chatFlag_State intValue], [self.chatFlag_Mine_State intValue]);
     
@@ -848,19 +881,6 @@
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath*)indexPath
-{
-    Message *message = [self.messages objectAtIndex:indexPath.row];
-    
-    if (message.attachmentType == kAudio)
-    {
-        if ([ChatAttachmentHelperClass sharedInstance].audioPlayer.rate)
-        {
-            [[ChatAttachmentHelperClass sharedInstance].audioPlayer pause];
-            [ChatAttachmentHelperClass sharedInstance].audioPlayer = nil;
-        }
-    }
-}
 
 - (void)previewImageInFullScreenMode:(UIButton *)imageBtn
 {
@@ -1274,11 +1294,11 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-//    [UIView animateWithDuration:0.16 animations:^{
-//        [self.tableViewChat setFrame:CGRectMake(0, 64, 320, self.view.frame.size.height-44-64)];
-//        [self.viewChatWindow setTransform:CGAffineTransformMakeTranslation(0, 0)];
-//        
-//    }];
+    [UIView animateWithDuration:0.16 animations:^{
+        [self.tableViewChat setFrame:CGRectMake(10, 64, 300, self.view.frame.size.height-44-64)];
+        [self.viewChatWindow setTransform:CGAffineTransformMakeTranslation(0, 0)];
+        
+    }];
     [textField resignFirstResponder];
     return YES;
 }

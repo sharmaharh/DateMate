@@ -183,7 +183,7 @@
             {
                 RecentChatsViewController *chatViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"RecentChatsViewController"];
                 UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:chatViewController];
-                [navigationController setNavigationBarHidden:YES];
+                [navigationController setNavigationBarHidden:YES animated:YES];
                 [appDelegate.revealController setContentViewController:navigationController animated:YES];
             }
             

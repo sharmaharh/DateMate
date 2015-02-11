@@ -193,7 +193,7 @@
 {
     if (indexPath.section == 2)
     {
-        return MAX(80, [self heightOfStatusText:currentPreferencesDict[@"ent_pers_desc"]]);
+        return MAX(80, [self heightOfStatusText:currentPreferencesDict[@"ent_pers_desc"]] + 10);
     }
     return indexPath.section?80:330;
 }
@@ -243,7 +243,7 @@
         {
             // Want to be famous
             cell.textLabel.text = @"Happy Going Famous";
-            cell.detailTextLabel.text = @"You could be lucky user to view yourself on All Yocty Users application splash screen. Do you want to be on their Welcome Screen?";
+            cell.detailTextLabel.text = @"Your profile pic can be chosen by our algorithm to feature on every Yocty users&apos; splash screen around the world for 24 hours.";
             UISwitch *onOffSwitch = [[UISwitch alloc] init];
             onOffSwitch.tag = 12;
             onOffSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"Famous"];
@@ -401,9 +401,9 @@
     {
         CGSize size = [str boundingRectWithSize:CGSizeMake(self.view.frame.size.width-20, 150) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName:[UIFont fontWithName:@"SegoeUI" size:14]} context:nil].size;
         
-        return MAX(50,size.height+5);
+        return MAX(70,size.height+5);
     }
-    return 50.0f;
+    return 70.0f;
 
 }
 

@@ -73,7 +73,7 @@
     }
     
     NSString *paramsString = @"id, name, first_name, last_name, gender, picture.type(large), email, birthday, location, bio";
-    NSArray *permissionsArray = @[@"email",@"user_birthday",@"user_location",@"user_likes"];
+    NSArray *permissionsArray = @[@"email",@"user_birthday",@"user_location",@"user_likes",@"user_photos"];
     [self.btnFacebook setUserInteractionEnabled:NO];
 
     [[Utils sharedInstance] startHSLoaderInView:self.view];

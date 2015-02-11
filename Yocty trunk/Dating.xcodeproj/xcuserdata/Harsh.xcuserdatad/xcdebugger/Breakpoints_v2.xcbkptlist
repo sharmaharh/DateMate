@@ -19,13 +19,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Dating/Classes/View Controllers/Profile VC/UserProfileViewController.m"
-            timestampString = "444678477.300749"
+            filePath = "Dating/Classes/View Controllers/Login VC/LogInViewController.m"
+            timestampString = "445356059.423368"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "368"
-            endingLineNumber = "368"
-            landmarkName = "-btnSaveProfilePressed:"
+            startingLineNumber = "101"
+            endingLineNumber = "101"
+            landmarkName = "-fetchProfilePhotoWithFBResponse:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -35,13 +35,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Dating/Models/Utility/Utils.m"
-            timestampString = "445199227.976595"
+            filePath = "Dating/Classes/Helper Classes/Facebook Helper/FacebookUtility.m"
+            timestampString = "445361818.827314"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "847"
-            endingLineNumber = "847"
-            landmarkName = "-locationManager:didUpdateLocations:"
+            startingLineNumber = "569"
+            endingLineNumber = "569"
+            landmarkName = "-getUserAlbumsWithCompletionBlock:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -51,45 +51,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Dating/Models/Utility/Utils.m"
-            timestampString = "445199293.101863"
+            filePath = "Dating/Classes/View Controllers/Splash VC/SplashViewController.m"
+            timestampString = "445366117.342759"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "824"
-            endingLineNumber = "824"
-            landmarkName = "-startLocationManager"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Dating/Classes/View Controllers/Chat VC/RecentChatsViewController.m"
-            timestampString = "445199795.888794"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "287"
-            endingLineNumber = "287"
-            landmarkName = "-prepareForSegue:sender:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Dating/Classes/View Controllers/Chat VC/ChatViewController.m"
-            timestampString = "445199837.648065"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "74"
-            endingLineNumber = "74"
-            landmarkName = "-viewWillAppear:"
+            startingLineNumber = "126"
+            endingLineNumber = "126"
+            landmarkName = "-downloadLatestSplashImage"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

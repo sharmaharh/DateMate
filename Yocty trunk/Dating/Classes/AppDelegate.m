@@ -40,15 +40,16 @@ AppDelegate* appDelegate = nil;
     if ([application respondsToSelector:@selector(isRegisteredForRemoteNotifications)])
     {
         // iOS 8 Notifications
-        [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
-        
+        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:
+                                                UIUserNotificationTypeAlert | UIUserNotificationTypeBadge |
+                                                UIUserNotificationTypeSound categories:nil];
+        [UIApplication.sharedApplication registerUserNotificationSettings:settings];
         [application registerForRemoteNotifications];
     }
     else
     {
         // iOS < 8 Notifications
-        [application registerForRemoteNotificationTypes:
-         (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound)];
+        [[UIApplication sharedApplication] registerForRemoteNotificationTypes: (UIRemoteNotificationTypeNewsstandContentAvailability| UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
     }
     
     
@@ -83,12 +84,28 @@ AppDelegate* appDelegate = nil;
             }
             else
             {
-                RecentChatsViewController *recentChatViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecentChatsViewController"];
-                recentChatViewController.isFromPush = YES;
-                self.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:recentChatViewController];
-                [self.frontNavigationController setNavigationBarHidden:YES animated:YES];
+                NSString *msgType = nil;
+                
+                if ([serverNotif[@"aps"][@"msgtype"] intValue] == 1 || [serverNotif[@"aps"][@"msgtype"] intValue] == 2)
+                {
+                    msgType = @"1";
+                }
+                else
+                {
+                    msgType = [NSString stringWithFormat:@"%i",[serverNotif[@"aps"][@"msgtype"] intValue]-1];
+                }
+                
                 [FacebookUtility sharedObject].fbID = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbID"];
                 [FacebookUtility sharedObject].fbFullName = [[NSUserDefaults standardUserDefaults] objectForKey:@"fbFullName"];
+                
+                NSDictionary *messageDict = @{msg_text: serverNotif[@"aps"][@"alert"], msg_Date: serverNotif[@"aps"][msg_Date], msg_ID: serverNotif[@"aps"][msg_ID], msg_Reciver_ID: [FacebookUtility sharedObject].fbID, msg_Sender_ID: serverNotif[@"aps"][@"sFid"],msg_Sender_Name: serverNotif[@"aps"][msg_Sender_Name],msg_Media_Section:msgType};
+                
+                RecentChatsViewController *recentChatViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecentChatsViewController"];
+                recentChatViewController.isFromPush = YES;
+                recentChatViewController.nameArray = [NSMutableArray arrayWithObject:messageDict];
+                self.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:recentChatViewController];
+                [self.frontNavigationController setNavigationBarHidden:YES animated:YES];
+                
                 
                 self.revealController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"ResideMenuViewController"];
                 self.revealController.contentViewController = self.frontNavigationController;
@@ -151,7 +168,6 @@ AppDelegate* appDelegate = nil;
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
     self.isAppinBackground = YES;
-    
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 }
@@ -205,6 +221,7 @@ AppDelegate* appDelegate = nil;
 
 #pragma mark-  Push Notification Method
 
+
 - (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken
 {
 	NSLog(@"My token is: %@", deviceToken);
@@ -246,19 +263,20 @@ AppDelegate* appDelegate = nil;
         NSDictionary *messageDict = @{msg_text: userInfo[@"aps"][@"alert"], msg_Date: userInfo[@"aps"][msg_Date], msg_ID: userInfo[@"aps"][msg_ID], msg_Reciver_ID: [FacebookUtility sharedObject].fbID, msg_Sender_ID: userInfo[@"aps"][@"sFid"],msg_Sender_Name: userInfo[@"aps"][msg_Sender_Name],msg_Media_Section:msgType};
         if ([frontNavigationController.topViewController isKindOfClass:[ChatViewController class]])
         {
-            ChatViewController *chatViewController = (ChatViewController *)frontNavigationController.topViewController;
+            ChatViewController *chatViewController = [ChatViewController sharedChatInstance];
             if ([chatViewController.recieveFBID isEqualToString:userInfo[@"aps"][@"sFid"]])
             {
                 [chatViewController recieveMessage:messageDict];
             }
            
-//            [chatViewController addMessageToDatabase:[Message messageWithDictionary:messageDict]];
         }
         if (self.isAppinBackground)
         {
             self.isAppinBackground = NO;
             if ([frontNavigationController.topViewController isKindOfClass:[RecentChatsViewController class]])
             {
+                RecentChatsViewController *recentChatViewController = (RecentChatsViewController *)frontNavigationController.topViewController;
+                recentChatViewController.nameArray = [NSMutableArray arrayWithObject:messageDict];
                 [frontNavigationController pushViewController:[ChatViewController sharedChatInstance] animated:YES];
                 
                 
@@ -267,7 +285,10 @@ AppDelegate* appDelegate = nil;
             {
                 UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
                 RecentChatsViewController *recentChatViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecentChatsViewController"];
+                
+                recentChatViewController.nameArray = [NSMutableArray arrayWithObject:messageDict];
                 frontNavigationController = [[UINavigationController alloc] initWithRootViewController:recentChatViewController];
+                [frontNavigationController setNavigationBarHidden:YES animated:YES];
                 recentChatViewController.isFromPush = YES;
                 
                 [appDelegate.revealController setContentViewController:frontNavigationController animated:YES];
@@ -310,11 +331,11 @@ AppDelegate* appDelegate = nil;
         }
         else
         {
-            UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
-            KeepingConnectingViewController *keepConnectingViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"KeepingConnectingViewController"];
-            UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:keepConnectingViewController];
-            [navigationController setNavigationBarHidden:YES];
-            [appDelegate.revealController setContentViewController:navigationController animated:YES];
+//            UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
+//            KeepingConnectingViewController *keepConnectingViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"KeepingConnectingViewController"];
+//            UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:keepConnectingViewController];
+//            [navigationController setNavigationBarHidden:YES animated:YES];
+//            [appDelegate.revealController setContentViewController:navigationController animated:YES];
             
         }
 
