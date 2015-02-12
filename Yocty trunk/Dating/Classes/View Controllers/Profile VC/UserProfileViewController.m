@@ -42,6 +42,10 @@
     }
     editedArray = [NSMutableArray arrayWithObjects:@"",@"",@"", nil];
     deletedImageUrlArray = [NSMutableArray array];
+    
+    [self.viewDelete.layer setBorderColor:[UIColor whiteColor].CGColor];
+    [self.viewDelete.layer setBorderWidth:1.0f];
+    
     [self setImagesOnLayout];
 }
 
@@ -124,7 +128,7 @@
         Btn.tag = btnTag*2;
         
         [self.view insertSubview:tempButton belowSubview:Btn];
-        [Btn.layer setBorderColor:[UIColor redColor].CGColor];
+        [Btn.layer setBorderColor:[UIColor whiteColor].CGColor];
         [Btn.layer setBorderWidth:1.0];
         [self popUpDeleteView];
     }
@@ -186,7 +190,7 @@
         [button1.layer setBorderColor:[UIColor whiteColor].CGColor];
         if (isIntersectWithImage)
         {
-            [button1.layer setBorderColor:[UIColor redColor].CGColor];
+            [button1.layer setBorderColor:[UIColor whiteColor].CGColor];
         }
         
         if (isIntersectWithDeletion)

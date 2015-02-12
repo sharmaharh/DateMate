@@ -28,4 +28,6 @@ typedef enum : NSUInteger {
 @property (strong, nonatomic) IBOutlet UIView *viewRequestSent;
 @property (strong, nonatomic) IBOutlet UILabel *lblRequestSent;
 
+- (void)getPendingEmotionsNotifications;
+
 @end

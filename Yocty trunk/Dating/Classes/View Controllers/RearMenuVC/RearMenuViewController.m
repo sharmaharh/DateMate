@@ -171,7 +171,12 @@
                 [appDelegate.revealController setContentViewController:navigationController animated:YES];
 //                [[MyWebSocket sharedInstance] logOutUserShouldClose:YES];
             }
-
+            else
+            {
+                KeepingConnectingViewController *keepConnectingViewController =  (KeepingConnectingViewController *)((UINavigationController *)appDelegate.revealController.contentViewController).topViewController;
+                [keepConnectingViewController getPendingEmotionsNotifications];
+                //                [[MyWebSocket sharedInstance] logOutUserShouldClose:YES];
+            }
             // Seems the user attempts to 'switch' to exactly the same controller he came from!
             [appDelegate.revealController hideMenuViewController];
 
@@ -186,7 +191,11 @@
                 [navigationController setNavigationBarHidden:YES animated:YES];
                 [appDelegate.revealController setContentViewController:navigationController animated:YES];
             }
-            
+            else
+            {
+                RecentChatsViewController *recentChatViewController =  (RecentChatsViewController *)((UINavigationController *)appDelegate.revealController.contentViewController).topViewController;
+                [recentChatViewController getRecentChatUsers];
+            }
             // Seems the user attempts to 'switch' to exactly the same controller he came from!
             [appDelegate.revealController hideMenuViewController];
             break;

@@ -174,7 +174,7 @@
     NSLog(@"COUNTDOWN FINISHED METHOD");
     [self.view setNeedsDisplay];
     [view updateAppearance];
-    [self passProfileButtonPressed:nil];
+//    [self passProfileButtonPressed:nil];
     
 }
 
@@ -434,6 +434,27 @@
         self.lblTimer.text = @"";
     }
     [self.sfCountdownView stop];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        
+        if (![Utils isInternetAvailable])
+        {
+            [Utils showOKAlertWithTitle:_Alert_Title message:NO_INERNET_MSG];
+        }
+        else
+        {
+            AFNHelper *afnhelper = [AFNHelper new];
+            NSMutableDictionary *requestDic = [NSMutableDictionary dictionaryWithObjects:@[[FacebookUtility sharedObject].fbID,matchedProfilesArray[self.currentProfileIndex][@"fbId"],@"6"] forKeys:@[@"ent_user_fbid",@"ent_invitee_fbid",@"ent_user_action"]];
+            
+            [afnhelper getDataFromPath:@"inviteAction" withParamData:requestDic withBlock:^(id response, NSError *error)
+             {
+                 
+                 NSLog(@"Profile passed with success = %@",response);
+                 
+             }];
+        }
+        
+    });
 }
 
 - (void)resetView
@@ -499,6 +520,15 @@
         
         [afnhelper getDataFromPath:@"inviteAction" withParamData:requestDic withBlock:^(id response, NSError *error)
          {
+             /*
+              {
+              errFlag = 0;
+              errMsg = "Congrats! You got a match";
+              errNum = 55;
+              pPic = "http://69.195.70.43/playground/ws/pics/10404248_787005571338697_2620196950764631887_n.jpg";
+              uFbId = 848605118512075;
+              uName = Rahul;
+              }*/
              if (!error)
              {
                  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -508,7 +538,7 @@
                  
                  if ([response[@"errMsg"] isEqualToString:@"Congrats! You got a match"]) {
                      // Now Winked Back, Start Conversation
-                     [[Utils sharedInstance] openAlertViewWithTitle:@"Dating" message:response[@"errMsg"] buttons:@[@"Cancel",@"Chat"] completion:^(UIAlertView *alert, NSInteger buttonIndex)
+                     [[Utils sharedInstance] openAlertViewWithTitle:_Alert_Title message:response[@"errMsg"] buttons:@[@"Cancel",@"Chat"] completion:^(UIAlertView *alert, NSInteger buttonIndex)
                      {
                          if (buttonIndex)
                          {
@@ -517,12 +547,15 @@
                              RecentChatsViewController *recentChatViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RecentChatsViewController"];
                              appDelegate.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:recentChatViewController];
                              [appDelegate.frontNavigationController setNavigationBarHidden:YES animated:YES];
-                             recentChatViewController.isFromPush = NO;
+                             
+                             NSDictionary *messageDict = @{msg_Reciver_ID: response[@"uFbId"], msg_Sender_ID: [FacebookUtility sharedObject].fbID,msg_Sender_Name: response[@"uName"]};
+                             recentChatViewController.nameArray = [@[messageDict] mutableCopy];
+                             recentChatViewController.isFromPush = YES;
                              [appDelegate.revealController setContentViewController:appDelegate.frontNavigationController animated:NO];
-                             ChatViewController *chatViewConrtroller = [ChatViewController sharedChatInstance];
-                             chatViewConrtroller.recieveFBID = response[@"uFbId"];
-                             chatViewConrtroller.userName = response[@"uName"];
-                             [appDelegate.frontNavigationController pushViewController:chatViewConrtroller animated:YES];
+//                             ChatViewController *chatViewConrtroller = [ChatViewController sharedChatInstance];
+//                             chatViewConrtroller.recieveFBID = response[@"uFbId"];
+//                             chatViewConrtroller.userName = response[@"uName"];
+//                             [appDelegate.frontNavigationController pushViewController:chatViewConrtroller animated:YES];
                          }
                          
                      }];

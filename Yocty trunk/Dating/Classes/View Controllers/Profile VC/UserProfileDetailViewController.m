@@ -478,12 +478,15 @@
                               appDelegate.frontNavigationController = [[UINavigationController alloc] initWithRootViewController:recentChatViewController];
                               [appDelegate.frontNavigationController setNavigationBarHidden:YES animated:YES];
                               
-                              recentChatViewController.isFromPush = NO;
+                              NSDictionary *messageDict = @{msg_Reciver_ID: response[@"uFbId"], msg_Sender_ID: [FacebookUtility sharedObject].fbID,msg_Sender_Name: response[@"uName"]};
+                              recentChatViewController.nameArray = [@[messageDict] mutableCopy];
+                              recentChatViewController.isFromPush = YES;
+                              
                               [appDelegate.revealController setContentViewController:appDelegate.frontNavigationController animated:NO];
-                              ChatViewController *chatViewConrtroller = [ChatViewController sharedChatInstance];
-                              chatViewConrtroller.recieveFBID = response[@"uFbId"];
-                              chatViewConrtroller.userName = response[@"uName"];
-                              [appDelegate.frontNavigationController pushViewController:chatViewConrtroller animated:YES];
+//                              ChatViewController *chatViewConrtroller = [ChatViewController sharedChatInstance];
+//                              chatViewConrtroller.recieveFBID = response[@"uFbId"];
+//                              chatViewConrtroller.userName = response[@"uName"];
+//                              [appDelegate.frontNavigationController pushViewController:chatViewConrtroller animated:YES];
                           }
                           
                       }];

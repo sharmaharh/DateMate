@@ -371,7 +371,7 @@
 {
     if (!aboutMeView)
     {
-        UITextView *statusTextView = [[UITextView alloc] initWithFrame:CGRectMake(10, 5, self.view.frame.size.width-20, MAX( 70, ([self heightOfStatusText:appDelegate.userPreferencesDict[@"ent_pers_desc"]] + 5)))];
+        UITextView *statusTextView = [[UITextView alloc] initWithFrame:CGRectMake(10, 5, self.view.frame.size.width-20, MAX( 70, [self heightOfStatusText:appDelegate.userPreferencesDict[@"ent_pers_desc"]]))];
         statusTextView.layer.borderWidth = 0.5f;
         statusTextView.layer.borderColor = [UIColor whiteColor].CGColor;
         [statusTextView setReturnKeyType:UIReturnKeyDone];
@@ -459,7 +459,7 @@
         radiusView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 80)];
         UISlider *radiusSlider = [[UISlider alloc] initWithFrame:CGRectMake(10, 45, self.view.frame.size.width-20, 20)];
         radiusSlider.tag = 7;
-        radiusSlider.maximumValue = 1000;
+        radiusSlider.maximumValue = 300;
         radiusSlider.minimumValue = 1;
         [radiusSlider addTarget:self action:@selector(radiusSliderValueChanged:) forControlEvents:UIControlEventValueChanged];
         radiusSlider.value = [appDelegate.userPreferencesDict[@"ent_pref_radius"] intValue];

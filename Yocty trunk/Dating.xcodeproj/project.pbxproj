@@ -240,6 +240,9 @@
 		AA3D7FC219921B5B00C862CF /* STBubbleTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3D7FC119921B5B00C862CF /* STBubbleTableViewCell.m */; };
 		AA3D7FC519921BE200C862CF /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3D7FC419921BE200C862CF /* Message.m */; };
 		AACE994A19CABE8A00DEC9D6 /* ChatHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = AACE994719CABE8A00DEC9D6 /* ChatHistory.m */; };
+		AAF486D91A8CA7FE00474F68 /* delete_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = AAF486D61A8CA7FE00474F68 /* delete_icon.png */; };
+		AAF486DA1A8CA7FE00474F68 /* delete_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = AAF486D71A8CA7FE00474F68 /* delete_icon@2x.png */; };
+		AAF486DB1A8CA7FE00474F68 /* delete_icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = AAF486D81A8CA7FE00474F68 /* delete_icon@3x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -540,6 +543,9 @@
 		AA3D7FC419921BE200C862CF /* Message.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Message.m; sourceTree = "<group>"; };
 		AACE994619CABE8A00DEC9D6 /* ChatHistory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatHistory.h; sourceTree = "<group>"; };
 		AACE994719CABE8A00DEC9D6 /* ChatHistory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatHistory.m; sourceTree = "<group>"; };
+		AAF486D61A8CA7FE00474F68 /* delete_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = delete_icon.png; sourceTree = "<group>"; };
+		AAF486D71A8CA7FE00474F68 /* delete_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "delete_icon@2x.png"; sourceTree = "<group>"; };
+		AAF486D81A8CA7FE00474F68 /* delete_icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "delete_icon@3x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -635,6 +641,9 @@
 				3A00F39F1A5073FD0039CE33 /* reveal-icon@2x.png */,
 				3A9340BB1A71640D00475FF2 /* tutorial_Stare@3x.png */,
 				3A9340BD1A72EFF900475FF2 /* tutorial_Stare.png */,
+				AAF486D61A8CA7FE00474F68 /* delete_icon.png */,
+				AAF486D71A8CA7FE00474F68 /* delete_icon@2x.png */,
+				AAF486D81A8CA7FE00474F68 /* delete_icon@3x.png */,
 				3A9340BE1A72EFF900475FF2 /* tutorial_Upcoming_Profile.png */,
 				3A9340BF1A72EFF900475FF2 /* tutorial_Upcoming_Profile@3x.png */,
 				3A7871C51A7E78B700086108 /* bummer_icon.png */,
@@ -1522,10 +1531,12 @@
 				AA3D7FB319921AFD00C862CF /* Bubble-4.png in Resources */,
 				3AA8EA9A1A434F5800A7D772 /* fashionmonger.png in Resources */,
 				3A9340C21A72EFF900475FF2 /* tutorial_Upcoming_Profile@3x.png in Resources */,
+				AAF486DA1A8CA7FE00474F68 /* delete_icon@2x.png in Resources */,
 				3AA8EAC71A4355DB00A7D772 /* shy@3x.png in Resources */,
 				3AA8EA9C1A434F5800A7D772 /* gadgetfreak.png in Resources */,
 				AA3D7FAD19921AFD00C862CF /* Bubble-1.png in Resources */,
 				3AD8BA0E1A768A8B00CAB6F3 /* splash_screen@2x.png in Resources */,
+				AAF486D91A8CA7FE00474F68 /* delete_icon.png in Resources */,
 				3AB65E561A8683A400782E04 /* message_icon_selected@3x.png in Resources */,
 				3AA8EA5F1A43318100A7D772 /* possessive@3x.png in Resources */,
 				3AA8EAA91A434F5800A7D772 /* tvjunkie@3x.png in Resources */,
@@ -1537,6 +1548,7 @@
 				3AC67CDD1A656E290030A4E8 /* Mawns_Handwriting.ttf in Resources */,
 				3AA8EAC41A4355DB00A7D772 /* punctual.png in Resources */,
 				3AD8BA1A1A795A0D00CAB6F3 /* side_line_icons.png in Resources */,
+				AAF486DB1A8CA7FE00474F68 /* delete_icon@3x.png in Resources */,
 				AA3D7FBA19921AFD00C862CF /* Bubble-7@2x.png in Resources */,
 				3AA8EAC21A4355DB00A7D772 /* peacelover.png in Resources */,
 				3AA8EA771A433E6F00A7D772 /* foodie@3x.png in Resources */,
@@ -1776,7 +1788,7 @@
 				INFOPLIST_FILE = "Dating/Dating-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "72116ada-cc5c-43f1-b98a-0d50121bfab4";
+				PROVISIONING_PROFILE = "b151248b-6ede-4f65-9047-e36454bf0960";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
@@ -1795,7 +1807,7 @@
 				INFOPLIST_FILE = "Dating/Dating-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "72116ada-cc5c-43f1-b98a-0d50121bfab4";
+				PROVISIONING_PROFILE = "b151248b-6ede-4f65-9047-e36454bf0960";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};

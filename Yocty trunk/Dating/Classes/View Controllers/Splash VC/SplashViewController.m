@@ -124,22 +124,24 @@
                     if ([response[@"Userphotos"] isKindOfClass:[NSArray class]])
                     {
                         NSArray *splashImagesArray = response[@"Userphotos"];
-                        if([response[@"Name"] length])
-                        {
-                            [[NSUserDefaults standardUserDefaults] setObject:response[@"Name"] forKey:@"FamousUserName"];
-                        }
-                        if([response[@"Country"] length])
-                        {
-                            [[NSUserDefaults standardUserDefaults] setObject:response[@"Country"] forKey:@"FamousUserLocation"];
-                        }
-                        
-                        [[NSUserDefaults standardUserDefaults] synchronize];
+                       
                     
                         if ([splashImagesArray count])
                         {
                             
                             
                             [[HSImageDownloader sharedInstance] imageWithImageURL:[splashImagesArray firstObject][@"image_url"] withFBID:nil withImageDownloadedBlock:^(UIImage *image, NSString *imgURL, NSError *error) {
+                                
+                                if([response[@"Name"] length])
+                                {
+                                    [[NSUserDefaults standardUserDefaults] setObject:response[@"Name"] forKey:@"FamousUserName"];
+                                }
+                                if([response[@"Country"] length])
+                                {
+                                    [[NSUserDefaults standardUserDefaults] setObject:response[@"Country"] forKey:@"FamousUserLocation"];
+                                }
+                                
+                                [[NSUserDefaults standardUserDefaults] synchronize];
                                 
                                 NSLog(@"Splash Downloaded");
                             }];

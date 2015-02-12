@@ -1092,7 +1092,7 @@ static ChatViewController *chatViewController = nil;
 {
     if (![Utils isInternetAvailable])
     {
-        [Utils showOKAlertWithTitle:@"Dating" message:@"No Internet Connection!"];
+        [Utils showOKAlertWithTitle:_Alert_Title message:NO_INERNET_MSG];
     }
     else
     {
@@ -1103,12 +1103,12 @@ static ChatViewController *chatViewController = nil;
          {
              if (!error)
              {
-                 [Utils showOKAlertWithTitle:@"Dating" message:response[@"errMsg"]];
+                 [Utils showOKAlertWithTitle:_Alert_Title message:response[@"errMsg"]];
                  
              }
              else
              {
-                 [Utils showOKAlertWithTitle:@"Dating" message:@"Error Occured, Please Try Again"];
+                 [Utils showOKAlertWithTitle:_Alert_Title message:@"Error Occured, Please Try Again"];
              }
              
          }];
